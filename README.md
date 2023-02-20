@@ -1,19 +1,19 @@
-# ispanproject
+# iSpanProject
 
-## Project setup
+## 建立專案請先開啟vscode中的terminal
+#### 請先確定環境有安裝npm
+
 ```
 npm install
 ```
 
-### Compiles and hot-reloads for development
+### 開啟serve
 ```
 npm run serve
 ```
 
-### Compiles and minifies for production
+### 查看打包檔案
 ```
 npm run build
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
