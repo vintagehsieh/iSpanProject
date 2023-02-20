@@ -1,7 +1,8 @@
 # iSpanProject
 
 ### 建立專案請先開啟vscode中的terminal
-#### 請先確定環境有安裝npm
+請先確定環境有安裝npm
+
 
 ```
 npm install
