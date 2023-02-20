@@ -1,15 +1,18 @@
 <script>
 import Header from "@/components/Header.vue";
+import Footer from "@/components/Footer.vue";
 
 export default {
   components: {
     Header,
+    Footer,
   },
 };
 </script>
 
 <template>
   <Header />
+  <Footer />
 </template>
 
 <style lang="scss">
@@ -21,6 +24,7 @@ export default {
   box-sizing: border-box;
   // 改字體
   font-family: "Microsoft JhengHei", "Heiti TC", "sans-serif";
+  list-style: none;
 }
 img {
   display: block;
