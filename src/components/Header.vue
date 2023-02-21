@@ -8,9 +8,9 @@ export default {};
       <div id="logo"></div>
       <!-- Direct -->
       <div id="pages">
-        <a href="" id="musicPage">音樂播放</a>
-        <a href="" id="shopPage">音樂商城</a>
-        <a href="" id="actPage">音樂活動</a>
+        <a href="music.html" id="musicPage">音樂播放</a>
+        <a href="shop.html" id="shopPage">音樂商城</a>
+        <a href="activity.html" id="actPage">音樂活動</a>
       </div>
       <!-- membership -->
       <div id="login">
