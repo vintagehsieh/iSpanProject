@@ -21,7 +21,7 @@ export default {
         </router-link>
       </template>
       <template #library>
-        <router-link to="/search" class="routerLink">
+        <router-link to="/library" class="routerLink">
           <h3>音樂庫</h3>
         </router-link>
       </template>

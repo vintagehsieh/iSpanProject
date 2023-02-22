@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import MusicHome from "@/pages/music/views/musicHome.vue";
 import musicSearch from "@/pages/music/views/musicSearch.vue";
+import musicLibrary from "@/pages/music/views/musicLibrary.vue"
 
 const routes = [
   {
@@ -15,8 +16,13 @@ const routes = [
   },
   {
     path: "/search",
-    name: "second",
+    name: "search",
     component: musicSearch,
+  },
+  {
+    path: "/library",
+    name: "library",
+    component: musicLibrary,
   },
 ];
 
