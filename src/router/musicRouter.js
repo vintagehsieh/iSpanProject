@@ -1,17 +1,22 @@
 import { createRouter, createWebHistory } from "vue-router";
-import MusicHome from "../pages/music/views/musicHome.vue";
-import MusicSecond from "@/pages/music/views/musicSecond.vue";
+import MusicHome from "@/pages/music/views/musicHome.vue";
+import musicSearch from "@/pages/music/views/musicSearch.vue";
 
 const routes = [
   {
     path: "/",
+    name: "main",
+    component: MusicHome,
+  },
+  {
+    path: "/music.html",
     name: "music",
     component: MusicHome,
   },
   {
-    path: "/musicSecond",
+    path: "/search",
     name: "second",
-    component: MusicSecond,
+    component: musicSearch,
   },
 ];
 
