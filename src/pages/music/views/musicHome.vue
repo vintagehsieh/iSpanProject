@@ -85,7 +85,7 @@ export default {
 
 <template>
   <div class="container">
-    <h1 style="color: #fff;">This is Music Home.</h1>
+    <div class="announcement"></div>
     <div class="row">
       <Card v-for="num in array" key="num" class="card">
         <template #picture>
@@ -104,10 +104,17 @@ export default {
 
 <style lang="scss" scoped>
 .container {
-  padding: 0 3rem;
-  background-color: #1F2124;
+  padding: 6rem 3rem;
 
-  .row {
+  >.announcement {
+    width: 90%;
+    height: 15rem;
+    background-color: #F6B352;
+    margin: 0 auto 2rem auto;
+    border-radius: 20px;
+  }
+
+  >.row {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;

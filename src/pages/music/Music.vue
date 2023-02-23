@@ -1,16 +1,21 @@
 <script>
 import SideBar from '@/components/SideBar.vue';
+import PlayerFooter from '@/components/Player.vue'
 
 export default {
   components: {
-    SideBar
+    SideBar,
+    PlayerFooter
   }
 };
 </script>
 <template>
-  <main>
-    <SideBar>
-      <template #main>
+  <div class="Root_top-container">
+    <div class="Root_top-bar">
+
+    </div>
+    <SideBar class="Root_nav-bar">
+      <template #main class="template">
         <router-link to="/" class="routerLink">
           <h3>首頁</h3>
         </router-link>
@@ -26,8 +31,13 @@ export default {
         </router-link>
       </template>
     </SideBar>
-    <router-view class="routerView" />
-  </main>
+    <div class="Root_now-playing-bar">
+      <PlayerFooter></PlayerFooter>
+    </div>
+    <div class="Root_main-view">
+      <router-view class="routerView" />
+    </div>
+  </div>
 </template>
 
 <style lang="scss">
@@ -42,8 +52,35 @@ export default {
   list-style: none;
 }
 
-main {
-  display: flex;
+.Root_top-container {
+  >.Root_top-bar {
+    position: fixed;
+    top: 0;
+    left: 18rem;
+    width: 82rem;
+    height: 3rem;
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+
+  >.Root_nav-bar {
+    width: 18rem;
+    height: 88vh;
+    top: 0;
+    position: fixed;
+  }
+
+  >.Root_now-playing-bar {
+    width: 100%;
+    height: 12vh;
+    position: fixed;
+    bottom: 0;
+    background-color: black;
+  }
+
+  >.Root_main-view {
+    margin-left: 18rem;
+    background-color: #1F2124;
+  }
 }
 
 .routerLink {
@@ -53,18 +90,14 @@ main {
   color: lightgray;
   text-decoration: none;
 
-  >h3 {
-    margin: auto;
+  &:hover {
+    cursor: pointer;
+    color: white;
+    text-decoration: none;
   }
-}
 
-.routerLink:hover {
-  cursor: pointer;
-  color: white;
-  text-decoration: none;
-}
-
-.routerView {
-  margin-left: 18rem;
+  >h3 {
+    margin-left: 1rem;
+  }
 }
 </style>

@@ -5,7 +5,9 @@ export default {};
 <template>
     <aside>
         <div id="logo">
-            <img src="https://www.ispan.com.tw/img/Logoslogan_sm.png" alt="" />
+            <a href="index.html" class="routerLink">
+                <img src="https://www.ispan.com.tw/img/Logoslogan_sm.png" alt="" />
+            </a>
         </div>
         <div id="default">
             <slot name="main"></slot>
@@ -20,9 +22,8 @@ export default {};
 
 <style lang="scss" scoped>
 aside {
-    width: 18rem;
-    height: 100vh;
-    position: fixed;
+    width: 100%;
+    height: 100%;
     margin: 0;
     background-color: #383A3F;
     color: white;
@@ -33,9 +34,15 @@ aside {
         margin: 2rem auto;
         background-color: #fff;
 
-        >img {
-            width: 100%;
-            height: 100%;
+        &:hover {
+            cursor: pointer;
+        }
+
+        >.routerLink {
+            >img {
+                width: 100%;
+                height: 100%;
+            }
         }
     }
 
