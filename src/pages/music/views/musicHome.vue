@@ -87,15 +87,15 @@ export default {
   <div class="container">
     <div class="announcement"></div>
     <div class="row">
-      <Card v-for="num in array" key="num" class="card">
+      <Card v-for="item in array" :key="item.name" class="card">
         <template #picture>
           <img src="../../../assets/logo.png" alt="">
         </template>
         <template #name>
-          <h3>{{ num.name }}</h3>
+          <h3>{{ item.name }}</h3>
         </template>
         <template #desc>
-          <p>{{ num.desc }}</p>
+          <p>{{ item.desc }}</p>
         </template>
       </Card>
     </div>

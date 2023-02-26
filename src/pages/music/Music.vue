@@ -12,10 +12,12 @@ export default {
 <template>
   <div class="Root_top-container">
     <div class="Root_top-bar">
-
+      <div v-if="RouterView">
+        <SearchBar></SearchBar>
+      </div>
     </div>
     <SideBar class="Root_nav-bar">
-      <template #main class="template">
+      <template #main>
         <router-link to="/" class="routerLink">
           <h3>首頁</h3>
         </router-link>
@@ -59,7 +61,7 @@ export default {
     left: 18rem;
     width: 82rem;
     height: 3rem;
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: rgba(0, 0, 0, 0.3);
   }
 
   >.Root_nav-bar {
