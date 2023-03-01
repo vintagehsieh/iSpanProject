@@ -12,9 +12,6 @@ export default {
 <template>
   <div class="Root_top-container">
     <div class="Root_top-bar">
-      <div v-if="RouterView">
-        <SearchBar></SearchBar>
-      </div>
     </div>
     <SideBar class="Root_nav-bar">
       <template #main>
@@ -31,6 +28,11 @@ export default {
         <router-link to="/library" class="routerLink">
           <h3>音樂庫</h3>
         </router-link>
+      </template>
+      <template #playlist>
+        <RouterLink to="/playlist" class="routerLink">
+          <h3>播放清單</h3>
+        </RouterLink>
       </template>
     </SideBar>
     <div class="Root_now-playing-bar">
@@ -77,6 +79,7 @@ export default {
     position: fixed;
     bottom: 0;
     background-color: black;
+    display: flex;
   }
 
   >.Root_main-view {

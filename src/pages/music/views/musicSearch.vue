@@ -43,7 +43,19 @@ export default {
 </script>
 <template>
   <div class="container">
-    <h1>This is Music Search Page</h1>
+    <div id="searchGroup">
+      <div id="search">
+        <!-- font awesome maginifier -->
+        <input type="text" placeholder="想聽什麼?"/>
+      </div>
+      <div id="sort">
+        <div class="sort-unit" id="all">所有</div>
+        <div class="sort-unit" id="song">歌曲</div>
+        <div class="sort-unit" id="playlist">播放清單</div>
+        <div class="sort-unit" id="artistAndCreator">藝人/創作者</div>
+        <div class="sort-unit" id="album">專輯</div>
+      </div>
+    </div>
     <div class="row">
       <Card v-for="item in items" :key="item.id" class="card">
         <template #name>
@@ -63,8 +75,43 @@ export default {
   padding: 6rem 3rem;
   background-color: #1F2124;
 
-  >h1 {
-    color: white;
+    >#searchGroup{
+      >#search{
+        width: 15rem;
+        height: 35px;
+        padding: 0 1rem;
+        background-color: #fff;
+        border-radius: 30px;
+        display: flex;
+        justify-content: center;
+
+        >input{
+          font-size: large;
+          border:  none;
+          &:focus{
+            outline: none;
+          }
+        }
+      }
+      >#sort{
+        margin-top: 1rem;
+        display: flex;
+
+        >.sort-unit{
+          margin-right: 5px;
+          padding: 0 10px;
+          height: 2rem;
+          color: white;
+          background-color: #2c2c2c;
+          border-radius: 30px;
+          display: flex;
+          align-items: center;
+
+          &:hover{
+            background-color: #383A3F;
+          }
+        }
+      }
   }
 
   >.row{

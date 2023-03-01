@@ -15,7 +15,7 @@ export default {};
             <slot name="library"></slot>
         </div>
         <div id="playlists">
-
+            <slot name="playlist"></slot>
         </div>
     </aside>
 </template>

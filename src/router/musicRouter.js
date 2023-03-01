@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from "vue-router";
 import MusicHome from "@/pages/music/views/musicHome.vue";
 import musicSearch from "@/pages/music/views/musicSearch.vue";
-import musicLibrary from "@/pages/music/views/musicLibrary.vue"
+import musicLibrary from "@/pages/music/views/musicLibrary.vue";
+import playlist from "@/pages/music/views/playlist.vue"
 
 const routes = [
   {
@@ -24,6 +25,11 @@ const routes = [
     name: "library",
     component: musicLibrary,
   },
+  {
+    path: "/playlist",
+    name: "playlist",
+    component: playlist,
+  }
 ];
 
 const router = createRouter({
