@@ -1,7 +1,10 @@
 <script>
+import Song from '@/components/Song.vue';
+
 export default {
     data() {
         return {
+            songs: {},
             playlist: {
                 totalLikes: 10,
                 totalSongs: 10,
@@ -57,12 +60,37 @@ export default {
                 <font-awesome-icon class="btn" icon="fa-solid fa-ellipsis" />
             </button>
         </div>
-        <div class="content"></div>
+        <div class="content">
+            <div id="contentHeader">
+                <Song>
+                    <template #order>
+                        <p>#</p>
+                    </template>
+                    <template #name>
+                        <p>標題</p>
+                    </template>
+                    <template #album>
+                        <p>專輯</p>
+                    </template>
+                    <template #addedDate>
+                        <p>新增日期</p>
+                    </template>
+                    <template #time>
+                        <font-awesome-icon icon="fa-regular fa-clock" />
+                    </template>
+                </Song>
+            </div>
+            <div id="contentBody">
+                <Song v-for="song in songs" :key="song.Id"></Song>
+            </div>
+        </div>
     </div>
 </template>
 
 <style lang="scss" scoped>
 .container {
+    width: 100%;
+
     .contentSpacing {
         width: 100%;
         height: 20rem;
@@ -124,6 +152,17 @@ export default {
                     color: white;
                 }
             }
+        }
+    }
+
+    >.content {
+        width: 100%;
+        min-height: 20rem;
+        padding: 1rem;
+
+        >#contentHeader {
+            width: 100%;
+            color: rgb(83, 83, 83);
         }
     }
 }

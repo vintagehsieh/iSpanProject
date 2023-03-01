@@ -2,6 +2,7 @@ import { createApp } from "vue";
 import Music from "./Music.vue";
 import router from "@/router/musicRouter";
 import Card from "@/components/Card.vue";
+import Song from "@/components/Song.vue";
 
 /* import the fontawesome core */
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -24,9 +25,10 @@ import { faPause } from "@fortawesome/free-solid-svg-icons";
 import { faForwardStep } from "@fortawesome/free-solid-svg-icons";
 import { faRepeat } from "@fortawesome/free-solid-svg-icons";
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
+import { faClock } from "@fortawesome/free-regular-svg-icons";
 
 /* add icons to the library */
-library.add(faBars, faHeart, solidHeart, faUpRightAndDownLeftFromCenter, faVolumeHigh, faVolumeLow, faVolumeXmark, faShuffle, faBackwardStep, faPlay, faPause, faForwardStep, faRepeat, faEllipsis)
+library.add(faBars, faHeart, solidHeart, faUpRightAndDownLeftFromCenter, faVolumeHigh, faVolumeLow, faVolumeXmark, faShuffle, faBackwardStep, faPlay, faPause, faForwardStep, faRepeat, faEllipsis, faClock)
 
-createApp(Music).component('Card', Card).component('font-awesome-icon', FontAwesomeIcon).use(router).mount("#music");
+createApp(Music).component('Card', Card).component('Song', Song).component('font-awesome-icon', FontAwesomeIcon).use(router).mount("#music");
 
