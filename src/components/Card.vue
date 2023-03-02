@@ -28,6 +28,7 @@ export default {};
         height: 70%;
         background-color: white;
         border-radius: 5%;
+        margin-bottom: 5px;
         overflow: hidden;
         display: flex;
         justify-content: center;

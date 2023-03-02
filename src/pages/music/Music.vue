@@ -3,6 +3,7 @@ import SideBar from '@/components/SideBar.vue';
 import PlayerFooter from '@/components/Player.vue'
 
 export default {
+  props: ['isPlaying'],
   components: {
     SideBar,
     PlayerFooter

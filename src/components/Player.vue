@@ -6,8 +6,15 @@ export default {
         return {
             playStatus: false,
             showQueue: false,
-            isliked: false,
+            currentTime: 0,
             volume: 50,
+            song: {
+                id: 1,
+                name: "Song Name",
+                artist: "Artist Name",
+                isLiked: false,
+                duration: 188,
+            }
         }
     },
     props: ['font-awesome-icon'],
@@ -23,7 +30,27 @@ export default {
         },
         togglePlay() {
             this.playStatus = !this.playStatus;
-        }
+        },
+        changeBackground(e) {
+            let target = e.target;
+
+            const min = target.min;
+            const max = target.max;
+            const val = target.value;
+
+            target.style.backgroundSize = (val - min) * 100 / (max - min) + '% 100%'
+        },
+        formatTime(seconds) {
+            // Compute the number of minutes and remaining seconds
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+
+            // Pad the seconds with a leading zero if needed
+            const paddedSeconds = remainingSeconds.toString().padStart(2, '0');
+
+            // Combine the minutes and seconds into a string
+            return `${minutes}:${paddedSeconds}`;
+        },
     }
 };
 </script>
@@ -36,8 +63,8 @@ export default {
                     <img src="../assets/logo.png" alt="">
                 </div>
                 <div class="names">
-                    <p class="songName">Song Name</p>
-                    <p class="artistName">Artist Name</p>
+                    <p class="songName">{{ song.name }}</p>
+                    <p class="artistName">{{ song.artist }}</p>
                 </div>
                 <div class="liked">
                     <font-awesome-icon v-if="isliked" icon="fa-solid fa-heart" style="color: white; font-size: 20px"
@@ -63,9 +90,12 @@ export default {
                 </div>
             </div>
             <div class="playback-bar">
-                <div id="currentTime"></div>
-                <div id="timeBar"></div>
-                <div id="totalTime"></div>
+                <div id="currentTime">{{ formatTime(currentTime) }}</div>
+                <div id="timeBar">
+                    <input type="range" min="0" step="1" max="100" v-model="currentTime" id="time-bar"
+                        @input="changeBackground" />
+                </div>
+                <div id="totalTime">{{ formatTime(song.duration) }}</div>
             </div>
         </div>
         <div class="options">
@@ -82,7 +112,8 @@ export default {
                     <font-awesome-icon icon="fa-solid fa-volume-high" v-else style="color:white; font-size: 20px;" />
                 </div>
                 <div class="volume-slider">
-                    <input type="range" min="0" step="1" max="100" v-model="volume" id="volume-range" />
+                    <input type="range" min="0" step="1" max="100" v-model="volume" id="volume-range"
+                        @input="changeBackground" />
                 </div>
             </div>
             <div id="full-screen">
@@ -146,7 +177,6 @@ export default {
     >.player-controls {
         width: 34%;
         height: 100%;
-        display: flex;
 
         >#player-controls_buttons {
             width: 100%;
@@ -216,6 +246,27 @@ export default {
                 }
             }
         }
+
+        >.playback-bar {
+            display: flex;
+            justify-content: center;
+
+            >#currentTime {
+                margin-right: 1rem;
+                color: #fff;
+            }
+
+            >#timeBar {
+                display: flex;
+                align-items: center;
+                margin-right: 1rem;
+                width: 1000px;
+            }
+
+            >#totalTime {
+                color: #fff;
+            }
+        }
     }
 
     >.options {
@@ -265,33 +316,39 @@ export default {
 }
 
 input[type="range"] {
-    border: none;
-    outline: none;
-    width: 100%;
-    height: 7px;
-    border-radius: 3px;
     -webkit-appearance: none;
-    appearance: none;
+    width: 100%;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 5px;
+    background-image: linear-gradient(#ffffff, #ffffff);
+    background-size: 0% 100%;
+    background-repeat: no-repeat;
+
+    &#volume-range {
+        background-size: 50% 100%;
+    }
 
     &::-webkit-slider-thumb {
         -webkit-appearance: none;
-        width: 7px;
-        height: 7px;
+        width: 5px;
+        height: 5px;
         border-radius: 50%;
         background-color: #fff;
         cursor: pointer;
     }
 
     &::-webkit-slider-runnable-track {
-        background: grey;
-        height: 7px;
-        border-radius: 3px;
+        -webkit-appearance: none;
+        box-shadow: none;
+        border: none;
+        background: transparent;
     }
 
     &:hover {
+        background-image: linear-gradient(#F6B352, #F6B352);
+
         &::-webkit-slider-thumb {
-            position: relative;
-            top: -4px;
             width: 15px;
             height: 15px;
         }
