@@ -4,48 +4,49 @@ import Song from '@/components/Song.vue';
 export default {
     data() {
         return {
-            songs: [{
-                Id: 1,
-                name: "ABC",
-                artist: "AAB",
-                album: "<M>",
-                addedDate: "2022-3-1",
-                duration: 180,
-                isLiked: false,
-                isHover: false,
-            }, {
-                Id: 2,
-                name: "ABC",
-                artist: "AAB",
-                album: "<M>",
-                addedDate: "2022-3-1",
-                duration: 180,
-                isLiked: false,
-                isHover: false,
-            }, {
-                Id: 3,
-                name: "ABC",
-                artist: "AAB",
-                album: "<M>",
-                addedDate: "2022-3-1",
-                duration: 180,
-                isLiked: false,
-                isHover: false,
-            }, {
-                Id: 4,
-                name: "ABC",
-                artist: "AAB",
-                album: "<M>",
-                addedDate: "2022-3-1",
-                duration: 180,
-                isLiked: true,
-                isHover: false,
-            }],
             playlist: {
+                name: "MyPlaylist#1",
                 totalLikes: 10,
-                totalSongs: 10,
                 totalTime: 180,
                 isliked: false,
+                ownerName: "Maru",
+                songs: [{
+                    Id: 1,
+                    name: "ABC",
+                    artist: "AAB",
+                    album: "<M>",
+                    addedDate: "2022-3-1",
+                    duration: 180,
+                    isLiked: false,
+                    isHover: false,
+                }, {
+                    Id: 2,
+                    name: "ABC",
+                    artist: "AAB",
+                    album: "<M>",
+                    addedDate: "2022-3-1",
+                    duration: 180,
+                    isLiked: false,
+                    isHover: false,
+                }, {
+                    Id: 3,
+                    name: "ABC",
+                    artist: "AAB",
+                    album: "<M>",
+                    addedDate: "2022-3-1",
+                    duration: 180,
+                    isLiked: false,
+                    isHover: false,
+                }, {
+                    Id: 4,
+                    name: "ABC",
+                    artist: "AAB",
+                    album: "<M>",
+                    addedDate: "2022-3-1",
+                    duration: 180,
+                    isLiked: true,
+                    isHover: false,
+                }],
             },
             isPlaying: false,
         }
@@ -58,7 +59,7 @@ export default {
             this.playlist.isliked = !this.playlist.isliked;
         },
         toggleSongLiked(i) {
-            this.songs[i].isLiked = !this.songs[i].isLiked;
+            this.playlist.songs[i].isLiked = !this.playlist.songs[i].isLiked;
         },
         formatTime(seconds) {
             // Compute the number of minutes and remaining seconds
@@ -72,10 +73,31 @@ export default {
             return `${minutes}:${paddedSeconds}`;
         },
         hoverSong(i) {
-            this.songs[i].isHover = true;
+            this.playlist.songs[i].isHover = true;
         },
         notHoverSong(i) {
-            this.songs[i].isHover = false;
+            this.playlist.songs[i].isHover = false;
+        },
+        getPlaylistTotalTime() {
+            let res = "";
+            let totaltime = 0;
+            for (let i = 0; i < this.playlist.songs.length; i++) {
+                totaltime += this.playlist.songs[i].duration;
+            }
+
+            if (totaltime < 3600) {
+                let minutes = totaltime / 60;
+                let seconds = totaltime % 60;
+                res = minutes + "分鐘";
+                res += seconds != 0 ? seconds + "秒" : "";
+            } else {
+                let hours = totaltime / 3600;
+                let minutes = totaltime % 3600 / 60;
+                res = hours + "小時";
+                res += minutes != 0 ? minutes + "分鐘" : "";
+            }
+
+            return res;
         }
     }
 };
@@ -87,17 +109,18 @@ export default {
                 <img src="@/assets/music-note-icon-song-melody-tune-flat-symbol-free-vector.webp" alt="">
             </div>
             <div id="playlistInfo">
-                <span id="type">Playlist</span>
-                <span id="playlistName"></span>
+                <div id="type">播放清單</div>
+                <div id="playlistName">{{ playlist.name }}</div>
                 <div id="infoDetail">
-                    <div id="artistInfo">
-                        <div class="picture" id="artistPic">
-                            <img src="" alt="">
+                    <div id="ownerInfo">
+                        <div class="picture" id="ownerPic">
+                            <img src="@/assets/50402309-musician-icon.webp" alt="">
                         </div>
-                        <div id="artistName"></div>
+                        <div id="ownerName">{{ playlist.ownerName }}</div>
                     </div>
-                    <span id="likes">{{ playlist.totalLikes }}</span>
-                    <span id="info">{{ playlist.totalSongs, playlist.totalTime }}</span>
+                    <span id="likes">喜歡人數 {{ playlist.totalLikes }}</span>
+                    <span id="totalSongs">{{ playlist.songs.length }}首歌</span>
+                    <span id="totaltime">{{ getPlaylistTotalTime() }}</span>
                 </div>
             </div>
         </div>
@@ -137,7 +160,7 @@ export default {
                 </Song>
             </div>
             <div id="contentBody">
-                <Song v-for="(song, i) in songs" :key="song.Id" class="songContent" @mouseover="hoverSong(i)"
+                <Song v-for="(song, i) in playlist.songs" :key="song.Id" class="songContent" @mouseover="hoverSong(i)"
                     @mouseleave="notHoverSong(i)">
                     <template #order>
                         <p v-if="song.isHover == false">{{ i + 1 }}</p>
@@ -212,6 +235,58 @@ export default {
         >#playlistInfo {
             position: relative;
             top: 4rem;
+            color: white;
+
+            >#type {
+                font-size: 40px;
+            }
+
+            >#playlistName {
+                font-size: 50px;
+                margin-bottom: 5rem;
+            }
+
+            >#infoDetail {
+                display: flex;
+                align-items: center;
+
+                >#ownerInfo {
+                    display: flex;
+                    align-items: center;
+                    margin-right: 1rem;
+
+                    >.picture {
+                        width: 30px;
+                        height: 30px;
+                        margin-right: 10px;
+
+                        >img {
+                            width: 100%;
+                            height: 100%;
+                            border-radius: 50%;
+                        }
+                    }
+
+                    >#ownerName {
+                        font-size: 16px;
+                    }
+                }
+
+                >#likes {
+                    font-size: 16px;
+                    margin-right: 1rem;
+                }
+
+                >#totalSongs {
+                    font-size: 16px;
+                    margin-right: 1rem;
+                }
+
+                >#totaltime {
+                    font-size: 16px;
+                    margin-right: 1rem;
+                }
+            }
         }
     }
 
@@ -310,9 +385,10 @@ export default {
                     >.desc {
                         width: auto;
                         height: 50px;
-                        font-size: 16px;
+                        font-size: 14px;
 
                         >.songName {
+                            font-size: 16px;
                             margin-bottom: 6px;
                         }
                     }

@@ -17,16 +17,19 @@ export default {
     <SideBar class="Root_nav-bar">
       <template #main>
         <router-link to="/" class="routerLink">
+          <font-awesome-icon icon="fa-solid fa-house" />
           <h3>首頁</h3>
         </router-link>
       </template>
       <template #search>
         <router-link to="/search" class="routerLink">
+          <font-awesome-icon icon="fa-solid fa-magnifying-glass" />
           <h3>搜尋</h3>
         </router-link>
       </template>
       <template #library>
         <router-link to="/library" class="routerLink">
+          <font-awesome-icon icon="fa-solid fa-music" />
           <h3>音樂庫</h3>
         </router-link>
       </template>
@@ -93,6 +96,7 @@ export default {
   width: 100%;
   height: 40px;
   display: flex;
+  align-items: center;
   color: lightgray;
   text-decoration: none;
 

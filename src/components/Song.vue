@@ -37,6 +37,7 @@ export default {
     padding: 0 1rem;
     display: flex;
     align-items: center;
+    cursor: context-menu;
 
     .box {
         display: flex;

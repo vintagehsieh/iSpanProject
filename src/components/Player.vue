@@ -26,7 +26,7 @@ export default {
             this.showQueue = !this.showQueue;
         },
         toggleLiked() {
-            this.isliked = !this.isliked;
+            this.song.isLiked = !this.song.isLiked;
         },
         togglePlay() {
             this.playStatus = !this.playStatus;
@@ -51,6 +51,9 @@ export default {
             // Combine the minutes and seconds into a string
             return `${minutes}:${paddedSeconds}`;
         },
+        checkSong() {
+            return Object.keys(this.song).length != 0
+        }
     }
 };
 </script>
@@ -58,7 +61,7 @@ export default {
 <template>
     <div class="container">
         <div class="currentMusic">
-            <div class="songInfo">
+            <div class="songInfo" v-if="checkSong()">
                 <div class="picture">
                     <img src="../assets/logo.png" alt="">
                 </div>
@@ -67,7 +70,7 @@ export default {
                     <p class="artistName">{{ song.artist }}</p>
                 </div>
                 <div class="liked">
-                    <font-awesome-icon v-if="isliked" icon="fa-solid fa-heart" style="color: white; font-size: 20px"
+                    <font-awesome-icon v-if="song.isLiked" icon="fa-solid fa-heart" style="color: white; font-size: 20px"
                         @click="toggleLiked" />
                     <font-awesome-icon v-else icon="fa-regular fa-heart" style="color: white; font-size: 20px"
                         @click="toggleLiked" />
@@ -81,8 +84,11 @@ export default {
                     <font-awesome-icon id="previous" class="playerBtn" icon="fa-solid fa-backward-step" />
                 </div>
                 <div class="player-controls_center">
-                    <font-awesome-icon id="play" icon="fa-solid fa-play" v-if="playStatus == false" @click="togglePlay" />
-                    <font-awesome-icon id="pause" icon="fa-solid fa-pause" v-else @click="togglePlay" />
+                    <button class="playBtn" v-bind:disabled="checkSong()">
+                        <font-awesome-icon id="play" icon="fa-solid fa-play" v-if="playStatus == false"
+                            @click="togglePlay" />
+                        <font-awesome-icon id="pause" icon="fa-solid fa-pause" v-else @click="togglePlay" />
+                    </button>
                 </div>
                 <div class="player-controls_right">
                     <font-awesome-icon id="next" class="playerBtn" icon="fa-solid fa-forward-step" />
@@ -92,7 +98,7 @@ export default {
             <div class="playback-bar">
                 <div id="currentTime">{{ formatTime(currentTime) }}</div>
                 <div id="timeBar">
-                    <input type="range" min="0" step="1" max="100" v-model="currentTime" id="time-bar"
+                    <input type="range" min="0" step="1" :max="song.duration" v-model="currentTime" id="time-bar"
                         @input="changeBackground" />
                 </div>
                 <div id="totalTime">{{ formatTime(song.duration) }}</div>
@@ -210,20 +216,29 @@ export default {
                 justify-content: center;
                 align-items: center;
 
-                >#play {
-                    font-size: 30px;
-                    color: white;
-                    position: absolute;
+                >.playBtn {
+                    width: 40px;
+                    height: 40px;
+                    background-color: rgba(255, 255, 255, 0);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
 
-                    &:hover {
-                        font-size: 34px;
+                    >#play {
+                        font-size: 30px;
+                        color: white;
+                        position: absolute;
+
+                        &:hover {
+                            font-size: 34px;
+                        }
                     }
-                }
 
-                >#pause {
-                    font-size: 30px;
-                    color: white;
-                    position: absolute;
+                    >#pause {
+                        font-size: 30px;
+                        color: white;
+                        position: absolute;
+                    }
                 }
             }
 
