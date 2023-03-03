@@ -27,6 +27,13 @@ module.exports = defineConfig({
       title: "Activity",
       chunks: ["chunk-vendors", "chunk-common", "activity"],
     },
+    member: {
+      entry: "src/pages/member/member.js",
+      template: "public/member.html",
+      filename: "member.html",
+      title: "Member",
+      chunks: ["chunk-vendors", "chunk-common", "member"],
+    },
     index: {
       entry: "src/main.js",
       template: "public/index.html",

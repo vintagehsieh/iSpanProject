@@ -1,4 +1,5 @@
 import { createStore } from "vuex";
+// import MusicSide from "./music/musicSide/musicSide";
 
 const homeModule = {
   state: {},
@@ -13,7 +14,9 @@ const musicModule = {
   getters: {},
   mutations: {},
   actions: {},
-  modules: {},
+  modules: {
+    // MusicSide,
+  },
 };
 
 const activityModule = {

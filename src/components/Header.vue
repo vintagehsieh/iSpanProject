@@ -5,7 +5,9 @@ export default {};
   <header>
     <nav>
       <!-- logo -->
-      <div id="logo"></div>
+      <div id="logo">
+        <a href="index.html"><img src="@/assets/logo.png" /></a>
+      </div>
       <!-- Direct -->
       <div id="pages">
         <a href="music.html" id="musicPage">音樂播放</a>
@@ -15,7 +17,7 @@ export default {};
       <!-- membership -->
       <div id="login">
         <div id="avatar"></div>
-        <a href="">會員登入</a>
+        <a href="member.html" id="memberPage">會員登入</a>
         <!-- 引入font-awesome -->
         <!-- <font-awesome-icon icon="fa-solid fa-caret-down" /> -->
       </div>
@@ -35,14 +37,23 @@ nav {
   width: 100%;
   height: 100%;
   > #logo {
+    display: flex;
     margin-left: 10rem;
     width: 200px;
     height: 60px;
-    background-color: white;
+    > a img {
+      display: flex;
+      width: max(10vw, 200px);
+      margin-top: -1rem;
+      scale: 2;
+    }
   }
   > #pages {
     display: flex;
     color: white;
+    > :nth-child(1) {
+      margin-left: 2rem;
+    }
     > a {
       text-decoration: none;
       color: white;
@@ -55,9 +66,10 @@ nav {
     justify-content: space-around;
     padding-right: 10rem;
     > #avatar {
-      display: block;
-      width: 30px;
-      height: 30px;
+      // 縮小不要變形
+      display: flex;
+      min-width: 30px;
+      min-height: 30px;
       border-radius: 50%;
       background-color: white;
     }

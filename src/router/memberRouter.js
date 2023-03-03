@@ -3,19 +3,19 @@ import {
   createWebHistory,
   createWebHashHistory,
 } from "vue-router";
-import MusicHome from "../pages/music/views/musicHome.vue";
-import MusicSecond from "@/pages/music/views/musicSecond.vue";
+import MemberHome from "../pages/member/views/memberHome.vue";
+import MemberSecond from "../pages/member/views/memberSecond.vue";
 
 const routes = [
   {
     path: "/",
-    name: "music",
-    component: MusicHome,
+    name: "member",
+    component: MemberHome,
   },
   {
-    path: "/musicSecond",
+    path: "/memberSecond",
     name: "second",
-    component: MusicSecond,
+    component: MemberSecond,
   },
 ];
 
