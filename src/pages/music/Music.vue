@@ -1,41 +1,113 @@
 <script>
-import { onMounted } from "vue";
-import { useStore } from "vuex";
-import MusicBtn from "@/pages/music/components/MusicBtn.vue";
-// import MusicSide from "@/pages/music/components/MusicSide.vue";
+import SideBar from '@/components/SideBar.vue';
+import PlayerFooter from '@/components/Player.vue'
 
 export default {
+  props: ['isPlaying'],
   components: {
-    MusicBtn,
-    // MusicSide,
-  },
-  props: {},
-  setup() {
-    const store = useStore();
-
-    onMounted(() => {});
-
-    return {};
-  },
+    SideBar,
+    PlayerFooter
+  }
 };
 </script>
 <template>
-  <MusicBtn />
-  <div class="content">
-    <h1>HIHI</h1>
+  <div class="Root_top-container">
+    <div class="Root_top-bar">
+    </div>
+    <SideBar class="Root_nav-bar">
+      <template #main>
+        <router-link to="/" class="routerLink">
+          <font-awesome-icon icon="fa-solid fa-house" />
+          <h3>首頁</h3>
+        </router-link>
+      </template>
+      <template #search>
+        <router-link to="/search" class="routerLink">
+          <font-awesome-icon icon="fa-solid fa-magnifying-glass" />
+          <h3>搜尋</h3>
+        </router-link>
+      </template>
+      <template #library>
+        <router-link to="/library" class="routerLink">
+          <font-awesome-icon icon="fa-solid fa-music" />
+          <h3>音樂庫</h3>
+        </router-link>
+      </template>
+      <template #playlist>
+        <RouterLink to="/playlist" class="routerLink">
+          <h3>播放清單</h3>
+        </RouterLink>
+      </template>
+    </SideBar>
+    <div class="Root_now-playing-bar">
+      <PlayerFooter></PlayerFooter>
+    </div>
+    <div class="Root_main-view">
+      <router-view class="routerView" />
+    </div>
   </div>
-  <MusicSide />
 </template>
 
-<style lang="scss" scoped>
-.content {
+<style lang="scss">
+* {
+  margin: 0;
+  padding: 0;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  // 改字體
+  font-family: "Microsoft JhengHei", "Heiti TC", "sans-serif";
+  list-style: none;
+}
+
+.Root_top-container {
+  >.Root_top-bar {
+    position: fixed;
+    top: 0;
+    left: 18rem;
+    width: 82rem;
+    height: 3rem;
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+
+  >.Root_nav-bar {
+    width: 18rem;
+    height: 88vh;
+    top: 0;
+    position: fixed;
+  }
+
+  >.Root_now-playing-bar {
+    width: 100%;
+    height: 12vh;
+    position: fixed;
+    bottom: 0;
+    background-color: black;
+    display: flex;
+  }
+
+  >.Root_main-view {
+    margin-left: 18rem;
+    background-color: #1F2124;
+  }
+}
+
+.routerLink {
   width: 100%;
-  height: 100%;
-  background-image: url("https://source.unsplash.com/WLUHO9A_xik/1600x900");
-  background-size: cover;
-  background-position: center;
+  height: 40px;
   display: flex;
-  justify-content: center;
   align-items: center;
+  color: lightgray;
+  text-decoration: none;
+
+  &:hover {
+    cursor: pointer;
+    color: white;
+    text-decoration: none;
+  }
+
+  >h3 {
+    margin-left: 1rem;
+  }
 }
 </style>
