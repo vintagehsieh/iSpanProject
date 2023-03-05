@@ -4,6 +4,14 @@ import PlayerFooter from '@/components/Player.vue'
 
 export default {
   props: ['isPlaying'],
+  provide: {
+    sharedData: {
+      category: {
+        name: "",
+        id: 0,
+      },
+    }
+  },
   components: {
     SideBar,
     PlayerFooter

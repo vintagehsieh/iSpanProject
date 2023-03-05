@@ -14,10 +14,8 @@ export default {};
 .scrollable-container {
     width: 20rem;
     height: 400px;
-    /* Set the height of the container */
-
+    box-shadow: -2px -2px 5px 2px rgba(0, 0, 0, 0.4);
     overflow-y: scroll;
-    /* Enable vertical scrolling */
 
     &::-webkit-scrollbar {
         display: none;

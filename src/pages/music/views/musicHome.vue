@@ -12,6 +12,10 @@ export default {
         headerName: "熱門專輯",
         items: []
       },
+      popularPlaylists: {
+        headerName: "精選播放清單",
+        items: []
+      },
       popularArtists: {
         headerName: "推薦藝人",
         items: []
@@ -25,7 +29,6 @@ export default {
     async function loadData() {
       const responseSongs = await fetch('https://localhost:7043/Songs/Popular');
       const dataSongs = await responseSongs.json();
-      console.log(dataSongs)
       mainPageContent.value.popularSongs.items = dataSongs;
 
       fetch('https://localhost:7043/Albums/Recommended')
@@ -35,12 +38,12 @@ export default {
         })
         .catch(error => console.error(error))
 
-      // fetch('https://localhost:7043/Playlists/Recommended')
-      //   .then(response => response.json())
-      //   .then(data => {
-      //     mainPageContent.popularPlaylists = data
-      //   })
-      //   .catch(error => console.error(error))
+      fetch('https://localhost:7043/Playlists/Recommended')
+        .then(response => response.json())
+        .then(data => {
+          mainPageContent.popularPlaylists = data
+        })
+        .catch(error => console.error(error))
 
       fetch('https://localhost:7043/Artists/Recommended')
         .then(response => response.json())
@@ -58,7 +61,6 @@ export default {
     }
 
     loadData();
-
 
     return { mainPageContent }
   },
