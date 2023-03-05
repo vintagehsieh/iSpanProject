@@ -84,11 +84,8 @@ export default {
                     <font-awesome-icon id="previous" class="playerBtn" icon="fa-solid fa-backward-step" />
                 </div>
                 <div class="player-controls_center">
-                    <button class="playBtn" v-bind:disabled="checkSong()">
-                        <font-awesome-icon id="play" icon="fa-solid fa-play" v-if="playStatus == false"
-                            @click="togglePlay" />
-                        <font-awesome-icon id="pause" icon="fa-solid fa-pause" v-else @click="togglePlay" />
-                    </button>
+                    <font-awesome-icon id="play" icon="fa-solid fa-play" v-if="playStatus == false" @click="togglePlay" />
+                    <font-awesome-icon id="pause" icon="fa-solid fa-pause" v-else @click="togglePlay" />
                 </div>
                 <div class="player-controls_right">
                     <font-awesome-icon id="next" class="playerBtn" icon="fa-solid fa-forward-step" />
@@ -216,29 +213,20 @@ export default {
                 justify-content: center;
                 align-items: center;
 
-                >.playBtn {
-                    width: 40px;
-                    height: 40px;
-                    background-color: rgba(255, 255, 255, 0);
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
+                >#play {
+                    font-size: 30px;
+                    color: white;
+                    position: absolute;
 
-                    >#play {
-                        font-size: 30px;
-                        color: white;
-                        position: absolute;
-
-                        &:hover {
-                            font-size: 34px;
-                        }
+                    &:hover {
+                        font-size: 34px;
                     }
+                }
 
-                    >#pause {
-                        font-size: 30px;
-                        color: white;
-                        position: absolute;
-                    }
+                >#pause {
+                    font-size: 30px;
+                    color: white;
+                    position: absolute;
                 }
             }
 
