@@ -1,4 +1,8 @@
-import { createRouter, createWebHistory } from "vue-router";
+import {
+  createRouter,
+  createWebHistory,
+  createWebHashHistory,
+} from "vue-router";
 import MusicHome from "@/pages/music/views/musicHome.vue";
 import musicSearch from "@/pages/music/views/musicSearch.vue";
 import musicLibrary from "@/pages/music/views/musicLibrary.vue";
