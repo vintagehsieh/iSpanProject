@@ -102,7 +102,7 @@ export default {
   padding: 6rem 3rem;
 
   >.announcement {
-    width: 90%;
+    width: 80%;
     height: 15rem;
     background-color: #F6B352;
     margin: 0 auto 2rem auto;
@@ -112,7 +112,7 @@ export default {
   >.content {
     >.contentHeader {
       margin: 0 3rem;
-      font-size: 40px;
+      font-size: 20px;
       color: white;
       cursor: context-menu;
       display: flex;
@@ -125,7 +125,7 @@ export default {
       >.showAll {
         right: 0;
         bottom: 0;
-        font-size: 20px;
+        font-size: 16px;
         padding: 5px 10px;
         border-radius: 5px;
         color: rgb(160, 160, 160);

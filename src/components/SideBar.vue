@@ -5,7 +5,7 @@ export default {};
 <template>
     <aside>
         <div id="logo">
-            <a href="index.html" class="routerLink">
+            <a href="index.html">
                 <img src="@/assets/logo.png" alt="" />
             </a>
         </div>
@@ -25,7 +25,7 @@ aside {
     width: 100%;
     height: 100%;
     margin: 0;
-    padding: 3rem 2rem;
+    padding: 0 2rem;
     background-color: #383A3F;
     color: white;
 
@@ -33,6 +33,8 @@ aside {
         display: flex;
         width: 200px;
         height: 60px;
+        overflow: hidden;
+        margin-bottom: 2rem;
 
         >a img {
             display: flex;
