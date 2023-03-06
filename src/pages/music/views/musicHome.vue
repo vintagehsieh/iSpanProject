@@ -81,7 +81,7 @@ export default {
         <span class="showAll">{{ showAll }}</span>
       </div>
       <div id="popSongs">
-        <Card v-for="item in content.items" :key="item.name" class="card">
+        <Card v-for="item in content.items" :key="item.name">
           <template #picture>
             <img src="../../../assets/logo.png" alt="">
           </template>
@@ -142,10 +142,6 @@ export default {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-
-      >.card {
-        margin: 1rem;
-      }
     }
   }
 }

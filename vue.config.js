@@ -38,7 +38,7 @@ module.exports = defineConfig({
       entry: "src/main.js",
       template: "public/index.html",
       filename: "index.html",
-      title: "Index",
+      title: "iSMusic",
       chunks: ["chunk-vendors", "chunk-common", "index"],
     },
   },

@@ -22,6 +22,7 @@ export default {};
     border-color: white;
     // border-style: dashed;
     padding: 1rem;
+    margin: 1rem;
 
     >.picture {
         width: 100%;

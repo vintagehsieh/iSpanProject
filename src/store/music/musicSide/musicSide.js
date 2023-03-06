@@ -4,10 +4,9 @@ export default createStore({
   state: {
     isOpen: false,
   },
-  actions: {
-    handOpenState(context) {
-      const isOpen = !context.state.isOpen;
-      context.commit("OpenState", isOpen);
+  getters: {
+    isOpen(state) {
+      return state.isOpen;
     },
   },
   mutations: {
@@ -15,9 +14,10 @@ export default createStore({
       state.isOpen = payload;
     },
   },
-  getters: {
-    isOpen(state) {
-      return state.isOpen;
+  actions: {
+    handOpenState(context) {
+      const isOpen = !context.state.isOpen;
+      context.commit("OpenState", isOpen);
     },
   },
 });

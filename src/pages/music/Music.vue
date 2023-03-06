@@ -1,6 +1,6 @@
 <script>
-import SideBar from '@/components/SideBar.vue';
-import PlayerFooter from '@/components/Player.vue'
+import SideBar from '@/pages/music/components/SideBar.vue';
+import PlayerFooter from '@/pages/music/components/MusicPlayer.vue'
 
 export default {
   props: ['isPlaying'],
@@ -98,6 +98,10 @@ export default {
   >.Root_main-view {
     margin-left: 18rem;
     background-color: #1F2124;
+
+    >.routerView {
+      margin-bottom: 5rem;
+    }
   }
 }
 

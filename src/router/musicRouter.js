@@ -6,7 +6,7 @@ import {
 import MusicHome from "@/pages/music/views/musicHome.vue";
 import musicSearch from "@/pages/music/views/musicSearch.vue";
 import musicLibrary from "@/pages/music/views/musicLibrary.vue";
-import playlist from "@/pages/music/views/playlist.vue"
+import musicPlaylist from "@/pages/music/views/musicPlaylist.vue"
 import categorySearch from "@/pages/music/views/categorySearch.vue";
 
 const routes = [
@@ -33,7 +33,7 @@ const routes = [
   {
     path: "/playlist",
     name: "playlist",
-    component: playlist,
+    component: musicPlaylist,
   },
   {
     path: "/categorySearch",

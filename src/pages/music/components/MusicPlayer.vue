@@ -1,5 +1,5 @@
 <script>
-import Queue from './Queue.vue';
+import Queue from './MusicQueue.vue';
 
 export default {
     data() {
@@ -63,7 +63,7 @@ export default {
         <div class="currentMusic">
             <div class="songInfo" v-if="checkSong()">
                 <div class="picture">
-                    <img src="../assets/logo.png" alt="">
+                    <img src="@/assets/logo.png" alt="">
                 </div>
                 <div class="names">
                     <p class="songName">{{ song.name }}</p>

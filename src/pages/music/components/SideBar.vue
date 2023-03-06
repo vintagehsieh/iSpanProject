@@ -32,7 +32,7 @@ aside {
     #logo {
         display: flex;
         width: 200px;
-        height: 60px;
+        height: 70px;
         overflow: hidden;
         margin-bottom: 2rem;
 

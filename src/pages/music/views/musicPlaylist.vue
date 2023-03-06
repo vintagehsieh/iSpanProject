@@ -1,5 +1,5 @@
 <script>
-import Song from '@/components/Song.vue';
+import Song from '@/pages/music/components/MusicSong.vue';
 
 export default {
     data() {
@@ -210,7 +210,6 @@ export default {
 <style lang="scss" scoped>
 .container {
     width: 100%;
-    padding-bottom: 7rem;
 
     .contentSpacing {
         width: 100%;

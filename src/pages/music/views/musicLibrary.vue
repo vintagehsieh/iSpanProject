@@ -3,6 +3,16 @@ export default {
     data() {
         return {
             sortType: "playlist",
+            sortByOptions: [
+                {
+                    name: "recentlyAdded",
+                    value: "最近新增"
+                },
+                {
+                    name: "Alphabetically",
+                    value: "依字母排序"
+                }
+            ],
             playlists: [
                 {
                     id: 1,
@@ -40,7 +50,7 @@ export default {
                     owner: "Maru",
                 },
             ],
-            artists: [
+            artistsAndCreators: [
                 {
                     id: 1,
                     name: "artist",
@@ -65,8 +75,6 @@ export default {
                     id: 6,
                     name: "album",
                 },
-            ],
-            creators: [
                 {
                     id: 1,
                     name: "creator",
@@ -133,12 +141,24 @@ export default {
                     owner: "Ruma",
                 },
             ],
+            sortByOpen: false,
+            selectedSortBy: {},
         }
     },
     methods: {
         changeSortType(value) {
             this.sortType = value;
+        },
+        toggleSortByOpen() {
+            this.sortByOpen = !this.sortByOpen;
+        },
+        changeSortOption(option) {
+            this.selectedSortBy = option;
+            this.toggleSortByOpen();
         }
+    },
+    created() {
+        this.selectedSortBy = this.sortByOptions[0];
     }
 };
 </script>
@@ -148,26 +168,42 @@ export default {
             <div class="box" id="playlist" @click="changeSortType('playlist')">播放清單</div>
             <div class="box" id="artistAndCreator" @click="changeSortType('artistAndCreator')">藝人與創作者</div>
             <div class="box" id="album" @click="changeSortType('album')">專輯</div>
+            <div id="sortBy">
+                <div id="sortByBtn" @click="toggleSortByOpen()">
+                    {{ selectedSortBy.value }}
+                    <font-awesome-icon icon="fa-solid fa-caret-down" v-if="sortByOpen == false" />
+                    <font-awesome-icon icon="fa-solid fa-caret-up" v-else />
+                </div>
+                <div id="sortByList" v-if="sortByOpen">
+                    <div class="option" v-for="option in sortByOptions" @click="changeSortOption(option)">{{ option.value }}
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="content" v-if="sortType == 'playlist'">
-            <Card v-for="playlist in playlists" :key="playlist.id" class="playlistCard">
-                <template #picture>
-                    <img src="@/assets/music-note-icon-song-melody-tune-flat-symbol-free-vector.webp" alt="">
-                </template>
-                <template #name>
-                    <span>{{ playlist.name }}</span>
-                </template>
-                <template #desc>
-                    <div>擁有者:{{ playlist.owner }}</div>
-                </template>
-            </Card>
+            <div class="header">
+                <h2>藝人與創作者</h2>
+            </div>
+            <div class="innerContent">
+                <Card v-for="playlist in playlists" :key="playlist.id" class="playlistCard">
+                    <template #picture>
+                        <img src="@/assets/music-note-icon-song-melody-tune-flat-symbol-free-vector.webp" alt="">
+                    </template>
+                    <template #name>
+                        <span>{{ playlist.name }}</span>
+                    </template>
+                    <template #desc>
+                        <div>擁有者:{{ playlist.owner }}</div>
+                    </template>
+                </Card>
+            </div>
         </div>
         <div class="content" v-else-if="sortType == 'artistAndCreator'">
-            <div class="creatorHeader">
-                <h2>創作者</h2>
+            <div class="header">
+                <h2>藝人與創作者</h2>
             </div>
-            <div class="creatorContent">
-                <Card v-for="creator in creators" :key="creator.id" class="creatorCard">
+            <div class="innerContent">
+                <Card v-for="creator in artistsAndCreators" :key="creator.id">
                     <template #picture>
                         <img src="@/assets/50402309-musician-icon.webp" alt="">
                     </template>
@@ -176,33 +212,24 @@ export default {
                     </template>
                 </Card>
             </div>
-            <div class="creatorHeader">
-                <h2>藝人</h2>
-            </div>
-            <div class="artistContent">
-                <Card v-for="artist in artists" :key="artist.id" class="artistCard">
-                    <template #picture>
-                        <img src="@/assets/50402309-musician-icon.webp" alt="">
-                    </template>
-                    <template #name>
-                        <span>{{ artist.name }}</span>
-                    </template>
-
-                </Card>
-            </div>
         </div>
         <div class="content" v-else>
-            <Card v-for="album in albums" :key="album.id" class="albumCard">
-                <template #picture>
-                    <img src="@/assets/music-note-icon-song-melody-tune-flat-symbol-free-vector.webp" alt="">
-                </template>
-                <template #name>
-                    <span>{{ album.name }}</span>
-                </template>
-                <template #desc>
-                    <div>擁有者:{{ album.owner }}</div>
-                </template>
-            </Card>
+            <div class="header">
+                <h2>專輯</h2>
+            </div>
+            <div class="innerContent">
+                <Card v-for="album in albums" :key="album.id">
+                    <template #picture>
+                        <img src="@/assets/music-note-icon-song-melody-tune-flat-symbol-free-vector.webp" alt="">
+                    </template>
+                    <template #name>
+                        <span>{{ album.name }}</span>
+                    </template>
+                    <template #desc>
+                        <div>擁有者:{{ album.owner }}</div>
+                    </template>
+                </Card>
+            </div>
         </div>
     </div>
 </template>
@@ -234,30 +261,56 @@ export default {
                 cursor: pointer;
             }
         }
+
+        >#sortBy {
+            width: 7rem;
+            height: 2rem;
+            cursor: context-menu;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-left: auto;
+            background-color: #6b6b6b;
+            border-radius: 50px;
+            position: relative;
+
+            >#sortByBtn {}
+
+            >#sortByList {
+                width: 8rem;
+                background-color: #6b6b6b;
+                position: absolute;
+                top: 36px;
+                border-radius: 10px;
+
+                >.option {
+                    width: 8rem;
+                    padding: 4px 1rem;
+                    text-align: center;
+                    border-radius: 10px;
+
+                    &:hover {
+                        background-color: #7d7d7d;
+                    }
+                }
+            }
+        }
     }
 
     >.content {
         padding-top: 2rem;
         color: white;
-        display: flex;
         flex-wrap: wrap;
 
-        >.playlistCard {
-            color: white;
-        }
-
-        >.creatorContent {
+        >.innerContent {
             display: flex;
             flex-wrap: wrap;
-        }
 
-        >.artistContent {
-            flex-wrap: wrap;
-            display: flex;
-        }
-
-        >.albumCard {
-            color: white;
+            >.artistCreatorBody {
+                display: flex;
+                flex-wrap: wrap;
+            }
         }
     }
 }
