@@ -350,6 +350,7 @@ export default {
         >#contentHeader {
             width: 100%;
             height: 3rem;
+            margin-bottom: 1rem;
             color: rgb(152, 152, 152);
             border-bottom: 1px solid rgb(152, 152, 152);
         }

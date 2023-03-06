@@ -10,12 +10,22 @@ export default {};
             </a>
         </div>
         <div id="default">
-            <slot name="main"></slot>
-            <slot name="search"></slot>
-            <slot name="library"></slot>
-        </div>
-        <div id="playlists">
-            <slot name="playlist"></slot>
+            <router-link to="/" class="routerLink">
+                <font-awesome-icon icon="fa-solid fa-house" />
+                <h3>首頁</h3>
+            </router-link>
+            <router-link to="/search" class="routerLink">
+                <font-awesome-icon icon="fa-solid fa-magnifying-glass" />
+                <h3>搜尋</h3>
+            </router-link>
+            <router-link to="/library" class="routerLink">
+                <font-awesome-icon icon="fa-solid fa-music" />
+                <h3>音樂庫</h3>
+            </router-link>
+            <RouterLink to="/playlist" class="routerLink">
+                <font-awesome-icon icon="fa-regular fa-square-plus" />
+                <h3>新增播放清單</h3>
+            </RouterLink>
         </div>
     </aside>
 </template>

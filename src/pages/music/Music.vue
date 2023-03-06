@@ -18,34 +18,8 @@ export default {
   <div class="Root_top-container">
     <div class="Root_top-bar">
     </div>
-    <SideBar class="Root_nav-bar">
-      <template #main>
-        <router-link to="/" class="routerLink">
-          <font-awesome-icon icon="fa-solid fa-house" />
-          <h3>首頁</h3>
-        </router-link>
-      </template>
-      <template #search>
-        <router-link to="/search" class="routerLink">
-          <font-awesome-icon icon="fa-solid fa-magnifying-glass" />
-          <h3>搜尋</h3>
-        </router-link>
-      </template>
-      <template #library>
-        <router-link to="/library" class="routerLink">
-          <font-awesome-icon icon="fa-solid fa-music" />
-          <h3>音樂庫</h3>
-        </router-link>
-      </template>
-      <template #playlist>
-        <RouterLink to="/playlist" class="routerLink">
-          <h3>播放清單</h3>
-        </RouterLink>
-      </template>
-    </SideBar>
-    <div class="Root_now-playing-bar">
-      <PlayerFooter></PlayerFooter>
-    </div>
+    <SideBar class="Root_nav-bar" />
+    <PlayerFooter class="Root_now-playing-bar" />
     <div class="Root_main-view">
       <router-view class="routerView" />
     </div>
@@ -72,7 +46,7 @@ export default {
     left: 18rem;
     width: 82rem;
     height: 3rem;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.0);
   }
 
   >.Root_nav-bar {

@@ -34,6 +34,7 @@ export default {
 .song {
     width: 100%;
     height: 100%;
+    border-radius: 10px;
     padding: 0 1rem;
     display: flex;
     align-items: center;
