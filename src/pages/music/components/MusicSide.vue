@@ -5,9 +5,7 @@ export default {
   setup() {
     const store = useStore();
     const isOpen = computed(() => {
-      // 這裡有錯
-      // return store.musicModule.musicSide.getters["isOpen"];
-      // return store.getters["isOpen"];
+      // return store.getters["musicSide/isOpen"];
     });
     const handClickMenu = () => {
       // store.dispatch("music/musicSide/handOpenState");
@@ -38,27 +36,32 @@ export default {
   z-index: 20;
   background-color: #fff;
   transition: right 0.3s;
+
   &.open {
     left: 0px;
   }
-  > a.closeBtn {
+
+  >a.closeBtn {
     cursor: pointer;
     position: absolute;
     left: 50px;
     top: 50px;
   }
-  > ul.nav {
+
+  >ul.nav {
     position: absolute;
     width: 100%;
     height: 300px;
     top: 50%;
     margin-top: -150px;
     padding: 0;
-    > li {
+
+    >li {
       display: block;
       width: 100%;
       height: 25%;
-      > a {
+
+      >a {
         cursor: pointer;
         display: block;
         width: 100%;

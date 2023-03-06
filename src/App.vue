@@ -52,12 +52,6 @@ export default {
 
 <template>
   <Header />
-  <div id="login">
-    <input type="text" id="account">
-    <input type="password" id="password">
-    <button @click="login()">login</button>
-  </div>
-  <button @click="logout()">logout</button>
   <Footer />
 </template>
 

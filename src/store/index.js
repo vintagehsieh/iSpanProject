@@ -1,5 +1,6 @@
 import { createStore } from "vuex";
-// import MusicSide from "./music/musicSide/musicSide";
+import MusicSide from "./music/musicSide/musicSide";
+import MusicMain from "./music/musicMain/musicMain";
 
 const homeModule = {
   state: {},
@@ -10,12 +11,27 @@ const homeModule = {
 };
 
 const musicModule = {
-  state: {},
-  getters: {},
-  mutations: {},
-  actions: {},
+  state: {
+    albumId: 0,
+  },
+  getters: {
+    getAlbumId(state) {
+      return state.albumId;
+    }
+  },
+  mutations: {
+    setAlbumId(state, payload) {
+      state.albumId = payload;
+    },
+  },
+  actions: {
+    setAlbumId({ commit }, id) {
+      commit("setAlbumId", id);
+    },
+  },
   modules: {
     // MusicSide,
+    //MusicMain
   },
 };
 

@@ -3,18 +3,14 @@ import SideBar from '@/pages/music/components/SideBar.vue';
 import PlayerFooter from '@/pages/music/components/MusicPlayer.vue'
 
 export default {
-  props: ['isPlaying'],
-  provide: {
-    sharedData: {
-      category: {
-        name: "",
-        id: 0,
-      },
-    }
-  },
   components: {
     SideBar,
     PlayerFooter
+  },
+  methods: {
+    setAlbumId(id) {
+      this.$store.dispatch('setAlbumId', id);
+    }
   }
 };
 </script>

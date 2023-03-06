@@ -1,6 +1,7 @@
 import { createApp } from "vue";
 import Music from "./Music.vue";
 import router from "@/router/musicRouter";
+import store from "@/store/index.js";
 import Card from "@/pages/music/components/MusicCard.vue";
 import Song from "@/pages/music/components/MusicSong.vue";
 
@@ -40,5 +41,5 @@ import {
 /* add icons to the library */
 library.add(faBars, faHeart, solidHeart, faUpRightAndDownLeftFromCenter, faVolumeHigh, faVolumeLow, faVolumeXmark, faShuffle, faBackwardStep, faPlay, faPause, faForwardStep, faRepeat, faEllipsis, faClock, faMagnifyingGlass, faHouse, faMusic, faCaretDown, faCaretUp)
 
-createApp(Music).component('Card', Card).component('Song', Song).component('font-awesome-icon', FontAwesomeIcon).use(router).mount("#music");
+createApp(Music).component('Card', Card).component('Song', Song).component('font-awesome-icon', FontAwesomeIcon).use(router).use(store).mount("#music");
 
