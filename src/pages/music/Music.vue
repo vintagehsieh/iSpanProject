@@ -80,6 +80,7 @@ export default {
     height: 88vh;
     top: 0;
     position: fixed;
+    z-index: 10;
   }
 
   >.Root_now-playing-bar {

@@ -30,7 +30,8 @@ import {
     faMagnifyingGlass,
     faHouse,
     faMusic,
-    faCaretUp
+    faCaretUp,
+    faAngleLeft
 } from '@fortawesome/free-solid-svg-icons';
 
 import {
@@ -39,7 +40,7 @@ import {
 } from "@fortawesome/free-regular-svg-icons";
 
 /* add icons to the library */
-library.add(faBars, faHeart, solidHeart, faUpRightAndDownLeftFromCenter, faVolumeHigh, faVolumeLow, faVolumeXmark, faShuffle, faBackwardStep, faPlay, faPause, faForwardStep, faRepeat, faEllipsis, faClock, faMagnifyingGlass, faHouse, faMusic, faCaretDown, faCaretUp)
+library.add(faBars, faHeart, solidHeart, faUpRightAndDownLeftFromCenter, faVolumeHigh, faVolumeLow, faVolumeXmark, faShuffle, faBackwardStep, faPlay, faPause, faForwardStep, faRepeat, faEllipsis, faClock, faMagnifyingGlass, faHouse, faMusic, faCaretDown, faCaretUp, faAngleLeft)
 
 createApp(Music).component('Card', Card).component('Song', Song).component('font-awesome-icon', FontAwesomeIcon).use(router).use(store).mount("#music");
 
