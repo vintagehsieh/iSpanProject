@@ -11,15 +11,15 @@ export default {
       headerName: "熱門專輯",
       items: {}
     });
-    const popularPlaylists = ({
+    const popularPlaylists = ref({
       headerName: "精選播放清單",
       items: {}
     });
-    const popularArtists = ({
+    const popularArtists = ref({
       headerName: "推薦藝人",
       items: {}
     });
-    const popularCreators = ({
+    const popularCreators = ref({
       headerName: "最受歡迎創作者",
       items: {}
     });
@@ -37,9 +37,9 @@ export default {
       // const playlists = await responsePlaylists.json();
       // popularPlaylists.items = playlists;
 
-      // const responseArtists = await fetch('https://localhost:7043/Artists/Recommended');
-      // const artists = await responseArtists.json();
-      // popularArtists.value.items = artists;
+      const responseArtists = await fetch('https://localhost:7043/Artists/Recommended');
+      const artists = await responseArtists.json();
+      popularArtists.value.items = artists;
 
       // const responseCreators = await fetch('https://localhost:7043/Creators/Recommended');
       // const creators = await responseCreators.json();
@@ -56,15 +56,15 @@ export default {
     }
   },
   methods: {
-    handleLinkClick(item) {
+    handleLinkClick(id) {
       // Modify the shareData before navigating to the next page
-      this.setAlbumId(item.id);
+      this.setAlbum(id);
     },
     printSongs() {
       console.log(this.popularSongs.items[0].artistlist)
     },
-    setAlbumId(id) {
-      this.$store.dispatch('setAlbumId', id);
+    async setAlbum(id) {
+      this.$store.dispatch('setAlbum', id);
     }
   }
 };
@@ -73,7 +73,7 @@ export default {
 <template>
   <div class="container">
     <div class="announcement"></div>
-    <div id="populars">
+    <div class="populars">
       <div class="box" id="popularSongs">
         <div class="contentHeader" id="popSongHeader">
           <span class="headerName">{{ popularSongs.headerName }}</span>
@@ -81,7 +81,7 @@ export default {
         </div>
         <div class="content">
           <RouterLink v-for="song in popularSongs.items" :key="song.id" to="/MusicAlbum"
-            @click="handleLinkClick(song.album.id)">
+            @click="handleLinkClick(song.albumId)">
             <Card>
               <template #picture>
                 <img :src=song.songCoverPath alt="">
@@ -97,7 +97,7 @@ export default {
         </div>
       </div>
     </div>
-    <div id="populars">
+    <div class="populars">
       <div class="box" id="popularAlbums">
         <div class="contentHeader" id="popAlbumHeader">
           <span class="headerName">{{ popularAlbums.headerName }}</span>
@@ -105,7 +105,7 @@ export default {
         </div>
         <div class="content">
           <RouterLink v-for="album in popularAlbums.items" :key="album.id" to="/MusicAlbum"
-            @click="handleLinkClick(album)">
+            @click="handleLinkClick(album.id)">
             <Card>
               <template #picture>
                 <img :src=album.albumCoverPath alt="">
@@ -115,6 +115,29 @@ export default {
               </template>
               <template #desc>
                 <p>{{ album.mainArtistName[0] }}</p>
+              </template>
+            </Card>
+          </RouterLink>
+        </div>
+      </div>
+    </div>
+    <div class="populars">
+      <div class="box" id="popularArtists">
+        <div class="contentHeader" id="popArtistHeader">
+          <span class="headerName">{{ popularArtists.headerName }}</span>
+          <span class="showAll">{{ showAll }}</span>
+        </div>
+        <div class="content">
+          <RouterLink v-for="artist in popularArtists.items" :key="artist.id" to="/MusicPerformerTemplate">
+            <Card>
+              <template #picture>
+                <img :src=artist.artistCoverPath alt="">
+              </template>
+              <template #name>
+                <h3>{{ artist.artistName }}</h3>
+              </template>
+              <template #desc>
+                <!-- <p>{{ artist.mainArtistName[0] }}</p> -->
               </template>
             </Card>
           </RouterLink>
@@ -136,7 +159,7 @@ export default {
     border-radius: 20px;
   }
 
-  >#populars {
+  >.populars {
     >.box {
       >.contentHeader {
         margin: 0 3rem;

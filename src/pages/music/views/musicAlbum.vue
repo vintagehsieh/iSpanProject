@@ -1,22 +1,13 @@
 <script>
 import { computed } from "vue";
-import { onMounted } from 'vue';
 import { useStore } from 'vuex';
 
 export default {
     setup() {
         const store = useStore();
-        const album = {};
-        const albumId = computed(() => {
-            return store.getters.getAlbumId;
+        const album = computed(() => {
+            return store.getters.getAlbum;
         });
-        async function loadData() {
-            const response = await fetch(`https://localhost:7043/Albums/${albumId.value}`);
-            const responseAlbum = await response.json();
-            album.value = responseAlbum;
-            console.log(album);
-        }
-        loadData();
 
         return { album };
     },
@@ -28,7 +19,21 @@ export default {
         show() {
             console.log(this.album.albumName);
             return this.album.albumName;
-        }
+        },
+        formatTime(seconds) {
+            // Compute the number of minutes and remaining seconds
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+
+            // Pad the seconds with a leading zero if needed
+            const paddedSeconds = remainingSeconds.toString().padStart(2, '0');
+
+            // Combine the minutes and seconds into a string
+            return `${minutes}:${paddedSeconds}`;
+        },
+    },
+    onMounted() {
+
     }
 };
 </script>
@@ -57,13 +62,13 @@ export default {
         <div id="btns">
             <button id="playPause">
                 <!-- <font-awesome-icon class="btn" id="play" icon="fa-solid fa-play" v-if="isPlaying == false"
-                                                                                                                    @click="togglePlay" />
-                                                                                                                <font-awesome-icon class="btn" id="pause" icon="fa-solid fa-pause" v-else @click="togglePlay" /> -->
+                                                                                                                                                                                @click="togglePlay" />
+                                                                                                                                                                            <font-awesome-icon class="btn" id="pause" icon="fa-solid fa-pause" v-else @click="togglePlay" /> -->
             </button>
             <button id="liked">
                 <!-- <font-awesome-icon v-if="album.isliked" class="btn" icon="fa-solid fa-heart" @click="toggleLiked"
-                                                                                                                    style="color: #F6B352" />
-                                                                                                                <font-awesome-icon v-else class="btn" icon="fa-regular fa-heart" @click="toggleLiked" /> -->
+                                                                                                                                                                                style="color: #F6B352" />
+                                                                                                                                                                            <font-awesome-icon v-else class="btn" icon="fa-regular fa-heart" @click="toggleLiked" /> -->
             </button>
             <button id="options">
                 <font-awesome-icon class="btn" icon="fa-solid fa-ellipsis" />
@@ -73,13 +78,13 @@ export default {
             <div id="contentHeader">
                 <Song>
                     <template #order>
-                        <span>#</span>
-                    </template>
+                    <span>#</span>
+                </template>
                     <template #name>
                         <span class="header">標題</span>
                     </template>
-                <template #album>
-                    <span class="header">播放次數</span>
+                    <template #addedDate>
+                        <span class="header">播放次數</span>
                     </template>
                     <template #time>
                         <font-awesome-icon icon="fa-regular fa-clock" class="header" />
@@ -101,8 +106,8 @@ export default {
                                 <img src="@/assets/logo.png" alt="" class="img">
                             </div>
                             <div class="desc">
-                                <div class="songName">{{ song.name }}</div>
-                                <div class="artistName">{{ song.artist }}</div>
+                                <div class="songName">{{ song.songName }}</div>
+                                <div class="artistName">{{ album.mainArtistName }}</div>
                             </div>
                         </div>
                     </template>
@@ -112,12 +117,12 @@ export default {
                     <template #liked>
                         <span v-if="song.isHover == true || song.isLiked == true">
                             <!-- <font-awesome-icon v-if="song.isLiked" class="btn" icon="fa-solid fa-heart"
-                                                                                                                                                @click="toggleSongLiked(i)" style="color: #F6B352" />
-                                                                                                                                            <font-awesome-icon v-else class="btn" icon="fa-regular fa-heart" @click="toggleSongLiked(i)" /> -->
+                                                                                                                                                                                                            @click="toggleSongLiked(i)" style="color: #F6B352" />
+                                                                                                                                                                                                        <font-awesome-icon v-else class="btn" icon="fa-regular fa-heart" @click="toggleSongLiked(i)" /> -->
                         </span>
                     </template>
                     <template #time>
-                        <!-- <span>{{ formatTime(song.duration) }}</span> -->
+                        <span>{{ formatTime(song.duration) }}</span>
                     </template>
                     <template #options>
                         <span v-if="song.isHover">
@@ -165,7 +170,7 @@ export default {
             }
 
             >#albumName {
-                font-size: 100px;
+                font-size: 60px;
                 margin-bottom: 2rem;
             }
 

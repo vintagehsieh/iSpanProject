@@ -9,6 +9,7 @@ import MusicLibrary from "@/pages/music/views/musicLibrary.vue";
 import MusicPlaylist from "@/pages/music/views/musicPlaylist.vue"
 import CategorySearch from "@/pages/music/views/categorySearch.vue";
 import MusicAlbum from "@/pages/music/views/musicAlbum.vue";
+import MusicPerformerTemplate from "@/pages/music/views/musicPerformerTemplate.vue";
 
 const routes = [
   {
@@ -45,6 +46,11 @@ const routes = [
     path: "/musicAlbum",
     name: "album",
     component: MusicAlbum,
+  },
+  {
+    path: "/musicPerformerTemplate",
+    name: "performer",
+    component: MusicPerformerTemplate,
   }
 ];
 

@@ -1,6 +1,5 @@
 import { createStore } from "vuex";
-import MusicSide from "./music/musicSide/musicSide";
-import MusicMain from "./music/musicMain/musicMain";
+import album from "./music/album";
 
 const homeModule = {
   state: {},
@@ -12,26 +11,51 @@ const homeModule = {
 
 const musicModule = {
   state: {
-    albumId: 0,
+    // album: {},
+    artist: {},
+    creator: {},
   },
   getters: {
-    getAlbumId(state) {
-      return state.albumId;
+    // getAlbum(state) {
+    //   return state.album;
+    // },
+    getArtist(state) {
+      return state.artist;
+    },
+    getCreator(state) {
+      return state.creator;
     }
   },
   mutations: {
-    setAlbumId(state, payload) {
-      state.albumId = payload;
+    // setAlbum(state, payload) {
+    //   state.album = payload;
+    // },
+    setArtist(state, payload) {
+      state.artist = payload;
+    },
+    setCreator(state, payload) {
+      state.creator = payload;
     },
   },
   actions: {
-    setAlbumId({ commit }, id) {
-      commit("setAlbumId", id);
+    // async setAlbum({ commit }, albumId) {
+    //   const response = await fetch(`https://localhost:7043/Albums/${albumId}`);
+    //   const responseAlbum = await response.json();
+    //   commit("setAlbum", responseAlbum);
+    // },
+    async setArtist({ commit }, artistId) {
+      const response = await fetch(`https://localhost:7043/Artists/${artistId}`);
+      const responseArtist = await response.json();
+      commit("setArtist", responseArtist);
     },
+    async setCreator({ commit }, creatorId) {
+      const response = await fetch(`https://localhost:7043/Creators/${creatorId}`);
+      const responseCreator = await response.json();
+      commit("setCreator", responseCreator);
+    }
   },
   modules: {
-    // MusicSide,
-    //MusicMain
+    album
   },
 };
 

@@ -47,3 +47,144 @@ export default {};
         </div>
     </div>
 </template>
+
+<style lang="scss" scoped>
+.container {
+    width: 100%;
+
+    .contentSpacing {
+        width: 100%;
+        height: 20rem;
+        padding: 0 2rem;
+        background-color: rgb(83, 83, 83);
+        display: flex;
+
+        >.picture {
+            width: 15rem;
+            height: 15rem;
+            position: relative;
+            top: 4rem;
+            margin-right: 2rem;
+
+            >img {
+                width: 100%;
+                height: 100%;
+            }
+        }
+    }
+
+    >#btns {
+        height: 5rem;
+        padding-left: 2rem;
+        display: flex;
+        align-items: center;
+
+        >#playlistPlayPause {
+            width: 5rem;
+            background-color: rgba(0, 0, 0, 0);
+            border: none;
+
+            >.btn {
+                margin-right: 2rem;
+                color: white;
+                font-size: 3rem;
+
+                &:hover {
+                    font-size: 55px;
+                }
+            }
+        }
+
+        >#playlistLiked {
+            background-color: rgba(0, 0, 0, 0);
+            margin-right: 2rem;
+            border: none;
+
+            >.btn {
+                color: grey;
+                font-size: 2rem;
+
+                &:hover {
+                    color: white;
+                }
+            }
+        }
+
+        >#playlistOptions {
+            border: none;
+            background-color: rgba(0, 0, 0, 0);
+
+            >.btn {
+                color: grey;
+                font-size: 2rem;
+
+                &:hover {
+                    color: white;
+                }
+            }
+        }
+    }
+
+    >.content {
+        width: 100%;
+        min-height: 20px;
+        height: auto;
+        padding: 0 2rem;
+
+        >#contentHeader {
+            width: 100%;
+            height: 3rem;
+            color: rgb(152, 152, 152);
+            border-bottom: 1px solid rgb(152, 152, 152);
+        }
+
+        >#contentBody {
+            >.songContent {
+                width: 100%;
+                height: 5rem;
+                color: white;
+
+                &:hover {
+                    background-color: rgb(70, 70, 70);
+                }
+
+                .songInfo {
+                    display: flex;
+                    align-items: center;
+
+                    .songPicture {
+                        width: 50px;
+                        height: 50px;
+                        margin-right: 1rem;
+                        display: flex;
+                        align-items: center;
+
+                        .img {
+                            width: 100%;
+                            height: 100%;
+                        }
+                    }
+
+                    >.desc {
+                        width: auto;
+                        height: 50px;
+                        font-size: 14px;
+
+                        >.songName {
+                            font-size: 16px;
+                            margin-bottom: 6px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.header {
+    &:hover {
+        color: white;
+        cursor: context-menu;
+    }
+}
+</style>
