@@ -25,7 +25,6 @@ export default {
       })
         .then(response => {
           const data = response.data;
-          // handle data...
         })
         .catch(error => {
           console.error(error);
