@@ -1,26 +1,26 @@
 // count state 必須是 Object
 const state = {
-    artist: {},
+    playlist: {},
 }
 
 // getters 也可以整理到這邊直接返回 count 內容
 const getters = {
-    getArtist: state => state.artist
+    getPlaylist: state => state.playlist
 }
 
 // actions 也是以 Object 形式建構。
 const actions = {
-    async setArtist({ commit }, artistId) {
-        const response = await fetch(`https://localhost:7043/Artists/${artistId}/Detail`);
-        const responseArtist = await response.json();
-        commit("setArtist", responseArtist);
+    async setPlaylist({ commit }, playlistId) {
+        const response = await fetch(`https://localhost:7043/Playlists/${playlistId}`);
+        const responsePlaylist = await response.json();
+        commit("setPlaylist", responsePlaylist);
     },
 }
 
 // mutations
 const mutations = {
-    setArtist(state, payload) {
-        state.artist = payload;
+    setPlaylist(state, payload) {
+        state.playlist = payload;
     },
 }
 

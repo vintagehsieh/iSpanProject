@@ -66,6 +66,9 @@ export default {
             this.musicPlayer.volume = val / 100;
         },
         formatTime(seconds) {
+            if (isNaN(seconds)) {
+                return '0:00';
+            }
             // Compute the number of minutes and remaining seconds
             const minutes = Math.floor(seconds / 60);
             const remainingSeconds = Math.floor(seconds % 60);
@@ -134,7 +137,8 @@ export default {
                     <input type="range" min="0" step="1" :max="musicPlayer.duration" v-model="currentTime" id="time-bar"
                         @input="changeCurrentTime" />
                 </div>
-                <div id="totalTime">{{ formatTime(musicPlayer.duration) }}</div>
+                <div id="totalTime">{{ formatTime(musicPlayer.duration) }}
+                </div>
             </div>
         </div>
         <div class="options">

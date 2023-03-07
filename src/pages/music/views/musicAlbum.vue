@@ -17,7 +17,7 @@ export default {
     },
     methods: {
         show() {
-            console.log(this.album.albumName);
+            console.log(this.album);
             return this.album.albumName;
         },
         formatTime(seconds) {
@@ -41,7 +41,7 @@ export default {
     <div class="container">
         <div class="contentSpacing" id="albumHeader">
             <div class="picture" id="albumPic" @click="show()">
-                <img src="@/assets/music-note-icon-song-melody-tune-flat-symbol-free-vector.webp" alt="">
+                <img :src=album.albumCoverPath alt="">
             </div>
             <div id="albumInfo">
                 <div id="type">專輯</div>
@@ -62,13 +62,13 @@ export default {
         <div id="btns">
             <button id="playPause">
                 <!-- <font-awesome-icon class="btn" id="play" icon="fa-solid fa-play" v-if="isPlaying == false"
-                                                                                                                                                                                @click="togglePlay" />
-                                                                                                                                                                            <font-awesome-icon class="btn" id="pause" icon="fa-solid fa-pause" v-else @click="togglePlay" /> -->
+                                                                                                                                                                                                    @click="togglePlay" />
+                                                                                                                                                                                                <font-awesome-icon class="btn" id="pause" icon="fa-solid fa-pause" v-else @click="togglePlay" /> -->
             </button>
             <button id="liked">
                 <!-- <font-awesome-icon v-if="album.isliked" class="btn" icon="fa-solid fa-heart" @click="toggleLiked"
-                                                                                                                                                                                style="color: #F6B352" />
-                                                                                                                                                                            <font-awesome-icon v-else class="btn" icon="fa-regular fa-heart" @click="toggleLiked" /> -->
+                                                                                                                                                                                                    style="color: #F6B352" />
+                                                                                                                                                                                                <font-awesome-icon v-else class="btn" icon="fa-regular fa-heart" @click="toggleLiked" /> -->
             </button>
             <button id="options">
                 <font-awesome-icon class="btn" icon="fa-solid fa-ellipsis" />
@@ -103,7 +103,7 @@ export default {
                     <template #name>
                         <div class="songInfo">
                             <div class="songPicture">
-                                <img src="@/assets/logo.png" alt="" class="img">
+                                <img :src=song.songCoverPath alt="" class="img">
                             </div>
                             <div class="desc">
                                 <div class="songName">{{ song.songName }}</div>
@@ -111,14 +111,14 @@ export default {
                             </div>
                         </div>
                     </template>
-                    <template #album>
-                        <span>{{ song.totalPlayedTimes }}</span>
+                    <template #addedDate>
+                        <span>{{ song.playedTimes }}</span>
                     </template>
                     <template #liked>
                         <span v-if="song.isHover == true || song.isLiked == true">
                             <!-- <font-awesome-icon v-if="song.isLiked" class="btn" icon="fa-solid fa-heart"
-                                                                                                                                                                                                            @click="toggleSongLiked(i)" style="color: #F6B352" />
-                                                                                                                                                                                                        <font-awesome-icon v-else class="btn" icon="fa-regular fa-heart" @click="toggleSongLiked(i)" /> -->
+                                                                                                                                                                                                                                @click="toggleSongLiked(i)" style="color: #F6B352" />
+                                                                                                                                                                                                                            <font-awesome-icon v-else class="btn" icon="fa-regular fa-heart" @click="toggleSongLiked(i)" /> -->
                         </span>
                     </template>
                     <template #time>

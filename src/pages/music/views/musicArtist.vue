@@ -1,17 +1,38 @@
 <script>
-export default {};
+import { computed } from "vue";
+import { useStore } from 'vuex';
+
+export default {
+    setup() {
+        const store = useStore();
+        const artist = computed(() => {
+            return store.getters.getArtist;
+        });
+        console.log(artist);
+
+        return { artist };
+    },
+    data() {
+        return {
+
+        }
+    },
+    methods: {
+
+    }
+};
 </script>
 <template>
     <div class="container">
         <div class="contentSpacing" id="playlistHeader">
             <div class="picture">
-                <img src="@/assets/music-note-icon-song-melody-tune-flat-symbol-free-vector.webp" alt="">
+                <img :src=artist.artistPicPath alt="">
             </div>
             <div id="Info">
                 <div id="type">藝人</div>
-                <div id="playlistName">{{ playlist.name }}</div>
+                <div id="playlistName">{{ artist.artistName }}</div>
                 <div id="infoDetail">
-                    <span id="likes">喜歡人數 {{ playlist.totalLikes }}</span>
+                    <span id="likes">喜歡人數 {{ artist.totalLikes }}</span>
                 </div>
             </div>
         </div>
