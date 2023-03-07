@@ -76,7 +76,7 @@ export default {
                 <div id="infoDetail">
                     <div id="ownerInfo">
                         <div class="picture" id="ownerPic">
-                            <img src="@/assets/50402309-musician-icon.webp" alt="">
+                            <img :src=playlistCoverPath alt="">
                         </div>
                         <div id="ownerName">{{ playlist.ownerName }}</div>
                     </div>

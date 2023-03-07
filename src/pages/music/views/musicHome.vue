@@ -87,8 +87,7 @@ export default {
             }}</span>
           </div>
           <div class="content">
-            <RouterLink v-for="song in popularSongs.items.slice(0, 5)" :key="song.id" to="/album"
-              @click="setAlbum(song.albumId)">
+            <RouterLink v-for="song in popularSongs.items" :key="song.id" to="/album" @click="setAlbum(song.albumId)">
               <Card>
                 <template #picture>
                   <img :src=song.songCoverPath alt="">

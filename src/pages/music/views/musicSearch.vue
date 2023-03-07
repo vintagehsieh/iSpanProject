@@ -17,12 +17,6 @@ export default {
   inject: ['sharedData'],
   data() {
     return {
-      // items: [
-      //   {
-      //     genreName: "esrnteisrnt",
-      //     id: 0,
-      //   }
-      // ],
       searchValue: "",
     }
   },

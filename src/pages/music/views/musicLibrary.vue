@@ -187,7 +187,7 @@ export default {
             <div class="innerContent">
                 <Card v-for="playlist in playlists" :key="playlist.id" class="playlistCard">
                     <template #picture>
-                        <img src="@/assets/music-note-icon-song-melody-tune-flat-symbol-free-vector.webp" alt="">
+                        <img src="" alt="">
                     </template>
                     <template #name>
                         <span>{{ playlist.name }}</span>
@@ -205,7 +205,7 @@ export default {
             <div class="innerContent">
                 <Card v-for="creator in artistsAndCreators" :key="creator.id">
                     <template #picture>
-                        <img src="@/assets/50402309-musician-icon.webp" alt="">
+                        <img src="" alt="">
                     </template>
                     <template #name>
                         <span>{{ creator.name }}</span>
@@ -220,7 +220,7 @@ export default {
             <div class="innerContent">
                 <Card v-for="album in albums" :key="album.id">
                     <template #picture>
-                        <img src="@/assets/music-note-icon-song-melody-tune-flat-symbol-free-vector.webp" alt="">
+                        <img src="" alt="">
                     </template>
                     <template #name>
                         <span>{{ album.name }}</span>
