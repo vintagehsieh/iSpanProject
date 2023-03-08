@@ -16,28 +16,38 @@ export default {
     const memberAccount = computed(() => store.getters.getMemberAccount);
     const error_message = reactive({});
 
-    // const errorFn = (err) => {
-    //   Object.keys(err).forEach((key) => (error_message[key] = err[key]));
-    // };
+    if (isLogin.value) {
+      redirect();
+    }
 
     // 把登入訊息存在cookie 中
     const saveCookie = () => {
-      Cookies.set("loginInfo", loginInfo, { expires: 1 });
+      Cookies.set("loginInfo", loginInfo.memberAccount, { expires: 1 });
+      Cookies.set("isLogin", isLogin.value, { expires: 1 });
+    };
+
+    const redirect = () => {
+      window.history.pushState({}, "", "/");
+      window.location.reload();
+      // window.location.href = "https://localhost:8080";
     };
 
     const handLoginFn = () => {
       const success = store.dispatch("login", loginInfo);
       if (success) {
         alert("登入成功");
+        store.commit("setIsLogin", true);
+        saveCookie();
         redirect();
       } else {
         alert("登入失敗，請檢查帳密");
       }
     };
 
-    const redirect = () => {
-      window.location.href = "http://localhost:8080/";
-    };
+    // const errorFn = (err) => {
+    //   Object.keys(err).forEach((key) => (error_message[key] = err[key]));
+    // };
+
     return {
       isLogin,
       loginInfo,
@@ -82,7 +92,7 @@ export default {
       <button type="submit" class="btn" @click="handLoginFn">送出</button>
     </form>
   </div>
-  <div v-if="isLogin">您已經登入</div>
+  <div v-if="isLogin" class="redirection">您已經登入，網頁轉導中...</div>
 </template>
 
 <style lang="scss">
@@ -96,16 +106,13 @@ body {
   width: 100%;
   height: 100%;
   background-color: #233245;
-  display: flex;
-  align-items: start;
-  justify-content: center;
   font-family: "微軟正黑體";
 }
 
 .logo {
   width: 300px;
   height: 100px;
-  margin: 2rem 0;
+  margin: 2rem auto;
   overflow: hidden;
   img {
     width: 100%;
@@ -117,14 +124,15 @@ body {
 form {
   display: flex;
   flex-direction: column;
-  align-items: start;
+  align-items: center;
   justify-content: center;
+  margin-top: 2rem;
   .input-box {
     display: flex;
     flex-direction: column;
     p {
       margin-top: 1.5rem;
-      font-size: 1rem;
+      font-size: 1.25rem;
       padding-left: 5px;
       color: white;
     }
@@ -132,7 +140,7 @@ form {
       width: 300px;
       height: 30px;
       border-radius: 20px;
-      padding: 5px;
+      padding-left: 1rem;
     }
   }
   .btn {
@@ -144,9 +152,17 @@ form {
     height: 30px;
     border-radius: 8px;
     border: none;
-    color: white;
+    color: black;
     font-size: 20px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   }
+}
+.redirection {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 1.5rem;
 }
 </style>

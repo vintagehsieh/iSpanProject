@@ -24,8 +24,7 @@ const actions = {
   async login({ commit }, loginInfo) {
     try {
       const res = await axios.post(
-        "https://localhost:3000/login",
-        // "https://localhost:7043/Members/MemberLogin",
+        "https://localhost:7043/Members/MemberLogin",
         loginInfo,
         { withCredentials: true }
       );
@@ -44,6 +43,7 @@ const actions = {
 const mutations = {
   setIsLogin(state, isLogin) {
     state.isLogin = isLogin;
+ 
   },
   setLoginInfo(state, loginInfo) {
     state.loginInfo = loginInfo;
