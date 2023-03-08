@@ -1,33 +1,22 @@
 <script>
-import Card from '@/components/Card.vue';
-import { ref } from 'vue'
+import { computed } from "vue";
+import { useStore } from 'vuex';
 
 export default {
   setup() {
-    let SongGenres = ref({});
-    async function loadData() {
-      const responseSongGenres = await fetch('https://localhost:7043/Songs/SongGenres');
-      SongGenres.value = await responseSongGenres.json();
-    }
+    const store = useStore();
 
-    loadData();
+    store.dispatch('loadData');
+    const SongGenres = computed(() => {
+      return store.getters.getSongGenre;
+    });
 
     return { SongGenres };
   },
-  inject: ['sharedData'],
   data() {
     return {
-      // items: [
-      //   {
-      //     genreName: "esrnteisrnt",
-      //     id: 0,
-      //   }
-      // ],
       searchValue: "",
     }
-  },
-  compotents: {
-    Card,
   },
   methods: {
     chooseSort(event) {
@@ -77,7 +66,27 @@ export default {
         </RouterLink>
       </div>
       <div id="searchResult" v-else>
+        <div id="Songs"></div>
+        <div id="Artists">
+          <Card>
 
+          </Card>
+        </div>
+        <div id="Creators">
+          <Card>
+
+          </Card>
+        </div>
+        <div id="Albums">
+          <Card>
+
+          </Card>
+        </div>
+        <div id="Playlists">
+          <Card>
+
+          </Card>
+        </div>
       </div>
     </div>
   </div>
@@ -85,7 +94,8 @@ export default {
 <style lang="scss" scoped>
 .container {
   width: 100%;
-  height: 140vh;
+  min-height: 100vh;
+  height: auto;
   padding: 6rem 3rem;
   background-color: #1F2124;
 
@@ -139,17 +149,11 @@ export default {
 
   >.row {
 
-
     >#categories {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-
-      >.card {
-        margin: 1rem;
-      }
     }
-
   }
 }
 </style>

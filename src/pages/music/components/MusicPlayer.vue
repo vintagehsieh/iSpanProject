@@ -1,20 +1,36 @@
 <script>
-import Queue from './Queue.vue';
+import Queue from './MusicQueue.vue';
+import { useStore } from 'vuex';
+import { computed, watch, ref } from 'vue';
 
 export default {
+    setup() {
+        const store = useStore();
+        var currentSong = ref({});
+        const musicPlayer = new Audio();
+
+        async function SetUpQueue() {
+            await store.dispatch('fetchQueueDataAsync');
+            currentSong = computed(() => {
+                return store.getters.getCurrentSong;
+            }).value;
+            console.log(currentSong);
+            musicPlayer.src = currentSong.songPath;
+        }
+
+        SetUpQueue();
+
+        return { currentSong, musicPlayer };
+    },
     data() {
         return {
             playStatus: false,
             showQueue: false,
             currentTime: 0,
+            musicInterval: '',
             volume: 50,
-            song: {
-                id: 1,
-                name: "Song Name",
-                artist: "Artist Name",
-                isLiked: false,
-                duration: 188,
-            }
+            music: 'https://localhost:44373/Uploads/Songs/6f405bb8b632440280ad3f2ab9817ce0.mp3',
+
         }
     },
     props: ['font-awesome-icon'],
@@ -26,12 +42,31 @@ export default {
             this.showQueue = !this.showQueue;
         },
         toggleLiked() {
-            this.song.isLiked = !this.song.isLiked;
+            this.currentSong.isLiked = !this.currentSong.isLiked
         },
         togglePlay() {
             this.playStatus = !this.playStatus;
+            if (this.playStatus == true) {
+                this.musicPlayer.play();
+                this.musicInterval = setInterval(() => {
+                    this.trackCurrentTime();
+                }, 500);
+            } else {
+                this.musicPlayer.pause();
+                clearInterval(this.musicInterval);
+            }
         },
-        changeBackground(e) {
+        changeCurrentTime(e) {
+            let target = e.target;
+
+            const min = target.min;
+            const max = target.max;
+            const val = target.value;
+
+            target.style.backgroundSize = (val - min) * 100 / (max - min) + '% 100%';
+            this.musicPlayer.currentTime = val;
+        },
+        changeVolume(e) {
             let target = e.target;
 
             const min = target.min;
@@ -39,11 +74,15 @@ export default {
             const val = target.value;
 
             target.style.backgroundSize = (val - min) * 100 / (max - min) + '% 100%'
+            this.musicPlayer.volume = val / 100;
         },
         formatTime(seconds) {
+            if (isNaN(seconds)) {
+                return '0:00';
+            }
             // Compute the number of minutes and remaining seconds
             const minutes = Math.floor(seconds / 60);
-            const remainingSeconds = seconds % 60;
+            const remainingSeconds = Math.floor(seconds % 60);
 
             // Pad the seconds with a leading zero if needed
             const paddedSeconds = remainingSeconds.toString().padStart(2, '0');
@@ -52,7 +91,19 @@ export default {
             return `${minutes}:${paddedSeconds}`;
         },
         checkSong() {
-            return Object.keys(this.song).length != 0
+            console.log(this.currentSong)
+            this.currentSong != undefined
+        },
+        trackCurrentTime() {
+            let timeBar = document.querySelector('#time-bar');
+
+            const min = timeBar.min;
+            const max = timeBar.max;
+            const val = timeBar.value;
+
+            timeBar.style.backgroundSize = (val - min) * 100 / (max - min) + '% 100%'
+
+            this.currentTime = this.musicPlayer.currentTime;
         }
     }
 };
@@ -61,13 +112,13 @@ export default {
 <template>
     <div class="container">
         <div class="currentMusic">
-            <div class="songInfo" v-if="checkSong()">
+            <div class="songInfo" v-if="this.currentSong == undefined">
                 <div class="picture">
-                    <img src="../assets/logo.png" alt="">
+                    <img :src=currentSong.songCoverPath alt="">
                 </div>
                 <div class="names">
-                    <p class="songName">{{ song.name }}</p>
-                    <p class="artistName">{{ song.artist }}</p>
+                    <p class="songName">{{ currentSong.songName }}</p>
+                    <p class="artistName">{{ currentSong.artists }}</p>
                 </div>
                 <div class="liked">
                     <font-awesome-icon v-if="song.isLiked" icon="fa-solid fa-heart" style="color: white; font-size: 20px"
@@ -95,10 +146,11 @@ export default {
             <div class="playback-bar">
                 <div id="currentTime">{{ formatTime(currentTime) }}</div>
                 <div id="timeBar">
-                    <input type="range" min="0" step="1" :max="song.duration" v-model="currentTime" id="time-bar"
-                        @input="changeBackground" />
+                    <input type="range" min="0" step="1" :max="musicPlayer.duration" v-model="currentTime" id="time-bar"
+                        @input="changeCurrentTime" />
                 </div>
-                <div id="totalTime">{{ formatTime(song.duration) }}</div>
+                <div id="totalTime">{{ formatTime(musicPlayer.duration) }}
+                </div>
             </div>
         </div>
         <div class="options">
@@ -116,7 +168,7 @@ export default {
                 </div>
                 <div class="volume-slider">
                     <input type="range" min="0" step="1" max="100" v-model="volume" id="volume-range"
-                        @input="changeBackground" />
+                        @input="changeVolume" />
                 </div>
             </div>
             <div id="full-screen">
@@ -129,6 +181,10 @@ export default {
 </template>
 
 <style lang="scss" scoped>
+#musicPlayer {
+    display: none;
+}
+
 .container {
     width: 100%;
     display: flex;

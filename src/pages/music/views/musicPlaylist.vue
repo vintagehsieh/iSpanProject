@@ -1,58 +1,24 @@
 <script>
-import Song from '@/components/Song.vue';
+import { computed } from "vue";
+import { useStore } from 'vuex';
 
 export default {
+    setup() {
+        const store = useStore();
+        const playlist = computed(() => {
+            return store.getters.getPlaylist;
+        });
+
+        return { playlist };
+    },
     data() {
         return {
-            playlist: {
-                name: "MyPlaylist#1",
-                totalLikes: 10,
-                totalTime: 180,
-                isliked: false,
-                ownerName: "Maru",
-                songs: [{
-                    Id: 1,
-                    name: "ABC",
-                    artist: "AAB",
-                    album: "<M>",
-                    addedDate: "2022-3-1",
-                    duration: 180,
-                    isLiked: false,
-                    isHover: false,
-                }, {
-                    Id: 2,
-                    name: "ABC",
-                    artist: "AAB",
-                    album: "<M>",
-                    addedDate: "2022-3-1",
-                    duration: 180,
-                    isLiked: false,
-                    isHover: false,
-                }, {
-                    Id: 3,
-                    name: "ABC",
-                    artist: "AAB",
-                    album: "<M>",
-                    addedDate: "2022-3-1",
-                    duration: 180,
-                    isLiked: false,
-                    isHover: false,
-                }, {
-                    Id: 4,
-                    name: "ABC",
-                    artist: "AAB",
-                    album: "<M>",
-                    addedDate: "2022-3-1",
-                    duration: 180,
-                    isLiked: true,
-                    isHover: false,
-                }],
-            },
             isPlaying: false,
         }
     },
     methods: {
         togglePlay() {
+            console.log(this.playlist.metadata[0])
             this.isPlaying = !this.isPlaying;
         },
         toggleLiked() {
@@ -72,32 +38,33 @@ export default {
             // Combine the minutes and seconds into a string
             return `${minutes}:${paddedSeconds}`;
         },
+        formatDate(date) {
+            const year = date.splice(0, 4);
+            const month = date.splice(5, 2);
+            console.log(month);
+            const day = date.splice(7, 2);
+            console.log(day);
+            return year + '年' + month + '月' + day + '日';
+        },
         hoverSong(i) {
-            this.playlist.songs[i].isHover = true;
+            this.playlist.metadata[i].isHover = true;
         },
         notHoverSong(i) {
-            this.playlist.songs[i].isHover = false;
+            this.playlist.metadata[i].isHover = false;
         },
         getPlaylistTotalTime() {
-            let res = "";
-            let totaltime = 0;
-            for (let i = 0; i < this.playlist.songs.length; i++) {
-                totaltime += this.playlist.songs[i].duration;
-            }
+            const totaltime = Object.values(this.playlist.metadata).reduce((acc, cur) => acc + cur.song.duration, 0);
 
-            if (totaltime < 3600) {
-                let minutes = totaltime / 60;
-                let seconds = totaltime % 60;
-                res = minutes + "分鐘";
-                res += seconds != 0 ? seconds + "秒" : "";
-            } else {
-                let hours = totaltime / 3600;
-                let minutes = totaltime % 3600 / 60;
-                res = hours + "小時";
-                res += minutes != 0 ? minutes + "分鐘" : "";
-            }
+            const hours = Math.floor(totaltime / 3600);
+            const minutes = Math.floor((totaltime % 3600) / 60);
+            const seconds = totaltime % 60;
 
-            return res;
+            return (hours == 0) ? minutes + '分鐘' + seconds + '秒' : hours + '小時' + minutes + '分鐘';
+        },
+        checkCover() {
+            const imgName = this.playlist.playlistCoverPath.slice(39);
+
+            return imgName.length != 0;
         }
     }
 };
@@ -106,20 +73,22 @@ export default {
     <div class="container">
         <div class="contentSpacing" id="playlistHeader">
             <div class="playlistPicture" id="playlistPic">
-                <img src="@/assets/music-note-icon-song-melody-tune-flat-symbol-free-vector.webp" alt="">
+
+                <img :src=playlist.playlistCoverPath alt="" v-if="checkCover()">
+                <img src="@/assets/music-note-icon-song-melody-tune-flat-symbol-free-vector.webp" v-else alt="">
             </div>
             <div id="playlistInfo">
                 <div id="type">播放清單</div>
-                <div id="playlistName">{{ playlist.name }}</div>
+                <div id="playlistName">{{ playlist.listName }}</div>
                 <div id="infoDetail">
                     <div id="ownerInfo">
                         <div class="picture" id="ownerPic">
-                            <img src="@/assets/50402309-musician-icon.webp" alt="">
+                            <img :src=playlistCoverPath alt="">
                         </div>
                         <div id="ownerName">{{ playlist.ownerName }}</div>
                     </div>
-                    <span id="likes">喜歡人數 {{ playlist.totalLikes }}</span>
-                    <span id="totalSongs">{{ playlist.songs.length }}首歌</span>
+                    <span id="likes"> {{ playlist.totalLikes }} 人喜歡</span>
+                    <span id="totalSongs">{{ Object.keys(this.playlist.metadata).length }}首歌</span>
                     <span id="totaltime">{{ getPlaylistTotalTime() }}</span>
                 </div>
             </div>
@@ -139,7 +108,7 @@ export default {
                 <font-awesome-icon class="btn" icon="fa-solid fa-ellipsis" />
             </button>
         </div>
-        <div class="content">
+        <div class="content" v-if="playlist.metadata.length != 0">
             <div id="contentHeader">
                 <Song>
                     <template #order>
@@ -160,10 +129,10 @@ export default {
                 </Song>
             </div>
             <div id="contentBody">
-                <Song v-for="(song, i) in playlist.songs" :key="song.Id" class="songContent" @mouseover="hoverSong(i)"
-                    @mouseleave="notHoverSong(i)">
+                <Song v-for="(metadata, i) in playlist.metadata" :key="metadata.Id" class="songContent"
+                    @mouseover="hoverSong(i)" @mouseleave="notHoverSong(i)">
                     <template #order>
-                        <p v-if="song.isHover == false">{{ i + 1 }}</p>
+                        <p v-if="metadata.isHover == false">{{ i + 1 }}</p>
                         <font-awesome-icon class="btn" id="play" icon="fa-solid fa-play" v-else-if="isPlaying == false"
                             @click="togglePlay" />
                         <font-awesome-icon class="btn" id="pause" icon="fa-solid fa-pause" v-else @click="togglePlay" />
@@ -171,38 +140,40 @@ export default {
                     <template #name>
                         <div class="songInfo">
                             <div class="songPicture">
-                                <img src="@/assets/logo.png" alt="" class="img">
+                                <img :src=metadata.song.songCoverPath alt="" class="img">
                             </div>
                             <div class="desc">
-                                <div class="songName">{{ song.name }}</div>
-                                <div class="artistName">{{ song.artist }}</div>
+                                <div class="songName">{{ metadata.song.songName }}</div>
+                                <div class="artistName">{{ metadata.song.artist }}</div>
                             </div>
                         </div>
                     </template>
                     <template #album>
-                        <span>{{ song.album }}</span>
+                        <span>{{ metadata.song.album }}</span>
                     </template>
                     <template #addedDate>
-                        <span>{{ song.addedDate }}</span>
+                        <span>{{ (metadata.addedTime.slice(0, 10)) }}</span>
                     </template>
                     <template #liked>
-                        <span v-if="song.isHover == true || song.isLiked == true">
-                            <font-awesome-icon v-if="song.isLiked" class="btn" icon="fa-solid fa-heart"
+                        <span v-if="metadata.isHover == true || metadata.song.isLiked == true">
+                            <font-awesome-icon v-if="metadata.song.isLiked" class="btn" icon="fa-solid fa-heart"
                                 @click="toggleSongLiked(i)" style="color: #F6B352" />
                             <font-awesome-icon v-else class="btn" icon="fa-regular fa-heart" @click="toggleSongLiked(i)" />
                         </span>
                     </template>
                     <template #time>
-                        <span>{{ formatTime(song.duration) }}</span>
+                        <span>{{ formatTime(metadata.song.duration) }}</span>
                     </template>
                     <template #options>
-                        <span v-if="song.isHover">
+                        <span v-if="metadata.isHover">
                             <font-awesome-icon class="btn" icon="fa-solid fa-ellipsis" />
                         </span>
                     </template>
-
                 </Song>
             </div>
+        </div>
+        <div class="content" v-else>
+
         </div>
     </div>
 </template>
@@ -210,7 +181,7 @@ export default {
 <style lang="scss" scoped>
 .container {
     width: 100%;
-    padding-bottom: 7rem;
+    padding-bottom: 3rem;
 
     .contentSpacing {
         width: 100%;
@@ -344,13 +315,14 @@ export default {
 
     >.content {
         width: 100%;
-        min-height: 20px;
+        min-height: 14rem;
         height: auto;
         padding: 0 2rem;
 
         >#contentHeader {
             width: 100%;
             height: 3rem;
+            margin-bottom: 1rem;
             color: rgb(152, 152, 152);
             border-bottom: 1px solid rgb(152, 152, 152);
         }

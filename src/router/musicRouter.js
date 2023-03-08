@@ -4,9 +4,12 @@ import {
   createWebHashHistory,
 } from "vue-router";
 import MusicHome from "@/pages/music/views/musicHome.vue";
-import musicSearch from "@/pages/music/views/musicSearch.vue";
-import musicLibrary from "@/pages/music/views/musicLibrary.vue";
-import playlist from "@/pages/music/views/playlist.vue"
+import MusicSearch from "@/pages/music/views/musicSearch.vue";
+import MusicLibrary from "@/pages/music/views/musicLibrary.vue";
+import MusicPlaylist from "@/pages/music/views/musicPlaylist.vue"
+import CategorySearch from "@/pages/music/views/categorySearch.vue";
+import MusicAlbum from "@/pages/music/views/musicAlbum.vue";
+import MusicArtist from "@/pages/music/views/musicArtist.vue";
 
 const routes = [
   {
@@ -22,17 +25,32 @@ const routes = [
   {
     path: "/search",
     name: "search",
-    component: musicSearch,
+    component: MusicSearch,
   },
   {
     path: "/library",
     name: "library",
-    component: musicLibrary,
+    component: MusicLibrary,
   },
   {
     path: "/playlist",
     name: "playlist",
-    component: playlist,
+    component: MusicPlaylist,
+  },
+  {
+    path: "/categorySearch",
+    name: "categorySearch",
+    component: CategorySearch,
+  },
+  {
+    path: "/album",
+    name: "album",
+    component: MusicAlbum,
+  },
+  {
+    path: "/artist",
+    name: "artist",
+    component: MusicArtist,
   }
 ];
 

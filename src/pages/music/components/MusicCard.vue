@@ -8,8 +8,12 @@ export default {};
             <slot name="picture"></slot>
         </div>
         <div class="description">
-            <slot name="name"></slot>
-            <slot name="desc"></slot>
+            <div class="top">
+                <slot name="name"></slot>
+            </div>
+            <div class="down">
+                <slot name="desc"></slot>
+            </div>
         </div>
     </div>
 </template>
@@ -22,6 +26,7 @@ export default {};
     border-color: white;
     // border-style: dashed;
     padding: 1rem;
+    margin: 1rem;
 
     >.picture {
         width: 100%;
@@ -44,6 +49,10 @@ export default {};
         height: 30%;
         border-radius: 15%;
         color: white;
+
+        >.top {
+            margin-bottom: 1rem;
+        }
     }
 }
 

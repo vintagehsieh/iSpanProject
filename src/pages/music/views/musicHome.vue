@@ -1,105 +1,286 @@
 <script>
-import { ref } from 'vue'
+import { computed } from "vue";
+import { useStore } from 'vuex';
 
 export default {
   setup() {
-    const mainPageContent = ref({
-      popularSongs: {
-        headerName: "熱門歌曲",
-        items: []
-      },
-      popularAlbums: {
-        headerName: "熱門專輯",
-        items: []
-      },
-      popularPlaylists: {
-        headerName: "精選播放清單",
-        items: []
-      },
-      popularArtists: {
-        headerName: "推薦藝人",
-        items: []
-      },
-      popularCreators: {
-        headerName: "最受歡迎創作者",
-        items: []
-      }
+    const store = useStore();
+
+    store.dispatch('fetchSongDataAsync');
+    store.dispatch('fetchAlbumDataAsync');
+    store.dispatch('fetchPlaylistDataAsync');
+    store.dispatch('fetchArtistDataAsync');
+    store.dispatch('fetchCreatorDataAsync');
+
+    const popularSongs = computed(() => {
+      return store.getters.getPopSongs;
+    });
+    const popularAlbums = computed(() => {
+      return store.getters.getPopAlbums;
+    });
+    const popularPlaylists = computed(() => {
+      return store.getters.getPopPlaylists;
+    });
+    const popularArtists = computed(() => {
+      return store.getters.getPopArtists;
+    });
+    const popularCreators = computed(() => {
+      return store.getters.getPopCreators;
     });
 
-    async function loadData() {
-      const responseSongs = await fetch('https://localhost:7043/Songs/Popular');
-      const dataSongs = await responseSongs.json();
-      mainPageContent.value.popularSongs.items = dataSongs;
-
-      fetch('https://localhost:7043/Albums/Recommended')
-        .then(response => response.json())
-        .then(data => {
-          mainPageContent.value.popularAlbums.items = data
-        })
-        .catch(error => console.error(error))
-
-      fetch('https://localhost:7043/Playlists/Recommended')
-        .then(response => response.json())
-        .then(data => {
-          mainPageContent.popularPlaylists = data
-        })
-        .catch(error => console.error(error))
-
-      fetch('https://localhost:7043/Artists/Recommended')
-        .then(response => response.json())
-        .then(data => {
-          mainPageContent.value.popularArtists.items = data
-        })
-        .catch(error => console.error(error))
-
-      fetch('https://localhost:7043/Creators/Recommended')
-        .then(response => response.json())
-        .then(data => {
-          mainPageContent.value.popularCreators.items = data
-        })
-        .catch(error => console.error(error))
-    }
-
-    loadData();
-
-    return { mainPageContent }
+    return {
+      popularSongs,
+      popularAlbums,
+      popularPlaylists,
+      popularArtists,
+      popularCreators,
+    };
   },
   data() {
     return {
+      isMain: true,
+      showAllName: "",
       showAll: "顯示所有內容"
+    }
+  },
+  methods: {
+    showAllPopSongs(popItems) {
+      this.isMain = !this.isMain;
+      this.showAllName = popItems.headerName;
+    },
+    returnMainPage() {
+      this.isMain = !this.isMain;
+    },
+    setAlbum(albumId) {
+      this.$store.dispatch('setAlbum', albumId);
+    },
+    setPlaylist(playlistId) {
+      this.$store.dispatch('setPlaylist', playlistId);
+    },
+    setArtist(artistId) {
+      this.$store.dispatch('setArtist', artistId);
+    },
+    setCreator(creatorId) {
+      this.$store.dispatch('setCreator', creatorId);
+    },
+    setPopSongRowNumber() {
+      this.$store.dispatch('setPopSongRowNumber', 2);
+      this.$store.dispatch('fetchSongDataAsync');
+    },
+    setPopAlbumRowNumber() {
+      this.$store.dispatch('setPopAlbumRowNumber', 2);
+      this.$store.dispatch('fetchAlbumDataAsync');
     }
   }
 };
 </script>
 
 <template>
-  <div class="container">
+  <div class="container" v-show="isMain">
     <div class="announcement"></div>
-    <div class="content" v-for="content in mainPageContent">
-      <div class="contentHeader" id="popSongHeader">
-        <span class="headerName">{{ content.headerName }}</span>
-        <span class="showAll">{{ showAll }}</span>
+    <div class="trans">
+      <div class="populars">
+        <div class="box" id="popularSongs">
+          <div class="contentHeader" id="popSongHeader">
+            <span class="headerName">{{ popularSongs.headerName }}</span>
+            <span class="showAll" @click="showAllPopSongs(popularSongs)" @click.once="setPopSongRowNumber()">{{ showAll
+            }}</span>
+          </div>
+          <div class="content">
+            <RouterLink v-for="song in popularSongs.items.slice(0, 5)" :key="song.id" to="/album"
+              @click="setAlbum(song.albumId)">
+              <Card>
+                <template #picture>
+                  <img :src=song.songCoverPath alt="">
+                </template>
+                <template #name>
+                  <h3>{{ song.songName }}</h3>
+                </template>
+                <template #desc>
+                  <span v-for="artist in song.artistlist">{{ artist.artistName }}</span>
+                </template>
+              </Card>
+            </RouterLink>
+          </div>
+        </div>
       </div>
-      <div id="popSongs">
-        <Card v-for="item in content.items" :key="item.name" class="card">
+      <div class="populars">
+        <div class="box" id="popularAlbums">
+          <div class="contentHeader" id="popAlbumHeader">
+            <span class="headerName">{{ popularAlbums.headerName }}</span>
+            <span class="showAll" @click="showAllPopSongs(popularAlbums)" @click.once="setPopAlbumRowNumber()">{{
+              showAll }}</span>
+          </div>
+          <div class="content">
+            <RouterLink v-for="album in popularAlbums.items.slice(0, 5)" :key="album.id" to="/album"
+              @click="setAlbum(album.id)">
+              <Card>
+                <template #picture>
+                  <img :src=album.albumCoverPath alt="">
+                </template>
+                <template #name>
+                  <h3>{{ album.albumName }}</h3>
+                </template>
+                <template #desc>
+                  <p>{{ album.mainArtistName }}</p>
+                </template>
+              </Card>
+            </RouterLink>
+          </div>
+        </div>
+      </div>
+      <div class="populars">
+        <div class="box" id="popularPlaylists">
+          <div class="contentHeader" id="popPlaylistHeader">
+            <span class="headerName">{{ popularPlaylists.headerName }}</span>
+            <span class="showAll" @click="showAllPopSongs(popularPlaylists)">{{ showAll }}</span>
+          </div>
+          <div class="content">
+            <RouterLink v-for="playlist in popularPlaylists.items.slice(0, 5)" :key="playlist.id" to="/playlist"
+              @click="setPlaylist(playlist.id)">
+              <Card>
+                <template #picture>
+                  <img :src=playlist.playlistCoverPath alt="">
+                </template>
+                <template #name>
+                  <h3>{{ playlist.listName }}</h3>
+                </template>
+                <template #desc>
+                  <!-- <p>{{ playlist.mainArtistName[0] }}</p> -->
+                </template>
+              </Card>
+            </RouterLink>
+          </div>
+        </div>
+      </div>
+      <div class="populars">
+        <div class="box" id="popularArtists">
+          <div class="contentHeader" id="popArtistHeader">
+            <span class="headerName">{{ popularArtists.headerName }}</span>
+            <span class="showAll" @click="showAllPopSongs(popularArtists)">{{ showAll }}</span>
+          </div>
+          <div class="content">
+            <RouterLink v-for="artist in popularArtists.items.slice(0, 5)" :key="artist.id" to="/artist"
+              @click="setArtist(artist.id)">
+              <Card>
+                <template #picture>
+                  <img :src=artist.artistPicPath alt="">
+                </template>
+                <template #name>
+                  <h3>{{ artist.artistName }}</h3>
+                </template>
+              </Card>
+            </RouterLink>
+          </div>
+        </div>
+      </div>
+      <div class="populars">
+        <div class="box" id="popularCreators">
+          <div class="contentHeader" id="popCreatorHeader">
+            <span class="headerName">{{ popularCreators.headerName }}</span>
+            <span class="showAll" @click="showAllPopSongs(popularCreators)">{{ showAll }}</span>
+          </div>
+          <div class="content">
+            <RouterLink v-for="creator in popularCreators.items.slice(0, 5)" :key="creator.id" to="/artist"
+              @click="setCreator(creator.id)">
+              <Card>
+                <template #picture>
+                  <img :src=creator.creatorCoverPath alt="">
+                </template>
+                <template #name>
+                  <h3>{{ creator.creatorName }}</h3>
+                </template>
+              </Card>
+            </RouterLink>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container" id="allPopular" v-show="!isMain">
+    <div class="header">
+      <div class="returnBtn">
+        <font-awesome-icon icon="fa-solid fa-angle-left" style="margin-right: 5px" />
+        <span class="return" @click="returnMainPage()">返回</span>
+      </div>
+      <div class="headerName">
+        <span>{{ showAllName }}</span>
+      </div>
+    </div>
+    <div class="contentAll">
+      <RouterLink v-show="showAllName == popularSongs.headerName" v-for="song in popularSongs.items" :key="song.id"
+        to="/album" @click="setAlbum(song.albumId)">
+        <Card>
           <template #picture>
-            <img src="../../../assets/logo.png" alt="">
+            <img :src=song.songCoverPath alt="">
           </template>
           <template #name>
-            <h3>{{ item.name }}</h3>
+            <h3>{{ song.songName }}</h3>
           </template>
           <template #desc>
-            <p>{{ item.desc }}</p>
+            <span v-for="artist in song.artistlist">{{ artist.artistName }}</span>
           </template>
         </Card>
-      </div>
+      </RouterLink>
+      <RouterLink v-show="showAllName == popularAlbums.headerName" v-for="album in popularAlbums.items" :key="album.id"
+        to="/album" @click="setAlbum(album.id)">
+        <Card>
+          <template #picture>
+            <img :src=album.albumCoverPath alt="">
+          </template>
+          <template #name>
+            <h3>{{ album.albumName }}</h3>
+          </template>
+          <template #desc>
+            <p>{{ album.mainArtistName }}</p>
+          </template>
+        </Card>
+      </RouterLink>
+      <RouterLink v-show="showAllName == popularPlaylists.headerName" v-for="playlist in popularPlaylists.items"
+        :key="playlist.id" to="/playlist" @click="setPlaylist(playlist.id)">
+        <Card>
+          <template #picture>
+            <img :src=playlist.playlistCoverPath alt="">
+          </template>
+          <template #name>
+            <h3>{{ playlist.listName }}</h3>
+          </template>
+          <template #desc>
+            <!-- <p>{{ playlist.mainArtistName[0] }}</p> -->
+          </template>
+        </Card>
+      </RouterLink>
+      <RouterLink v-show="showAllName == popularArtists.headerName" v-for="artist in popularArtists.items"
+        :key="artist.id" to="/artist" @click="setArtist(artist.id)">
+        <Card>
+          <template #picture>
+            <img :src=artist.artistPicPath alt="">
+          </template>
+          <template #name>
+            <h3>{{ artist.artistName }}</h3>
+          </template>
+        </Card>
+      </RouterLink>
+      <RouterLink v-show="showAllName == popularCreators.headerName" v-for="creator in popularCreators.items"
+        :key="creator.id" to="/artist" @click="setCreator(creator.id)">
+        <Card>
+          <template #picture>
+            <img :src=creator.creatorCoverPath alt="">
+          </template>
+          <template #name>
+            <h3>{{ creator.creatorName }}</h3>
+          </template>
+        </Card>
+      </RouterLink>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .container {
-  padding: 6rem 3rem;
+  padding: 5rem 3rem 10rem 3rem;
+  min-height: 100vh;
+  color: white;
 
   >.announcement {
     width: 80%;
@@ -109,44 +290,93 @@ export default {
     border-radius: 20px;
   }
 
-  >.content {
-    >.contentHeader {
-      margin: 0 3rem;
-      font-size: 20px;
-      color: white;
-      cursor: context-menu;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+  >.trans {
+    >.populars {
+      >.box {
+        >.contentHeader {
+          margin: 0 3rem;
+          font-size: 30px;
+          cursor: context-menu;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
 
+          >.showAll {
+            right: 0;
+            bottom: 0;
+            font-size: 16px;
+            padding: 5px 10px;
+            border-radius: 5px;
+            color: rgb(160, 160, 160);
+            cursor: context-menu;
 
-      >.headerName {}
+            &:hover {
+              color: white;
+              background-color: #383A3F;
+            }
+          }
+        }
 
-      >.showAll {
-        right: 0;
-        bottom: 0;
-        font-size: 16px;
-        padding: 5px 10px;
-        border-radius: 5px;
-        color: rgb(160, 160, 160);
-        cursor: pointer;
-
-        &:hover {
-          color: white;
-          background-color: #383A3F;
+        >.content {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
         }
       }
     }
+  }
 
-    >#popSongs {
+  >.header {
+    >.returnBtn {
+      width: 4rem;
+      height: 2rem;
+      border-radius: 5px;
+      color: rgb(160, 160, 160);
       display: flex;
-      flex-wrap: wrap;
       justify-content: center;
+      align-items: center;
+      cursor: context-menu;
 
-      >.card {
-        margin: 1rem;
+      &:hover {
+        color: white;
+        background-color: #383A3F;
       }
     }
+
+    >.headerName {
+      font-size: 40px;
+    }
   }
+
+  >.contentAll {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
+
+.slide-left-leave-active,
+.slide-left-enter-active {
+  transition: all .8s ease;
+}
+
+.slide-left-enter-from {
+  transform: translateX(-100%);
+}
+
+.slide-left-leave-to {
+  transform: translateX(-100%);
+}
+
+.slide-right-leave-active,
+.slide-right-enter-active {
+  transition: all .8s ease;
+}
+
+.slide-right-enter-from {
+  transform: translateX(100%);
+}
+
+.slide-right-leave-to {
+  transform: translateX(100%);
 }
 </style>

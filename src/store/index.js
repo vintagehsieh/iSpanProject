@@ -1,5 +1,11 @@
 import { createStore } from "vuex";
-// import MusicSide from "./music/musicSide/musicSide";
+import album from "./music/album";
+import artist from "./music/artist";
+import creator from "./music/creator";
+import playlist from "./music/playlist";
+import main from "./music/main";
+import queue from "./music/queue";
+import SongGenres from "./music/songGenres";
 
 const homeModule = {
   state: {},
@@ -15,7 +21,13 @@ const musicModule = {
   mutations: {},
   actions: {},
   modules: {
-    // MusicSide,
+    album,
+    artist,
+    creator,
+    playlist,
+    main,
+    queue,
+    SongGenres
   },
 };
 

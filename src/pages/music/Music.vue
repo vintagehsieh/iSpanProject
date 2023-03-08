@@ -1,20 +1,17 @@
 <script>
-import SideBar from '@/components/SideBar.vue';
-import PlayerFooter from '@/components/Player.vue'
+import SideBar from '@/pages/music/components/SideBar.vue';
+import PlayerFooter from '@/pages/music/components/MusicPlayer.vue'
+import { useStore } from 'vuex';
 
 export default {
-  props: ['isPlaying'],
-  provide: {
-    sharedData: {
-      category: {
-        name: "",
-        id: 0,
-      },
-    }
-  },
   components: {
     SideBar,
     PlayerFooter
+  },
+  methods: {
+    setAlbumId(id) {
+      this.$store.dispatch('setAlbumId', id);
+    }
   }
 };
 </script>
@@ -22,34 +19,8 @@ export default {
   <div class="Root_top-container">
     <div class="Root_top-bar">
     </div>
-    <SideBar class="Root_nav-bar">
-      <template #main>
-        <router-link to="/" class="routerLink">
-          <font-awesome-icon icon="fa-solid fa-house" />
-          <h3>首頁</h3>
-        </router-link>
-      </template>
-      <template #search>
-        <router-link to="/search" class="routerLink">
-          <font-awesome-icon icon="fa-solid fa-magnifying-glass" />
-          <h3>搜尋</h3>
-        </router-link>
-      </template>
-      <template #library>
-        <router-link to="/library" class="routerLink">
-          <font-awesome-icon icon="fa-solid fa-music" />
-          <h3>音樂庫</h3>
-        </router-link>
-      </template>
-      <template #playlist>
-        <RouterLink to="/playlist" class="routerLink">
-          <h3>播放清單</h3>
-        </RouterLink>
-      </template>
-    </SideBar>
-    <div class="Root_now-playing-bar">
-      <PlayerFooter></PlayerFooter>
-    </div>
+    <SideBar class="Root_nav-bar" />
+    <PlayerFooter class="Root_now-playing-bar" />
     <div class="Root_main-view">
       <router-view class="routerView" />
     </div>
@@ -76,7 +47,7 @@ export default {
     left: 18rem;
     width: 82rem;
     height: 3rem;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.0);
   }
 
   >.Root_nav-bar {
@@ -84,6 +55,7 @@ export default {
     height: 88vh;
     top: 0;
     position: fixed;
+    z-index: 10;
   }
 
   >.Root_now-playing-bar {
@@ -98,6 +70,10 @@ export default {
   >.Root_main-view {
     margin-left: 18rem;
     background-color: #1F2124;
+
+    >.routerView {
+      margin-bottom: 5rem;
+    }
   }
 }
 

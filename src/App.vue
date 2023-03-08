@@ -1,7 +1,6 @@
 <script>
 import Header from "@/components/Header.vue";
 import Footer from "@/components/Footer.vue";
-import axios from 'axios';
 
 export default {
   components: {
@@ -13,19 +12,23 @@ export default {
       const account = document.querySelector('#account').value;
       const password = document.querySelector('#password').value;
 
-      axios.post('https://localhost:7043/Members/MemberLogin', {
-        memberAccount: account,
-        memberPassword: password
-      }, {
+      fetch('https://localhost:7043/Members/MemberLogin', {
+        method: 'POST',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
-        withCredentials: true
+        body: JSON.stringify({
+          memberAccount: account,
+          memberPassword: password
+        }),
+        credentials: 'include'
       })
         .then(response => {
-          const data = response.data;
-          // handle data...
+          return response.json();
+        })
+        .then(data => {
+          console.log(data);
         })
         .catch(error => {
           console.error(error);
@@ -38,7 +41,6 @@ export default {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
-        credentials: 'include',
       })
         .then(response => response.json())
         .then(data => {
@@ -52,12 +54,9 @@ export default {
 
 <template>
   <Header />
-  <div id="login">
-    <input type="text" id="account">
-    <input type="password" id="password">
-    <button @click="login()">login</button>
-  </div>
-  <button @click="logout()">logout</button>
+  <input type="text" id="account">
+  <input type="text" id="password">
+  <button @click="login">login</button>
   <Footer />
 </template>
 
