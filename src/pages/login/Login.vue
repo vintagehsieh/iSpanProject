@@ -11,17 +11,20 @@ export default {
     });
     const error_message = reactive({});
 
+
     const successFn = () => {
-      alert("註冊成功");
-      isReg.value = true;
+      alert("登入成功");
+      isLogin.value = true;
     };
 
     // const errorFn = (err) => {
     //   Object.keys(err).forEach((key) => (error_message[key] = err[key]));
     // };
 
-    const handLoginFn = () => {
-      axios
+    const
+
+    const handLoginFn = async () => {
+      await axios
         .post("https://localhost:7043/Members/MemberLogin", loginInfo, {
           withCredentials: true,
         })
