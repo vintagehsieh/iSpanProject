@@ -1,76 +1,88 @@
 <script>
-import { onMounted, reactive, ref } from "vue";
-import { useRouter } from "vue-router";
-import axios from "axios";
+import { reactive, computed } from "vue";
+import { useStore } from "vuex";
+import Cookies from "js-cookie";
 
 export default {
   setup() {
-    const isLogin = ref(false);
+    const store = useStore();
+    const isLogin = computed(() => {
+      return store.getters.getIsLogin;
+    });
     const loginInfo = reactive({
       memberAccount: "",
       memberPassword: "",
     });
-    const router = useRouter();
+    const memberAccount = computed(() => store.getters.getMemberAccount);
     const error_message = reactive({});
-
-
-    const successFn = () => {
-      alert("登入成功");
-      isLogin.value = true;
-      if (isLogin.value) {
-        redirect();
-      }
-    };
 
     // const errorFn = (err) => {
     //   Object.keys(err).forEach((key) => (error_message[key] = err[key]));
     // };
 
-    const handLoginFn = async () => {
-      await axios
-        .post("https://localhost:7043/Members/MemberLogin", loginInfo, {
-          withCredentials: true,
-        })
-        .then((res) => {
-          successFn();
-        });
-      // .catch((err) => {
-      //   errorFn(err.response.data.error_message);
-      // });
+    // 把登入訊息存在cookie 中
+    const saveCookie = () => {
+      Cookies.set("loginInfo", loginInfo, { expires: 1 });
     };
+
+    const handLoginFn = () => {
+      const success = store.dispatch("login", loginInfo);
+      if (success) {
+        alert("登入成功");
+        redirect();
+      } else {
+        alert("登入失敗，請檢查帳密");
+      }
+    };
+
     const redirect = () => {
       window.location.href = "http://localhost:8080/";
     };
-    return { isLogin, loginInfo, handLoginFn, redirect, error_message };
+    return {
+      isLogin,
+      loginInfo,
+      memberAccount,
+      handLoginFn,
+      redirect,
+      saveCookie,
+      error_message,
+    };
   },
 };
 </script>
 <template>
-  <div class="logo">
-    <img src="@/assets/logo.png" alt="" />
+  <div v-if="!isLogin">
+    <div class="logo">
+      <img src="@/assets/logo.png" alt="" />
+    </div>
+    <hr />
+    <form>
+      <div class="input-box">
+        <p>帳號</p>
+        <input
+          type="text"
+          placeholder="帳號"
+          v-model="loginInfo.memberAccount"
+        />
+        <p v-if="error_message.username" class="error">
+          {{ error_message.username }}
+        </p>
+      </div>
+      <div class="input-box">
+        <p>密碼</p>
+        <input
+          type="password"
+          placeholder="輸入密碼"
+          v-model="loginInfo.memberPassword"
+        />
+        <p v-if="error_message.password" class="error">
+          {{ error_message.password }}
+        </p>
+      </div>
+      <button type="submit" class="btn" @click="handLoginFn">送出</button>
+    </form>
   </div>
-  <hr />
-  <form>
-    <div class="input-box">
-      <p>帳號</p>
-      <input type="text" placeholder="帳號" v-model="loginInfo.memberAccount" />
-      <p v-if="error_message.username" class="error">
-        {{ error_message.username }}
-      </p>
-    </div>
-    <div class="input-box">
-      <p>密碼</p>
-      <input
-        type="password"
-        placeholder="輸入密碼"
-        v-model="loginInfo.memberPassword"
-      />
-      <p v-if="error_message.password" class="error">
-        {{ error_message.password }}
-      </p>
-    </div>
-    <button type="submit" class="btn" @click="handLoginFn">送出</button>
-  </form>
+  <div v-if="isLogin">您已經登入</div>
 </template>
 
 <style lang="scss">
