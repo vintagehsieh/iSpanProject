@@ -1,12 +1,15 @@
 <script>
-import { ref, reactive, onMounted, nextTick } from "vue";
+import { ref, reactive, onMounted, computed, watchEffect, nextTick } from "vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
+import emitter from "@/mitt";
+
 export default {
   setup() {
     const activities = reactive({ data: [] });
     const router = useRouter();
     const more = ref("");
+    const isOpen = ref(false);
 
     const goToActivities = (id) => {
       router.push(`/activities/${id}`);
@@ -40,8 +43,19 @@ export default {
       // nextTick(() => {
       //   more.value.style.textAlign = "right";
       // });
+      emitter.on("isOpenMitt", (value) => {
+        isOpen.value = value.value;
+      });
     });
-    return { activities, more, truncatedText, goToActivities, openNewTab };
+
+    return {
+      activities,
+      more,
+      isOpen,
+      truncatedText,
+      goToActivities,
+      openNewTab,
+    };
   },
 };
 </script>
@@ -49,7 +63,7 @@ export default {
   <div id="activities">
     <router-link
       :to="`/activities/${item.id}`"
-      class="card"
+      :class="['card', { open: isOpen }]"
       v-for="(item, index) in activities.data"
       :key="item.id"
       @click.left="goToActivities(item.id)"
@@ -77,13 +91,14 @@ export default {
   background-color: black;
   align-items: center;
   justify-content: center;
+  margin-top: 3rem;
 }
 a.card {
   cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  width: 55vw;
+  width: 66vw;
   height: auto;
   padding: 10px;
   border-radius: 5px;
@@ -95,6 +110,9 @@ a.card {
   &:hover {
     opacity: 1;
   }
+  &.open {
+    width: 60vw;
+  }
   .content {
     margin: 25px;
     > .title {
@@ -102,7 +120,6 @@ a.card {
       justify-content: space-between;
       align-items: center;
       padding: 0px 5px;
-      margin-top: -10px;
 
       > .name {
         font-size: 24px;

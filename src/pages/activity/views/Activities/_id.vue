@@ -56,7 +56,7 @@ export default {
 <style lang="scss" scoped>
 #actDetail {
   width: 60vw;
-  height: auto;
-  margin: 0 auto;
+  margin: 3rem 3rem;
+  padding: 0 3rem;
 }
 </style>
