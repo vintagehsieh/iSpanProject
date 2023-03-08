@@ -1,5 +1,6 @@
 <script>
-import { reactive, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
+import { useRouter } from "vue-router";
 import axios from "axios";
 
 export default {
@@ -9,31 +10,37 @@ export default {
       memberAccount: "",
       memberPassword: "",
     });
+    const router = useRouter();
     const error_message = reactive({});
 
     const successFn = () => {
-      alert("註冊成功");
-      isReg.value = true;
+      alert("登入成功");
+      isLogin.value = true;
+      if (isLogin.value) {
+        redirect();
+      }
     };
 
     // const errorFn = (err) => {
     //   Object.keys(err).forEach((key) => (error_message[key] = err[key]));
     // };
 
-    const handLoginFn = () => {
-      axios
+    const handLoginFn = async () => {
+      await axios
         .post("https://localhost:7043/Members/MemberLogin", loginInfo, {
           withCredentials: true,
         })
         .then((res) => {
           successFn();
-        })
-        .catch((err) => {
-          errorFn(err.response.data.error_message);
         });
+      // .catch((err) => {
+      //   errorFn(err.response.data.error_message);
+      // });
     };
-
-    return { isLogin, loginInfo, handLoginFn, error_message };
+    const redirect = () => {
+      window.location.href = "http://localhost:8080/";
+    };
+    return { isLogin, loginInfo, handLoginFn, redirect, error_message };
   },
 };
 </script>
