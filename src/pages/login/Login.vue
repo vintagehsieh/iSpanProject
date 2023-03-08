@@ -1,5 +1,6 @@
 <script>
 import { reactive, ref } from "vue";
+import { useRouter } from "vue-router";
 import axios from "axios";
 
 export default {
@@ -9,12 +10,15 @@ export default {
       memberAccount: "",
       memberPassword: "",
     });
+    const router = useRouter();
     const error_message = reactive({});
 
 
     const successFn = () => {
       alert("登入成功");
       isLogin.value = true;
+      redirect();
+      // router.push({ path: "/home", redirect: "/" });
     };
 
     // const errorFn = (err) => {
@@ -30,13 +34,15 @@ export default {
         })
         .then((res) => {
           successFn();
-        })
-        .catch((err) => {
-          errorFn(err.response.data.error_message);
         });
+      // .catch((err) => {
+      //   errorFn(err.response.data.error_message);
+      // });
     };
-
-    return { isLogin, loginInfo, handLoginFn, error_message };
+    const redirect = () => {
+      window.location.href = "http://localhost:8080/";
+    };
+    return { isLogin, loginInfo, handLoginFn, redirect, error_message };
   },
 };
 </script>
