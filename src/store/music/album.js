@@ -1,3 +1,4 @@
+import http from "@/plugins/http";
 // count state 必須是 Object
 const state = {
     album: {},
@@ -11,7 +12,7 @@ const getters = {
 // actions 也是以 Object 形式建構。
 const actions = {
     async setAlbum({ commit }, albumId) {
-        const response = await fetch(`https://localhost:7043/Albums/${albumId}`);
+        const response = await http(`https://localhost:7043/Albums/${albumId}`);
         const responseAlbum = await response.json();
         commit("setAlbum", responseAlbum);
     },

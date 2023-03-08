@@ -1,6 +1,7 @@
 <script>
 import SideBar from '@/pages/music/components/SideBar.vue';
 import PlayerFooter from '@/pages/music/components/MusicPlayer.vue'
+import { useStore } from 'vuex';
 
 export default {
   components: {

@@ -1,3 +1,4 @@
+import http from "@/plugins/http";
 // count state 必須是 Object
 const state = {
     playlist: {},
@@ -11,7 +12,7 @@ const getters = {
 // actions 也是以 Object 形式建構。
 const actions = {
     async setPlaylist({ commit }, playlistId) {
-        const response = await fetch(`https://localhost:7043/Playlists/${playlistId}`);
+        const response = await http(`https://localhost:7043/Playlists/${playlistId}`);
         const responsePlaylist = await response.json();
         commit("setPlaylist", responsePlaylist);
     },

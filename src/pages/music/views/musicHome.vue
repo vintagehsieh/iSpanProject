@@ -87,7 +87,8 @@ export default {
             }}</span>
           </div>
           <div class="content">
-            <RouterLink v-for="song in popularSongs.items" :key="song.id" to="/album" @click="setAlbum(song.albumId)">
+            <RouterLink v-for="song in popularSongs.items.slice(0, 5)" :key="song.id" to="/album"
+              @click="setAlbum(song.albumId)">
               <Card>
                 <template #picture>
                   <img :src=song.songCoverPath alt="">
@@ -111,7 +112,8 @@ export default {
               showAll }}</span>
           </div>
           <div class="content">
-            <RouterLink v-for="album in popularAlbums.items" :key="album.id" to="/album" @click="setAlbum(album.id)">
+            <RouterLink v-for="album in popularAlbums.items.slice(0, 5)" :key="album.id" to="/album"
+              @click="setAlbum(album.id)">
               <Card>
                 <template #picture>
                   <img :src=album.albumCoverPath alt="">
@@ -134,7 +136,7 @@ export default {
             <span class="showAll" @click="showAllPopSongs(popularPlaylists)">{{ showAll }}</span>
           </div>
           <div class="content">
-            <RouterLink v-for="playlist in popularPlaylists.items" :key="playlist.id" to="/playlist"
+            <RouterLink v-for="playlist in popularPlaylists.items.slice(0, 5)" :key="playlist.id" to="/playlist"
               @click="setPlaylist(playlist.id)">
               <Card>
                 <template #picture>
@@ -158,7 +160,7 @@ export default {
             <span class="showAll" @click="showAllPopSongs(popularArtists)">{{ showAll }}</span>
           </div>
           <div class="content">
-            <RouterLink v-for="artist in popularArtists.items" :key="artist.id" to="/artist"
+            <RouterLink v-for="artist in popularArtists.items.slice(0, 5)" :key="artist.id" to="/artist"
               @click="setArtist(artist.id)">
               <Card>
                 <template #picture>
@@ -179,7 +181,7 @@ export default {
             <span class="showAll" @click="showAllPopSongs(popularCreators)">{{ showAll }}</span>
           </div>
           <div class="content">
-            <RouterLink v-for="creator in popularCreators.items" :key="creator.id" to="/artist"
+            <RouterLink v-for="creator in popularCreators.items.slice(0, 5)" :key="creator.id" to="/artist"
               @click="setCreator(creator.id)">
               <Card>
                 <template #picture>

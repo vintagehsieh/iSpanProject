@@ -1,7 +1,27 @@
 <script>
 import Queue from './MusicQueue.vue';
+import { useStore } from 'vuex';
+import { computed, watch, ref } from 'vue';
 
 export default {
+    setup() {
+        const store = useStore();
+        var currentSong = ref({});
+        const musicPlayer = new Audio();
+
+        async function SetUpQueue() {
+            await store.dispatch('fetchQueueDataAsync');
+            currentSong = computed(() => {
+                return store.getters.getCurrentSong;
+            }).value;
+            console.log(currentSong);
+            musicPlayer.src = currentSong.songPath;
+        }
+
+        SetUpQueue();
+
+        return { currentSong, musicPlayer };
+    },
     data() {
         return {
             playStatus: false,
@@ -9,15 +29,8 @@ export default {
             currentTime: 0,
             musicInterval: '',
             volume: 50,
-            song: {
-                id: 1,
-                name: "Song Name",
-                artist: "Artist Name",
-                isLiked: false,
-                duration: 188,
-            },
             music: 'https://localhost:44373/Uploads/Songs/6f405bb8b632440280ad3f2ab9817ce0.mp3',
-            musicPlayer: new Audio(),
+
         }
     },
     props: ['font-awesome-icon'],
@@ -29,9 +42,7 @@ export default {
             this.showQueue = !this.showQueue;
         },
         toggleLiked() {
-            this.musicPlayer.src = this.music;
-            this.musicPlayer.volume = 0.5;
-            this.song.isLiked = !this.song.isLiked;
+            this.currentSong.isLiked = !this.currentSong.isLiked
         },
         togglePlay() {
             this.playStatus = !this.playStatus;
@@ -80,7 +91,8 @@ export default {
             return `${minutes}:${paddedSeconds}`;
         },
         checkSong() {
-            return Object.keys(this.song).length != 0
+            console.log(this.currentSong)
+            this.currentSong != undefined
         },
         trackCurrentTime() {
             let timeBar = document.querySelector('#time-bar');
@@ -100,13 +112,13 @@ export default {
 <template>
     <div class="container">
         <div class="currentMusic">
-            <div class="songInfo" v-if="checkSong()">
+            <div class="songInfo" v-if="this.currentSong == undefined">
                 <div class="picture">
-                    <img src="@/assets/logo.png" alt="">
+                    <img :src=currentSong.songCoverPath alt="">
                 </div>
                 <div class="names">
-                    <p class="songName">{{ song.name }}</p>
-                    <p class="artistName">{{ song.artist }}</p>
+                    <p class="songName">{{ currentSong.songName }}</p>
+                    <p class="artistName">{{ currentSong.artists }}</p>
                 </div>
                 <div class="liked">
                     <font-awesome-icon v-if="song.isLiked" icon="fa-solid fa-heart" style="color: white; font-size: 20px"

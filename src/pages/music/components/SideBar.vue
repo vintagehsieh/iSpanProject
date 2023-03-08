@@ -1,5 +1,33 @@
 <script>
-export default {};
+import store from '@/store';
+import { useStore } from 'vuex';
+
+export default {
+    methods: {
+        async createNewPlaylist() {
+            const store = useStore();
+
+            await fetch('https://localhost:7043/Playlists/NewList', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
+            })
+                .then(response => {
+                    return response.json();
+                })
+                .then(data => {
+                    //set playlist
+                    store.dispatch('setPlaylist', data);
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        }
+    }
+};
 </script>
 
 <template>
@@ -22,7 +50,7 @@ export default {};
                 <font-awesome-icon icon="fa-solid fa-music" />
                 <h3>音樂庫</h3>
             </router-link>
-            <RouterLink to="/playlist" class="routerLink">
+            <RouterLink to="/playlist" class="routerLink" @click="createNewPlaylist">
                 <font-awesome-icon icon="fa-regular fa-square-plus" />
                 <h3>新增播放清單</h3>
             </RouterLink>

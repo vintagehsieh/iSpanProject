@@ -1,5 +1,18 @@
 <script>
-export default {};
+import { computed } from "vue";
+import { useStore } from 'vuex';
+
+export default {
+    setup() {
+        const store = useStore();
+
+        const queue = computed(() => {
+            return store.getters.getQueue;
+        });
+
+        return { queue };
+    },
+};
 </script>
 
 <template>
@@ -13,6 +26,15 @@ export default {};
             </div>
         </div>
         <div class="scrollable-content">
+            <div class="song" v-for="song in queue.songInfos" :keys="song.id">
+                <div class="pic">
+                    <img :src=song.songCoverPath alt="">
+                </div>
+                <div class="desc">
+                    <div class="name">{{ song.songName }}</div>
+                    <div class="authorName">sss</div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -63,11 +85,34 @@ export default {};
 
 .scrollable-content {
     /* Set the height and width of the content */
-    height: 800px;
+    height: auto;
     min-height: 400px;
     width: 100%;
     /* Add some padding to the content to prevent it from sticking to the sides of the container */
-    padding: 10px;
     background-color: #383A3F;
+
+    .song {
+        height: 100px;
+        width: 100%;
+        color: white;
+        padding: 10px;
+        display: flex;
+        align-items: center;
+
+        .pic {
+            width: 60px;
+            height: 60px;
+            margin-right: 1rem;
+
+            img {
+                width: 100%;
+                height: 100%;
+            }
+        }
+
+        &:hover {
+            background-color: rgb(117, 117, 117);
+        }
+    }
 }
 </style>

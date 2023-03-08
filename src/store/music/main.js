@@ -1,3 +1,5 @@
+import http from "@/plugins/http";
+
 // count state 必須是 Object
 const state = {
     popSongRowNumber: 1,
@@ -45,27 +47,27 @@ const getters = {
 // actions 也是以 Object 形式建構。
 const actions = {
     async fetchSongDataAsync({ state, commit }) {
-        const responseSongs = await fetch(`https://localhost:7043/Songs/Popular?rowNumber=${state.popSongRowNumber}`);
+        const responseSongs = await http(`https://localhost:7043/Songs/Popular?rowNumber=${state.popSongRowNumber}`);
         const songs = await responseSongs.json();
         commit("setPopSongs", songs);
     },
     async fetchAlbumDataAsync({ state, commit }) {
-        const responseAlbums = await fetch(`https://localhost:7043/Albums/Recommended?rowNumber=${state.popAlbumRowNumber}`);
+        const responseAlbums = await http(`https://localhost:7043/Albums/Recommended?rowNumber=${state.popAlbumRowNumber}`);
         const albums = await responseAlbums.json();
         commit("setPopAlbums", albums);
     },
     async fetchPlaylistDataAsync({ state, commit }) {
-        const responsePlaylists = await fetch(`https://localhost:7043/Playlists/Recommended?rowNumber=${state.popPlaylistRowNumber}`);
+        const responsePlaylists = await http(`https://localhost:7043/Playlists/Recommended?rowNumber=${state.popPlaylistRowNumber}`);
         const playlists = await responsePlaylists.json();
         commit("setPopPlaylists", playlists);
     },
     async fetchArtistDataAsync({ state, commit }) {
-        const responseArtists = await fetch(`https://localhost:7043/Artists/Recommended?rowNumber=${state.popArtistRowNumber}`);
+        const responseArtists = await http(`https://localhost:7043/Artists/Recommended?rowNumber=${state.popArtistRowNumber}`);
         const artists = await responseArtists.json();
         commit("setPopArtists", artists);
     },
     async fetchCreatorDataAsync({ state, commit }) {
-        const responseCreators = await fetch(`https://localhost:7043/Creators/Recommended?rowNumber=${state.popCreatorRowNumber}`);
+        const responseCreators = await http(`https://localhost:7043/Creators/Recommended?rowNumber=${state.popCreatorRowNumber}`);
         const creators = await responseCreators.json();
         commit("setPopCreators", creators);
     },

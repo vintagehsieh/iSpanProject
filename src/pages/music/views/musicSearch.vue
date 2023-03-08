@@ -1,27 +1,22 @@
 <script>
-import Card from '@/pages/music/components/MusicCard.vue';
-import { ref } from 'vue'
+import { computed } from "vue";
+import { useStore } from 'vuex';
 
 export default {
   setup() {
-    let SongGenres = ref({});
-    async function loadData() {
-      const responseSongGenres = await fetch('https://localhost:7043/Songs/SongGenres');
-      SongGenres.value = await responseSongGenres.json();
-    }
+    const store = useStore();
 
-    loadData();
+    store.dispatch('loadData');
+    const SongGenres = computed(() => {
+      return store.getters.getSongGenre;
+    });
 
     return { SongGenres };
   },
-  inject: ['sharedData'],
   data() {
     return {
       searchValue: "",
     }
-  },
-  compotents: {
-    Card,
   },
   methods: {
     chooseSort(event) {

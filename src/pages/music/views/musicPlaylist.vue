@@ -60,6 +60,11 @@ export default {
             const seconds = totaltime % 60;
 
             return (hours == 0) ? minutes + '分鐘' + seconds + '秒' : hours + '小時' + minutes + '分鐘';
+        },
+        checkCover() {
+            const imgName = this.playlist.playlistCoverPath.slice(39);
+
+            return imgName.length != 0;
         }
     }
 };
@@ -68,7 +73,9 @@ export default {
     <div class="container">
         <div class="contentSpacing" id="playlistHeader">
             <div class="playlistPicture" id="playlistPic">
-                <img :src=playlist.playlistCoverPath alt="">
+
+                <img :src=playlist.playlistCoverPath alt="" v-if="checkCover()">
+                <img src="@/assets/music-note-icon-song-melody-tune-flat-symbol-free-vector.webp" v-else alt="">
             </div>
             <div id="playlistInfo">
                 <div id="type">播放清單</div>
@@ -101,7 +108,7 @@ export default {
                 <font-awesome-icon class="btn" icon="fa-solid fa-ellipsis" />
             </button>
         </div>
-        <div class="content">
+        <div class="content" v-if="playlist.metadata.length != 0">
             <div id="contentHeader">
                 <Song>
                     <template #order>
@@ -162,9 +169,11 @@ export default {
                             <font-awesome-icon class="btn" icon="fa-solid fa-ellipsis" />
                         </span>
                     </template>
-
                 </Song>
             </div>
+        </div>
+        <div class="content" v-else>
+
         </div>
     </div>
 </template>
@@ -306,7 +315,7 @@ export default {
 
     >.content {
         width: 100%;
-        min-height: 20px;
+        min-height: 14rem;
         height: auto;
         padding: 0 2rem;
 

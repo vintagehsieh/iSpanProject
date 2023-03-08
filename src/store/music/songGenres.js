@@ -1,27 +1,28 @@
 import http from "@/plugins/http";
+
 // count state 必須是 Object
 const state = {
-    creator: {},
+    SongGenres: {},
 }
 
 // getters 也可以整理到這邊直接返回 count 內容
 const getters = {
-    getCreator: state => state.creator
+    getSongGenre: state => state.SongGenres,
 }
 
 // actions 也是以 Object 形式建構。
 const actions = {
-    async setCreator({ commit }, creatorId) {
-        const response = await http(`https://localhost:7043/Creators/${creatorId}`);
-        const responseCreator = await response.json();
-        commit("setCreator", responseCreator);
+    async loadData({ commit }) {
+        const response = await http('https://localhost:7043/Songs/SongGenres');
+        const responseSongGenres = await response.json();
+        commit("setSongGenre", responseSongGenres);
     }
 }
 
 // mutations
 const mutations = {
-    setCreator(state, payload) {
-        state.creator = payload;
+    setSongGenre(state, payload) {
+        state.SongGenres = payload;
     },
 }
 
