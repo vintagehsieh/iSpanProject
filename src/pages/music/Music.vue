@@ -4,6 +4,14 @@ import PlayerFooter from '@/components/Player.vue'
 
 export default {
   props: ['isPlaying'],
+  provide: {
+    sharedData: {
+      category: {
+        name: "",
+        id: 0,
+      },
+    }
+  },
   components: {
     SideBar,
     PlayerFooter
@@ -63,11 +71,12 @@ export default {
 .Root_top-container {
   >.Root_top-bar {
     position: fixed;
+    z-index: 10;
     top: 0;
     left: 18rem;
     width: 82rem;
     height: 3rem;
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: rgba(0, 0, 0, 0.5);
   }
 
   >.Root_nav-bar {

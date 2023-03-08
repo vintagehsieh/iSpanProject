@@ -5,8 +5,8 @@ export default {};
 <template>
     <aside>
         <div id="logo">
-            <a href="index.html" class="routerLink">
-                <img src="https://www.ispan.com.tw/img/Logoslogan_sm.png" alt="" />
+            <a href="index.html">
+                <img src="@/assets/logo.png" alt="" />
             </a>
         </div>
         <div id="default">
@@ -25,24 +25,21 @@ aside {
     width: 100%;
     height: 100%;
     margin: 0;
+    padding: 0 2rem;
     background-color: #383A3F;
     color: white;
 
-    >#logo {
-        width: 80%;
-        height: 3rem;
-        margin: 2rem auto;
-        background-color: #fff;
+    #logo {
+        display: flex;
+        width: 200px;
+        height: 60px;
+        overflow: hidden;
+        margin-bottom: 2rem;
 
-        &:hover {
-            cursor: pointer;
-        }
-
-        >.routerLink {
-            >img {
-                width: 100%;
-                height: 100%;
-            }
+        >a img {
+            display: flex;
+            width: max(10vw, 200px);
+            scale: 2;
         }
     }
 

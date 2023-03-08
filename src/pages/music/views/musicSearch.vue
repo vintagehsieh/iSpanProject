@@ -1,39 +1,28 @@
 <script>
 import Card from '@/components/Card.vue';
+import { ref } from 'vue'
 
 export default {
+  setup() {
+    let SongGenres = ref({});
+    async function loadData() {
+      const responseSongGenres = await fetch('https://localhost:7043/Songs/SongGenres');
+      SongGenres.value = await responseSongGenres.json();
+    }
+
+    loadData();
+
+    return { SongGenres };
+  },
+  inject: ['sharedData'],
   data() {
     return {
-      items: [
-        {
-          name: "hello",
-          desc: 'world'
-        },
-        {
-          name: "hello",
-          desc: 'world'
-        },
-        {
-          name: "hello",
-          desc: 'world'
-        },
-        {
-          name: "hello",
-          desc: 'world'
-        },
-        {
-          name: "hello",
-          desc: 'world'
-        },
-        {
-          name: "hello",
-          desc: 'world'
-        },
-        {
-          name: "hello",
-          desc: 'world'
-        },
-      ],
+      // items: [
+      //   {
+      //     genreName: "esrnteisrnt",
+      //     id: 0,
+      //   }
+      // ],
       searchValue: "",
     }
   },
@@ -49,7 +38,15 @@ export default {
         div.classList.remove('active');
       });
       event.target.classList.add('active');
-    }
+    },
+    checkSearchValue() {
+      return this.searchValue.trim().length != 0
+    },
+    handleLinkClick(item) {
+      // Modify the shareData before navigating to the next page
+      this.sharedData.category.name = item.genreName;
+      this.sharedData.category.id = item.id;
+    },
   }
 };
 </script>
@@ -60,7 +57,7 @@ export default {
         <font-awesome-icon icon="fa-solid fa-magnifying-glass" style="font-size: 20px; margin-right: 8px;" />
         <input type="text" placeholder="想聽什麼?" v-model="searchValue" />
       </div>
-      <div id="sort" v-if="searchValue.trim().length != 0">
+      <div id="sort" v-if="checkSearchValue()">
         <div class="sort-unit active" id="all" @click="chooseSort">所有</div>
         <div class="sort-unit" id="song" @click="chooseSort">歌曲</div>
         <div class="sort-unit" id="playlist" @click="chooseSort">播放清單</div>
@@ -70,14 +67,18 @@ export default {
       <div id="sort" v-else></div>
     </div>
     <div class="row">
-      <Card v-for="item in items" :key="item.id" class="card">
-        <template #name>
-          <p>{{ item.name }}</p>
-        </template>
-        <template #desc>
-          <p>{{ item.desc }}</p>
-        </template>
-      </Card>
+      <div id="categories" v-if="checkSearchValue() == false">
+        <RouterLink v-for="item in SongGenres" :key="item.id" to="/categorySearch" @click="handleLinkClick(item)">
+          <Card class="card">
+            <template #name>
+              <p>{{ item.genreName }}</p>
+            </template>
+          </Card>
+        </RouterLink>
+      </div>
+      <div id="searchResult" v-else>
+
+      </div>
     </div>
   </div>
 </template>
@@ -137,13 +138,18 @@ export default {
   }
 
   >.row {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
 
-    >.card {
-      margin: 1rem;
+
+    >#categories {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+
+      >.card {
+        margin: 1rem;
+      }
     }
+
   }
 }
 </style>

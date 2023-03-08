@@ -30,42 +30,51 @@ header {
   width: 100%;
   height: 100px;
 }
+
 nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
   height: 100%;
-  > #logo {
+
+  >#logo {
     display: flex;
     margin-left: 10rem;
     width: 200px;
     height: 60px;
-    > a img {
+    overflow: hidden;
+
+    >a img {
       display: flex;
       width: max(10vw, 200px);
       margin-top: -1rem;
       scale: 2;
     }
   }
-  > #pages {
+
+  >#pages {
     display: flex;
     color: white;
+
     > :nth-child(1) {
       margin-left: 2rem;
     }
-    > a {
+
+    >a {
       text-decoration: none;
       color: white;
       padding-right: 6rem;
     }
   }
-  > #login {
+
+  >#login {
     display: flex;
     align-items: center;
     justify-content: space-around;
     padding-right: 10rem;
-    > #avatar {
+
+    >#avatar {
       // 縮小不要變形
       display: flex;
       min-width: 30px;
@@ -73,14 +82,15 @@ nav {
       border-radius: 50%;
       background-color: white;
     }
-    > a {
+
+    >a {
       text-decoration: none;
       color: white;
       padding-left: 1rem;
     }
   }
 }
+
 font-awesome-icon {
   color: white;
-}
-</style>
+}</style>
