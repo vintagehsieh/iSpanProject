@@ -1,61 +1,52 @@
 <script>
 import Header from "@/components/Header.vue";
 import Footer from "@/components/Footer.vue";
+import { onMounted, ref } from "vue";
+import { useRouter, useRoute } from "vue-router";
+import Cookies from "js-cookie";
 
 export default {
   components: {
     Header,
     Footer,
   },
-  methods: {
-    login() {
-      const account = document.querySelector("#account").value;
-      const password = document.querySelector("#password").value;
+  setup() {
+    const isLogin = ref(false);
+    const router = useRouter();
+    const route = useRoute();
 
-      fetch("https://localhost:7043/Members/MemberLogin", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          memberAccount: account,
-          memberPassword: password,
-        }),
-        credentials: "include",
-      })
-        .then((response) => {
-          return response.json();
-        })
-        .then((data) => {
-          console.log(data);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    },
-    logout() {
-      fetch("https://localhost:7043/Members/MemberLogOut", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => {})
-        .catch((error) => console.error(error));
-    },
+    onMounted(() => {
+      const isLoginLocalStorage = localStorage.getItem("isLogin");
+      if (isLoginLocalStorage) {
+        isLogin.value = true;
+      } else {
+        isLogin.value = false;
+      }
+    });
+
+    const handLogout = () => {
+      // 把isLogin改回false
+      isLogin.value = false;
+
+      // 清除cookie和localstorage
+      Cookies.remove("*");
+      localStorage.clear();
+
+      redirect();
+    };
+
+    const redirect = () => {
+      router.push({ path: route.path });
+    };
+
+    return { isLogin, handLogout };
   },
 };
 </script>
 
 <template>
-  <Header />
-  <input type="text" id="account" />
-  <input type="text" id="password" />
-  <button href="register.html">register</button>
-  <button href="member.html">login</button>
+  <Header :isLogin="isLogin" :handLogout="handLogout" />
+
   <Footer />
 </template>
 

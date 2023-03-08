@@ -1,5 +1,5 @@
 <script>
-import { reactive, computed } from "vue";
+import { reactive, computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import Cookies from "js-cookie";
 
@@ -16,14 +16,22 @@ export default {
     const memberAccount = computed(() => store.getters.getMemberAccount);
     const error_message = reactive({});
 
-    if (isLogin.value) {
-      redirect();
-    }
+    onMounted(() => {
+      const isLoginLocalStorage = localStorage.getItem("isLogin");
+      if (isLoginLocalStorage) {
+        store.commit("setIsLogin", true);
+      }
+      if (store.getters.getIsLogin) {
+        setTimeout(() => {
+          redirect();
+        }, 1000);
+      }
+    });
 
     // 把登入訊息存在cookie 中
     const saveCookie = () => {
       Cookies.set("loginInfo", loginInfo.memberAccount, { expires: 1 });
-      Cookies.set("isLogin", isLogin.value, { expires: 1 });
+      localStorage.setItem("isLogin", true);
     };
 
     const redirect = () => {
@@ -36,7 +44,7 @@ export default {
       const success = store.dispatch("login", loginInfo);
       if (success) {
         alert("登入成功");
-        store.commit("setIsLogin", true);
+        // store.commit("setIsLogin", true);
         saveCookie();
         redirect();
       } else {

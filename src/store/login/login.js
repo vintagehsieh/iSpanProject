@@ -29,7 +29,8 @@ const actions = {
         { withCredentials: true }
       );
       if (res.status === 200) {
-        commit("setIsLogin", true);
+        const bool = !state.isLogin;
+        commit("setIsLogin", bool);
         commit("setLoginInfo", loginInfo);
         commit("setMemberAccount", loginInfo.memberAccount);
         return true;
@@ -41,9 +42,8 @@ const actions = {
 };
 
 const mutations = {
-  setIsLogin(state, isLogin) {
-    state.isLogin = isLogin;
- 
+  setIsLogin(state, bool) {
+    state.isLogin = bool;
   },
   setLoginInfo(state, loginInfo) {
     state.loginInfo = loginInfo;
