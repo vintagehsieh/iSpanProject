@@ -1,5 +1,5 @@
 <script>
-import { reactive, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
 
@@ -17,15 +17,14 @@ export default {
     const successFn = () => {
       alert("登入成功");
       isLogin.value = true;
-      redirect();
-      // router.push({ path: "/home", redirect: "/" });
+      if (isLogin.value) {
+        redirect();
+      }
     };
 
     // const errorFn = (err) => {
     //   Object.keys(err).forEach((key) => (error_message[key] = err[key]));
     // };
-
-    const
 
     const handLoginFn = async () => {
       await axios
