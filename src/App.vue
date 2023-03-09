@@ -9,54 +9,53 @@ export default {
   },
   methods: {
     login() {
-      const account = document.querySelector('#account').value;
-      const password = document.querySelector('#password').value;
+      const account = document.querySelector("#account").value;
+      const password = document.querySelector("#password").value;
 
-      fetch('https://localhost:7043/Members/MemberLogin', {
-        method: 'POST',
+      fetch("https://localhost:7043/Members/MemberLogin", {
+        method: "POST",
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           memberAccount: account,
-          memberPassword: password
+          memberPassword: password,
         }),
-        credentials: 'include'
+        credentials: "include",
       })
-        .then(response => {
+        .then((response) => {
           return response.json();
         })
-        .then(data => {
+        .then((data) => {
           console.log(data);
         })
-        .catch(error => {
+        .catch((error) => {
           console.error(error);
         });
     },
     logout() {
-      fetch('https://localhost:7043/Members/MemberLogOut', {
-        method: 'POST',
+      fetch("https://localhost:7043/Members/MemberLogOut", {
+        method: "POST",
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
       })
-        .then(response => response.json())
-        .then(data => {
-
-        })
-        .catch(error => console.error(error));
-    }
-  }
-}
+        .then((response) => response.json())
+        .then((data) => {})
+        .catch((error) => console.error(error));
+    },
+  },
+};
 </script>
 
 <template>
   <Header />
-  <input type="text" id="account">
-  <input type="text" id="password">
-  <button @click="login">login</button>
+  <input type="text" id="account" />
+  <input type="text" id="password" />
+  <button href="register.html">register</button>
+  <button href="member.html">login</button>
   <Footer />
 </template>
 

@@ -17,7 +17,7 @@ export default {};
       <!-- membership -->
       <div id="login">
         <div id="avatar"></div>
-        <a href="member.html" id="memberPage">會員登入</a>
+        <a href="login.html" id="memberPage">會員登入</a>
         <!-- 引入font-awesome -->
         <!-- <font-awesome-icon icon="fa-solid fa-caret-down" /> -->
       </div>
@@ -38,14 +38,14 @@ nav {
   width: 100%;
   height: 100%;
 
-  >#logo {
+  > #logo {
     display: flex;
     margin-left: 10rem;
     width: 200px;
     height: 60px;
     overflow: hidden;
 
-    >a img {
+    > a img {
       display: flex;
       width: max(10vw, 200px);
       margin-top: -1rem;
@@ -53,7 +53,7 @@ nav {
     }
   }
 
-  >#pages {
+  > #pages {
     display: flex;
     color: white;
 
@@ -61,20 +61,20 @@ nav {
       margin-left: 2rem;
     }
 
-    >a {
+    > a {
       text-decoration: none;
       color: white;
       padding-right: 6rem;
     }
   }
 
-  >#login {
+  > #login {
     display: flex;
     align-items: center;
     justify-content: space-around;
     padding-right: 10rem;
 
-    >#avatar {
+    > #avatar {
       // 縮小不要變形
       display: flex;
       min-width: 30px;
@@ -83,7 +83,7 @@ nav {
       background-color: white;
     }
 
-    >a {
+    > a {
       text-decoration: none;
       color: white;
       padding-left: 1rem;
@@ -93,4 +93,5 @@ nav {
 
 font-awesome-icon {
   color: white;
-}</style>
+}
+</style>
