@@ -3,21 +3,20 @@ import {
   createWebHistory,
   createWebHashHistory,
 } from "vue-router";
-import MemberHome from "../pages/member/views/memberHome.vue";
-import MemberSecond from "../pages/member/views/memberSecond.vue";
+import Login from "@/pages/login/Login.vue";
+import Register from "@/pages/member/components/Register.vue"
 
 const routes = [
   {
     path: "/",
-    name: "member",
-    component: MemberHome,
+    name: "login",
+    component: Login,
   },
   {
-    path: "/memberSecond",
-    name: "second",
-    component: MemberSecond,
-  },
-
+    path: '/register',
+    name: 'register',
+    component: Register
+  }
 ];
 
 const router = createRouter({

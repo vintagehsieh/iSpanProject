@@ -8,7 +8,8 @@ const state = {
 // getters 也可以整理到這邊直接返回 count 內容
 const getters = {
     getQueue: state => state.queue,
-    getCurrentSong: state => state.queue.songInfos[0],
+    getCurrentSong: state => state.queue.songInfos?.[0] ?? null,
+
 }
 
 // actions 也是以 Object 形式建構。

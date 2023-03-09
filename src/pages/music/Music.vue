@@ -4,6 +4,8 @@ import PlayerFooter from '@/pages/music/components/MusicPlayer.vue'
 import { useStore } from 'vuex';
 
 export default {
+  setup() {
+  },
   components: {
     SideBar,
     PlayerFooter
