@@ -13,6 +13,7 @@ export default {
   </nav>
   <router-view />
   <Register />
+
 </template>
 
 <style></style>
