@@ -42,7 +42,7 @@ export default {
     };
 
     // 把登入訊息存在cookie 中
-    const saveCookie = () => { 
+    const saveCookie = () => {
       Cookies.set("loginInfo", loginInfo.memberAccount, { expires: 1 });
       localStorage.setItem("isLogin", true);
     };
@@ -52,18 +52,6 @@ export default {
       window.history.pushState({}, "", "/");
       window.location.reload();
       // window.location.href = "https://localhost:8080";
-    };
-
-    const handLoginFn = async () => {
-      const success = await store.dispatch("login", loginInfo);
-      if (success) {
-        alert("登入成功");
-        // store.commit("setIsLogin", true);
-        saveCookie();
-        redirect();
-      } else {
-        alert("登入失敗，請檢查帳密");
-      }
     };
 
     const handRegisterFn = () => {
