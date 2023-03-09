@@ -17,6 +17,7 @@ const routes = [
     name: "second",
     component: MemberSecond,
   },
+
 ];
 
 const router = createRouter({

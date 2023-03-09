@@ -1,24 +1,23 @@
 <script>
 import Queue from './MusicQueue.vue';
 import { useStore } from 'vuex';
-import { computed, watch, ref } from 'vue';
+import { computed, watchEffect } from 'vue';
 
 export default {
     setup() {
         const store = useStore();
-        var currentSong = ref({});
-        const musicPlayer = new Audio();
+        var musicPlayer = new Audio();
 
-        async function SetUpQueue() {
-            await store.dispatch('fetchQueueDataAsync');
-            currentSong = computed(() => {
-                return store.getters.getCurrentSong;
-            }).value;
-            console.log(currentSong);
-            musicPlayer.src = currentSong.songPath;
-        }
+        store.dispatch('fetchQueueDataAsync');
 
-        SetUpQueue();
+        const currentSong = computed(() => {
+            return store.getters.getCurrentSong;
+        });
+
+        watchEffect(() => {
+            musicPlayer.src = currentSong.value?.songPath ?? "";
+        })
+
 
         return { currentSong, musicPlayer };
     },
@@ -29,8 +28,6 @@ export default {
             currentTime: 0,
             musicInterval: '',
             volume: 50,
-            music: 'https://localhost:44373/Uploads/Songs/6f405bb8b632440280ad3f2ab9817ce0.mp3',
-
         }
     },
     props: ['font-awesome-icon'],
@@ -90,10 +87,6 @@ export default {
             // Combine the minutes and seconds into a string
             return `${minutes}:${paddedSeconds}`;
         },
-        checkSong() {
-            console.log(this.currentSong)
-            this.currentSong != undefined
-        },
         trackCurrentTime() {
             let timeBar = document.querySelector('#time-bar');
 
@@ -104,6 +97,19 @@ export default {
             timeBar.style.backgroundSize = (val - min) * 100 / (max - min) + '% 100%'
 
             this.currentTime = this.musicPlayer.currentTime;
+        },
+        nextSong() {
+            fetch(`https://localhost:7043/Queues/NextSong`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+            })
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error(error))
+
         }
     }
 };
@@ -112,7 +118,7 @@ export default {
 <template>
     <div class="container">
         <div class="currentMusic">
-            <div class="songInfo" v-if="this.currentSong == undefined">
+            <div class="songInfo" v-if="this.currentSong != undefined">
                 <div class="picture">
                     <img :src=currentSong.songCoverPath alt="">
                 </div>
@@ -121,8 +127,8 @@ export default {
                     <p class="artistName">{{ currentSong.artists }}</p>
                 </div>
                 <div class="liked">
-                    <font-awesome-icon v-if="song.isLiked" icon="fa-solid fa-heart" style="color: white; font-size: 20px"
-                        @click="toggleLiked" />
+                    <font-awesome-icon v-if="currentSong.isLiked" icon="fa-solid fa-heart"
+                        style="color: white; font-size: 20px" @click="toggleLiked" />
                     <font-awesome-icon v-else icon="fa-regular fa-heart" style="color: white; font-size: 20px"
                         @click="toggleLiked" />
                 </div>
@@ -139,7 +145,7 @@ export default {
                     <font-awesome-icon id="pause" icon="fa-solid fa-pause" v-else @click="togglePlay" />
                 </div>
                 <div class="player-controls_right">
-                    <font-awesome-icon id="next" class="playerBtn" icon="fa-solid fa-forward-step" />
+                    <font-awesome-icon id="next" class="playerBtn" icon="fa-solid fa-forward-step" @click="nextSong" />
                     <font-awesome-icon id="repeat" class="playerBtn" icon="fa-solid fa-repeat" />
                 </div>
             </div>

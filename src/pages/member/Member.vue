@@ -1,9 +1,9 @@
 <script>
 import Register from "@/pages/member/components/Register";
 export default {
-  components: {
-    Register,
-  },
+  // components: {
+  //   Register,
+  // },
 };
 </script>
 <template>
@@ -12,7 +12,7 @@ export default {
     <router-link to="/MemberSecond">MemberSecond</router-link>
   </nav>
   <router-view />
-  <Register />
+  <!-- <Register /> -->
 </template>
 
 <style></style>
