@@ -18,7 +18,6 @@ export default {
             musicPlayer.src = currentSong.value?.songPath ?? "";
         })
 
-
         return { currentSong, musicPlayer };
     },
     data() {
@@ -38,8 +37,31 @@ export default {
         toggleQueue() {
             this.showQueue = !this.showQueue;
         },
-        toggleLiked() {
+        toggleSongLiked() {
             this.currentSong.isLiked = !this.currentSong.isLiked
+            if (this.currentSong.isLiked == true) {
+                fetch(`https://localhost:7043/Members/LikedSongs/${this.currentSong.id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                })
+                    .then(response => response.json())
+                    .then(data => console.log(data))
+                    .catch(error => console.error(error))
+            } else {
+                fetch(`https://localhost:7043/Members/LikedSongs/${this.currentSong.id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                })
+                    .then(response => response.json())
+                    .then(data => console.log(data))
+                    .catch(error => console.error(error))
+            }
         },
         togglePlay() {
             this.playStatus = !this.playStatus;
@@ -124,13 +146,14 @@ export default {
                 </div>
                 <div class="names">
                     <p class="songName">{{ currentSong.songName }}</p>
-                    <p class="artistName">{{ currentSong.artists }}</p>
+                    <span class="artistName" v-for="artist in currentSong.artists">{{ artist.artistName }}</span>
+                    <span class="creatorName" v-for="creator in currentSong.creators">{{ creator.creatorName }}</span>
                 </div>
                 <div class="liked">
                     <font-awesome-icon v-if="currentSong.isLiked" icon="fa-solid fa-heart"
-                        style="color: white; font-size: 20px" @click="toggleLiked" />
+                        style="color: white; font-size: 20px" @click="toggleSongLiked" />
                     <font-awesome-icon v-else icon="fa-regular fa-heart" style="color: white; font-size: 20px"
-                        @click="toggleLiked" />
+                        @click="toggleSongLiked" />
                 </div>
             </div>
         </div>
@@ -187,11 +210,8 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-#musicPlayer {
-    display: none;
-}
-
 .container {
+    z-index: 10;
     width: 100%;
     display: flex;
 

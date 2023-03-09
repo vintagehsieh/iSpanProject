@@ -4,6 +4,7 @@ import router from "@/router/musicRouter";
 import store from "@/store/index.js";
 import Card from "@/pages/music/components/MusicCard.vue";
 import Song from "@/pages/music/components/MusicSong.vue";
+import Options from "@/pages/music/components/MusicOption.vue";
 
 /* import the fontawesome core */
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -43,5 +44,5 @@ import {
 /* add icons to the library */
 library.add(faBars, faHeart, solidHeart, faUpRightAndDownLeftFromCenter, faVolumeHigh, faVolumeLow, faVolumeXmark, faShuffle, faBackwardStep, faPlay, faPause, faForwardStep, faRepeat, faEllipsis, faClock, faMagnifyingGlass, faHouse, faMusic, faCaretDown, faCaretUp, faAngleLeft, faSquarePlus)
 
-createApp(Music).component('Card', Card).component('Song', Song).component('font-awesome-icon', FontAwesomeIcon).use(router).use(store).mount("#music");
+createApp(Music).component('Options', Options).component('Card', Card).component('Song', Song).component('font-awesome-icon', FontAwesomeIcon).use(router).use(store).mount("#music");
 
