@@ -1,5 +1,27 @@
 <script>
-export default {};
+import { ref } from "vue";
+import Cookies from "js-cookie";
+
+export default {
+  props: {
+    isLogin: {
+      type: Boolean,
+    },
+    handLogout: {
+      type: Function,
+      default: () => {},
+    },
+  },
+  setup(props) {
+    const memberAccount = ref("");
+
+    if (Cookies.get("loginInfo") !== undefined) {
+      memberAccount.value = Cookies.get("loginInfo");
+    }
+
+    return { props, memberAccount };
+  },
+};
 </script>
 <template>
   <header>
@@ -11,13 +33,15 @@ export default {};
       <!-- Direct -->
       <div id="pages">
         <a href="music.html" id="musicPage">音樂播放</a>
-        <a href="shop.html" id="shopPage">音樂商城</a>
-        <a href="activity.html" id="actPage">音樂活動</a>
+        <a href="shop.html" v-if="props.isLogin" id="shopPage">音樂商城</a>
+        <a href="activity.html" v-if="props.isLogin" id="actPage">音樂活動</a>
       </div>
       <!-- membership -->
-      <div id="login">
-        <div id="avatar"></div>
-        <a href="login.html" id="memberPage">會員登入</a>
+      <div class="loginSection">
+        <div v-if="props.isLogin" class="avatar"></div>
+        <div class="member" v-if="props.isLogin">{{ memberAccount }}</div>
+        <a href="login.html" class="login" v-if="!props.isLogin">會員登入</a>
+        <button v-else @click="props.handLogout" class="logout">登出</button>
         <!-- 引入font-awesome -->
         <!-- <font-awesome-icon icon="fa-solid fa-caret-down" /> -->
       </div>
@@ -68,19 +92,23 @@ nav {
     }
   }
 
-  > #login {
+  > .loginSection {
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: center;
     padding-right: 10rem;
 
-    > #avatar {
+    > .avatar {
       // 縮小不要變形
       display: flex;
       min-width: 30px;
       min-height: 30px;
       border-radius: 50%;
       background-color: white;
+    }
+    > .member {
+      color: white;
+      margin: 0 1rem;
     }
 
     > a {

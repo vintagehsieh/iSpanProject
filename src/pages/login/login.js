@@ -1,5 +1,6 @@
 import { createApp } from "vue";
 import Login from "./Login.vue";
-import router from "@/router/memberRouter";
+import store from "@/store/index";
+import router from "@/router/loginRouter";
 
-createApp(Login).use(router).mount("#login");
+createApp(Login).use(router).use(store).mount("#login");
