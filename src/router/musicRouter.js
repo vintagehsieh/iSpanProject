@@ -14,11 +14,6 @@ import MusicArtist from "@/pages/music/views/musicArtist.vue";
 const routes = [
   {
     path: "/",
-    name: "main",
-    component: MusicHome,
-  },
-  {
-    path: "/music.html",
     name: "music",
     component: MusicHome,
   },
