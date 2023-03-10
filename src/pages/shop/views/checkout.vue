@@ -1,73 +1,111 @@
 <template>
-    <div class="shopping-cart">
-      <h1>結帳</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>Product</th>
-            <th>Price</th>
-            <th>Quantity</th>
-            <th>Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(item, index) in cartItems" :key="index">
-            <td>{{ item.name }}</td>
-            <td>{{ item.price }}</td>
-            <td>{{ item.quantity }}</td>
-            <td>{{ item.price * item.quantity }}</td>
-            <td>{{ coupon }}</td>
-          </tr>
-        </tbody>
-      </table>
-      
-      <hr>
-      
-      <div>
-        <h3>優惠券</h3>
+  <div class="shopping-cart">
+    <h1>結帳</h1>
+    <table>
+      <thead>
         <tr>
-            <td>couponText</td>
-            <td>-10</td>
+          <th>Product</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>Total</th>
         </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(item, index) in membercart.value" :key="index">
+          <td>{{ item.productName }}</td>
+          <td>{{ item.productPrice }}</td>
+          <td>{{ item.qty }}</td>
+          <td>{{ item.productPrice * item.qty }}</td>
+          <td>{{ coupon }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>Total: {{ cartTotal }}</p>
+    <hr />
 
-        <h3>Total: {{ cartTotal-10 }}</h3>
-      </div>
+    <div>
+      <h3>優惠券</h3>
+      <tr>
+        <td>couponText</td>
+        <td>-10</td>
+      </tr>
 
+      <h3>Total: {{ cartTotal - 10 }}</h3>
+      <button @click="chekout">結帳</button>
     </div>
-  </template>
-  
-  <script>
-  export default {
-    data() {
+    <div id="test"></div>
+  </div>
+</template>
+
+<script>
+import { reactive, computed, onMounted } from "vue";
+
+export default {
+  setup() {
+    const membercart = reactive({ value: [] });
+    let productName = [];
+    let Total = [];
+
+    console.log(membercart.value);
+    const chekout = () => {
+      productName = membercart.value.map((x) => x.productName);
+      Total = membercart.value.map((x) => x.productPrice * x.qty);
+      console.log(productName);
+      $.ajax({
+        url: `https://localhost:7043/EcPay?cartId=${membercart.value[0].cartId}&Total=50&productName=${productName}`,
+        method: "POST",
+        dataType: "text",
+        xhrFields: {
+          withCredentials: true,
+        },
+        success: function (returnObj) {
+          // console.log(returnObj);
+          $("#test").html(returnObj);
+          $("#payForm").submit();
+        },
+        error: function (err) {
+          alert(err.status + " " + err.statusText + "\n" + err.responseText);
+        },
+      });
+
       return {
-        cartItems: [
-          { name: "Product A", price: 10, quantity: 1 },
-          { name: "Product B", price: 15, quantity: 2 },
-          { name: "Product C", price: 20, quantity: 3 },
-        ],
-        selectedOption: '',
-        options: [
-          { value: 'option1', label: '選項 1' },
-          { value: 'option2', label: '選項 2' },
-          { value: 'option3', label: '選項 3' },
-        ]
+        chekout,
       };
-    },
-    computed: {
-      cartTotal() {
-        return this.cartItems.reduce(
-          (total, item) => total + item.price * item.quantity,
-          0
-        );
-      },
-    },
-    methods: {
-      removeItem(index) {
-        this.cartItems.splice(index, 1);
-      },
-    },
-  };
-  </script>
+    };
+
+    onMounted(() => {
+      fetchData();
+    });
+
+    async function fetchData() {
+      try {
+        const response = await fetch("https://localhost:7043/Carts/CartItem", {
+          method: "GET",
+          credentials: "include",
+        });
+        const data = await response.json();
+        console.log("this", data);
+        membercart.value = data;
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    const cartTotal = computed(() => {
+      return membercart.value.reduce(
+        (total, item) => total + item.productPrice * item.qty,
+        0
+      );
+    });
+
+    return {
+      chekout,
+      membercart,
+      cartTotal,
+    };
+  },
+};
+</script>
 
 <style>
 .shopping-cart {
@@ -109,18 +147,18 @@ button:disabled {
 }
 
 .custom-label {
-color: #333;
-font-size: 16px;
-font-weight: bold;
-text-transform: uppercase;
-padding: 20px;
-margin-bottom: 50px;
+  color: #333;
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+  padding: 20px;
+  margin-bottom: 50px;
 }
 
 .custom-select {
-padding: 8px;
-font-size: 16px;
-border: 2px solid #ccc;
-border-radius: 4px;
+  padding: 8px;
+  font-size: 16px;
+  border: 2px solid #ccc;
+  border-radius: 4px;
 }
 </style>
