@@ -1,5 +1,5 @@
 <script>
-import { computed } from "vue";
+import { computed, watchEffect } from "vue";
 import { useStore } from 'vuex';
 
 export default {
@@ -8,8 +8,11 @@ export default {
         const playlist = computed(() => {
             return store.getters.getPlaylist;
         });
+        const currentSong = computed(() => {
+            return store.getters.getCurrentSong;
+        })
 
-        return { playlist };
+        return { playlist, currentSong };
     },
     data() {
         return {
@@ -19,7 +22,6 @@ export default {
     },
     methods: {
         togglePlay() {
-            console.log(this.playlist.isLiked)
             this.isPlaying = !this.isPlaying;
         },
         togglePlalistLiked() {
@@ -73,6 +75,10 @@ export default {
                     .then(data => console.log(data))
                     .catch(error => console.error(error))
             }
+
+            if (this.playlist.metadata[i].song.id == this.currentSong.id) {
+                this.currentSong.isLiked = this.playlist.metadata[i].song.isLiked;
+            }
         },
         toggleOption() {
             this.optionIsOpen = !this.optionIsOpen;
@@ -114,8 +120,8 @@ export default {
 
             return imgName.length != 0;
         },
-        addToQueue() {
-            fetch(`https://localhost:7043/Queues/Playlists/${this.playlist.id}`, {
+        async addToQueue() {
+            await fetch(`https://localhost:7043/Queues/Playlists/${this.playlist.id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -125,6 +131,22 @@ export default {
                 .then(response => response.json())
                 .then(data => console.log(data))
                 .catch(error => console.error(error))
+
+            this.$store.dispatch("fetchQueueDataAsync");
+        },
+        async addSongToQueue(songId) {
+            await fetch(`https://localhost:7043/Queues/Songs/${songId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+            })
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error(error))
+
+            this.$store.dispatch("fetchQueueDataAsync");
         },
         changePrivacySetting() {
             this.playlist.isPublic = !this.playlist.isPublic;
@@ -152,6 +174,8 @@ export default {
             } catch (error) {
                 console.error(error);
             }
+
+            this.$router.go(-1);
         },
         toggleSongOption(i) {
             if (this.playlist.metadata[i].optionIsOpen == undefined) {
@@ -220,7 +244,7 @@ export default {
                                 刪除清單
                             </div>
                         </template>
-                        <template #forth v-if="playlist.isown">
+                        <template #forth v-if="playlist.isOwner">
                             <div class="option" v-if="playlist.isPublic == false" @click="changePrivacySetting">設為公開</div>
                             <div class="option" v-else @click="changePrivacySetting">設為私人</div>
                         </template>
@@ -303,11 +327,11 @@ export default {
                         <div v-if="metadata.isHover">
                             <font-awesome-icon class="btn" icon="fa-solid fa-ellipsis" @click="toggleSongOption(i)" />
                         </div>
-                        <div class="songOptionParent" v-if="playlist.metadata[i].optionIsOpen">
+                        <div class="songOptionParent" v-if="metadata.optionIsOpen">
                             <div class="SongOptions">
                                 <Options>
                                     <template #first>
-                                        <div class="option" @click="addToQueue()">加入佇列</div>
+                                        <div class="option" @click="addSongToQueue(metadata.song.id)">加入佇列</div>
                                     </template>
                                     <template #second>
                                         <div class="option" @click="addToQueue()">前往專輯</div>

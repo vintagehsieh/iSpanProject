@@ -14,11 +14,19 @@ export default {
             return store.getters.getCurrentSong;
         });
 
+        const queue = computed(() => {
+            return store.getters.getQueue;
+        })
+
+        const playlist = computed(() => {
+            return store.getters.getPlaylist;
+        })
+
         watchEffect(() => {
             musicPlayer.src = currentSong.value?.songPath ?? "";
         })
 
-        return { currentSong, musicPlayer };
+        return { currentSong, musicPlayer, queue, playlist };
     },
     data() {
         return {
@@ -27,7 +35,25 @@ export default {
             currentTime: 0,
             musicInterval: '',
             volume: 50,
+            oldVolume: 0,
         }
+    },
+    updated() {
+        const shuffle = document.querySelector("#shuffle");
+        if (this.queue.isShuffle) {
+            shuffle.classList.add("active");
+        } else {
+            shuffle.classList.remove("active");
+        }
+
+        const repeat = document.querySelector("#repeat");
+
+        if (this.queue.isRepeat) {
+            repeat.classList.add("active");
+        } else {
+            repeat.classList.remove("active");
+        }
+
     },
     props: ['font-awesome-icon'],
     components: {
@@ -47,7 +73,7 @@ export default {
                     },
                     credentials: 'include',
                 })
-                    .then(response => response.json())
+                    .then(response => response.text())
                     .then(data => console.log(data))
                     .catch(error => console.error(error))
             } else {
@@ -58,10 +84,16 @@ export default {
                     },
                     credentials: 'include',
                 })
-                    .then(response => response.json())
+                    .then(response => response.text())
                     .then(data => console.log(data))
                     .catch(error => console.error(error))
             }
+
+            this.playlist.metadata.forEach(metadatum => {
+                if (metadatum.song.id == this.currentSong.id) {
+                    metadatum.song.isLiked = this.currentSong.isLiked;
+                }
+            })
         },
         togglePlay() {
             this.playStatus = !this.playStatus;
@@ -93,7 +125,7 @@ export default {
             const val = target.value;
 
             target.style.backgroundSize = (val - min) * 100 / (max - min) + '% 100%'
-            this.musicPlayer.volume = val / 100;
+            this.musicPlayer.volume = val;
         },
         formatTime(seconds) {
             if (isNaN(seconds)) {
@@ -120,9 +152,79 @@ export default {
 
             this.currentTime = this.musicPlayer.currentTime;
         },
-        nextSong() {
-            fetch(`https://localhost:7043/Queues/NextSong`, {
+        async nextSong() {
+            await fetch(`https://localhost:7043/Queues/NextSong`, {
                 method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+            })
+                .then(response => response.text())
+                .then(data => console.log(data))
+                .catch(error => console.error(error))
+            await this.$store.dispatch('fetchQueueDataAsync');
+            this.reSetPlayer();
+        },
+        async previousSong() {
+            if (this.musicPlayer.currentTime > 5) {
+                this.musicPlayer.currentTime = 0;
+                return;
+            }
+
+            await fetch(`https://localhost:7043/Queues/PreviousSong`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+            })
+                .then(response => response.text())
+                .then(data => console.log(data))
+                .catch(error => console.error(error))
+            await this.$store.dispatch('fetchQueueDataAsync');
+            this.reSetPlayer();
+        },
+        reSetPlayer() {
+            if (this.playStatus) {
+                this.playStatus = false;
+                this.musicPlayer.play();
+                this.playStatus = true;
+            }
+            this.currentTime = 0;
+        },
+        async toggleShuffle() {
+            this.queue.isShuffle = !this.queue.isShuffle;
+            const shuffle = document.querySelector("#shuffle");
+
+            if (this.queue.isShuffle) {
+                shuffle.classList.add("active");
+            } else {
+                shuffle.classList.remove("active");
+            }
+            await fetch(`https://localhost:7043/Queues/ShuffleSetting`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+            })
+                .then(response => response.text())
+                .then(data => console.log(data))
+                .catch(error => console.error(error))
+            await this.$store.dispatch('fetchQueueDataAsync');
+        },
+        async toggleRepeat() {
+            this.queue.isRepeat = !this.queue.isRepeat;
+            const repeat = document.querySelector("#repeat");
+
+            if (this.queue.isRepeat) {
+                repeat.classList.add("active");
+            } else {
+                repeat.classList.remove("active");
+            }
+            await fetch(`https://localhost:7043/Queues/RepeatSetting`, {
+                method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -131,7 +233,7 @@ export default {
                 .then(response => response.json())
                 .then(data => console.log(data))
                 .catch(error => console.error(error))
-
+            await this.$store.dispatch('fetchQueueDataAsync');
         }
     }
 };
@@ -160,8 +262,9 @@ export default {
         <div class="player-controls">
             <div id="player-controls_buttons">
                 <div class="player-controls_left">
-                    <font-awesome-icon id="shuffle" class="playerBtn" icon="fa-solid fa-shuffle" />
-                    <font-awesome-icon id="previous" class="playerBtn" icon="fa-solid fa-backward-step" />
+                    <font-awesome-icon id="shuffle" class="playerBtn" icon="fa-solid fa-shuffle" @click="toggleShuffle" />
+                    <font-awesome-icon id="previous" class="playerBtn" icon="fa-solid fa-backward-step"
+                        @click="previousSong" />
                 </div>
                 <div class="player-controls_center">
                     <font-awesome-icon id="play" icon="fa-solid fa-play" v-if="playStatus == false" @click="togglePlay" />
@@ -169,7 +272,7 @@ export default {
                 </div>
                 <div class="player-controls_right">
                     <font-awesome-icon id="next" class="playerBtn" icon="fa-solid fa-forward-step" @click="nextSong" />
-                    <font-awesome-icon id="repeat" class="playerBtn" icon="fa-solid fa-repeat" />
+                    <font-awesome-icon id="repeat" class="playerBtn" icon="fa-solid fa-repeat" @click="toggleRepeat" />
                 </div>
             </div>
             <div class="playback-bar">
@@ -178,7 +281,7 @@ export default {
                     <input type="range" min="0" step="1" :max="musicPlayer.duration" v-model="currentTime" id="time-bar"
                         @input="changeCurrentTime" />
                 </div>
-                <div id="totalTime">{{ formatTime(musicPlayer.duration) }}
+                <div id="totalTime">{{ formatTime(currentSong != undefined ? currentSong.duration : 0) }}
                 </div>
             </div>
         </div>
@@ -196,7 +299,7 @@ export default {
                     <font-awesome-icon icon="fa-solid fa-volume-high" v-else style="color:white; font-size: 20px;" />
                 </div>
                 <div class="volume-slider">
-                    <input type="range" min="0" step="1" max="100" v-model="volume" id="volume-range"
+                    <input type="range" min="0" step="0.01" max="1" v-model="musicPlayer.volume" id="volume-range"
                         @input="changeVolume" />
                 </div>
             </div>
@@ -280,6 +383,7 @@ export default {
                 >#shuffle {
                     position: absolute;
                     right: 4rem;
+                    font-size: 20px;
                 }
 
                 >#previous {
@@ -327,7 +431,10 @@ export default {
 
                 >#repeat {
                     left: 4rem;
+                    font-size: 20px;
                     position: absolute;
+
+
                 }
             }
         }
@@ -411,7 +518,7 @@ input[type="range"] {
     background-repeat: no-repeat;
 
     &#volume-range {
-        background-size: 50% 100%;
+        background-size: 100% 100%;
     }
 
     &::-webkit-slider-thumb {
@@ -447,5 +554,9 @@ input[type="range"] {
     &:hover {
         color: white;
     }
+}
+
+.active {
+    color: #F6B352;
 }
 </style>

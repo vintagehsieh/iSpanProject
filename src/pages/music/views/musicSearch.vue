@@ -16,9 +16,22 @@ export default {
   data() {
     return {
       searchValue: "",
+      searchSongs: [],
+      searchPlaylists: [],
+      searchAlbums: [],
+      searchArtists: [],
+      searchCreators: [],
     }
   },
   methods: {
+    debounce(func, delay) {
+      let timeoutId;
+      return function (...args) {
+        const context = this;
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => func.apply(context, args), delay);
+      }
+    },
     chooseSort(event) {
       const divs = document.querySelectorAll('.sort-unit');
 
@@ -36,6 +49,41 @@ export default {
       this.sharedData.category.name = item.genreName;
       this.sharedData.category.id = item.id;
     },
+    async search() {
+      if (this.searchValue == "") return;
+      this.searchAlbums = [];
+      this.searchArtists = [];
+      this.searchCreators = [];
+      this.searchPlaylists = [];
+      this.searchSongs = [];
+      await fetch(`https://localhost:7043/Songs/${this.searchValue}`, { method: 'GET', headers: { 'Content-Type': 'application/json' }, credentials: 'include', })
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch(error => console.error(error))
+
+      await fetch(`https://localhost:7043/Artists/${this.searchValue}`, { method: 'GET', headers: { 'Content-Type': 'application/json' }, credentials: 'include', })
+        .then(response => response.json())
+        .then(data => { this.searchArtists = data; })
+        .catch(error => console.error(error))
+
+      await fetch(`https://localhost:7043/Creators/${this.searchValue}`, { method: 'GET', headers: { 'Content-Type': 'application/json' }, credentials: 'include', })
+        .then(response => response.json())
+        .then(data => { this.searchCreators = data; })
+        .catch(error => console.error(error))
+
+      await fetch(`https://localhost:7043/Albums/Search/${this.searchValue}`, { method: 'GET', headers: { 'Content-Type': 'application/json' }, credentials: 'include', })
+        .then(response => response.json())
+        .then(data => { this.searchAlbums = data; })
+        .catch(error => console.error(error))
+
+      await fetch(`https://localhost:7043/Playlists/Search/${this.searchValue}`, { method: 'GET', headers: { 'Content-Type': 'application/json' }, credentials: 'include', })
+        .then(response => response.json())
+        .then(data => {
+          console.log(data)
+          this.searchPlaylists = data;
+        })
+        .catch(error => console.error(error))
+    }
   }
 };
 </script>
@@ -44,7 +92,7 @@ export default {
     <div id="searchGroup">
       <div id="search">
         <font-awesome-icon icon="fa-solid fa-magnifying-glass" style="font-size: 20px; margin-right: 8px;" />
-        <input type="text" placeholder="想聽什麼?" v-model="searchValue" />
+        <input type="text" placeholder="想聽什麼?" v-model="searchValue" @keyup="search" />
       </div>
       <div id="sort" v-if="checkSearchValue()">
         <div class="sort-unit active" id="all" @click="chooseSort">所有</div>
@@ -68,23 +116,34 @@ export default {
       <div id="searchResult" v-else>
         <div id="Songs"></div>
         <div id="Artists">
-          <Card>
-
+          <Card v-for="artist in searchArtists" :keys="artist.id">
+            <template #picture>
+              <img :src=artist.artistPicPath alt="">
+            </template>
           </Card>
         </div>
         <div id="Creators">
-          <Card>
-
+          <Card v-for="creator in searchCreators" :keys="creator.id">
+            <template #picture>
+              <img :src=creator.creatorPicPath alt="">
+            </template>
           </Card>
         </div>
         <div id="Albums">
-          <Card>
-
+          <Card v-for="album in searchAlbums" :keys="album.id">
+            <template #picture>
+              <img :src=album.albumCoverPath alt="">
+            </template>
           </Card>
         </div>
         <div id="Playlists">
-          <Card>
-
+          <Card v-for="playlist in searchPlaylists" :keys="playlist.id">
+            <template #picture>
+              <img :src=playlist.playlistCoverPath alt="">
+            </template>
+            <template #name>
+              <span>{{ playlist.listName }}</span>
+            </template>
           </Card>
         </div>
       </div>

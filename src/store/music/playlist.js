@@ -22,6 +22,7 @@ const actions = {
 const mutations = {
     setPlaylist(state, payload) {
         state.playlist = payload;
+        state.playlist.metadata.forEach(metadatum => metadatum.isHover = false);
     },
 }
 

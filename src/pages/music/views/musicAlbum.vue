@@ -8,11 +8,15 @@ export default {
         const album = computed(() => {
             return store.getters.getAlbum;
         });
+        const currentSong = computed(() => {
+            return store.getters.getCurrentSong;
+        })
 
-        return { album };
+        return { album, currentSong };
     },
     data() {
         return {
+            isPlaying: false,
         }
     },
     methods: {
@@ -31,9 +35,80 @@ export default {
             // Combine the minutes and seconds into a string
             return `${minutes}:${paddedSeconds}`;
         },
-    },
-    onMounted() {
+        formatReleased(released) {
+            return released.slice(0, 10);
+        },
+        toggleSongLiked(i) {
+            this.album.songs[i].isLiked = !this.album.songs[i].isLiked;
+            if (this.album.songs[i].isLiked == true) {
+                fetch(`https://localhost:7043/Members/LikedSongs/${this.album.songs[i].id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                })
+                    .then(response => response.json())
+                    .then(data => console.log(data))
+                    .catch(error => console.error(error))
+            } else {
+                fetch(`https://localhost:7043/Members/LikedSongs/${this.album.songs[i].id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                })
+                    .then(response => response.json())
+                    .then(data => console.log(data))
+                    .catch(error => console.error(error))
+            }
 
+            if (this.album.sogns[i].id == this.currentSong.id) {
+                this.currentSong.isLiked = this.album.sogns[i].isLiked;
+            }
+        },
+        toggleAlbumLiked() {
+            this.album.isLiked = !this.album.isLiked;
+            if (this.album.isLiked == true) {
+                fetch(`https://localhost:7043/Members/LikedAlbums/${this.album.id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                })
+                    .then(response => response.json())
+                    .then(data => console.log(data))
+                    .catch(error => console.error(error))
+            } else {
+                fetch(`https://localhost:7043/Members/LikedAlbums/${this.album.id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                })
+                    .then(response => response.json())
+                    .then(data => console.log(data))
+                    .catch(error => console.error(error))
+            }
+        },
+        hoverSong(i) {
+            this.album.songs[i].isHover = true;
+        },
+        notHoverSong(i) {
+            this.album.songs[i].isHover = false;
+        },
+        getAlbumTotalTime() {
+            const totaltime = Object.values(this.album.songs).reduce((acc, cur) => acc + cur.duration, 0);
+
+            const hours = Math.floor(totaltime / 3600);
+            const minutes = Math.floor((totaltime % 3600) / 60);
+            const seconds = totaltime % 60;
+
+            return (hours == 0) ? minutes + '分鐘' + seconds + '秒' : hours + '小時' + minutes + '分鐘';
+        },
     }
 };
 </script>
@@ -49,28 +124,30 @@ export default {
                 <div id="infoDetail">
                     <div id="ownerInfo">
                         <div class="picture" id="ownerPic">
-                            <img :src=albumCoverPath alt="">
+                            <img :src=album.mainArtistPicPath v-if="album.mainArtistName" alt="">
+                            <img :src=album.mainCreatorPicPath v-else alt="">
                         </div>
-                        <div id="ownerName">{{ album.mainArtistName }}</div>
+                        <div id="ownerName" v-if="album.mainArtistName">{{ album.mainArtistName }}</div>
+                        <div id="ownerName" v-else>{{ album.mainCreatorName }}</div>
                     </div>
-                    <span id="releasedYear">{{ album.released }}</span>
-                    <!-- <span id="totalSongs">{{ album.songs.length }}首歌曲</span> -->
-                    <!-- <span id="totaltime">{{ getAlbumTotalTime() }}</span> -->
+                    <span id="releasedYear" style="margin-right: 1rem">{{ formatReleased(album.released) }}</span>
+                    <span id="totalSongs">{{ album.songs.length }}首歌曲</span>
+                    <span id="totaltime">{{ getAlbumTotalTime() }}</span>
                 </div>
             </div>
         </div>
         <div id="btns">
-            <button id="playPause">
-                <!-- <font-awesome-icon class="btn" id="play" icon="fa-solid fa-play" v-if="isPlaying == false"
-                                                                                                                                                                                                        @click="togglePlay" />
-                                                                                                                                                                                                    <font-awesome-icon class="btn" id="pause" icon="fa-solid fa-pause" v-else @click="togglePlay" /> -->
+            <button id="albumPlayPause">
+                <font-awesome-icon class="btn" id="play" icon="fa-solid fa-play" v-if="isPlaying == false"
+                    @click="togglePlay" />
+                <font-awesome-icon class="btn" id="pause" icon="fa-solid fa-pause" v-else @click="togglePlay" />
             </button>
-            <button id="liked">
-                <!-- <font-awesome-icon v-if="album.isliked" class="btn" icon="fa-solid fa-heart" @click="toggleLiked"
-                                                                                                                                                                                                        style="color: #F6B352" />
-                                                                                                                                                                                                    <font-awesome-icon v-else class="btn" icon="fa-regular fa-heart" @click="toggleLiked" /> -->
+            <button id="albumLiked">
+                <font-awesome-icon v-if="album.isLiked" class="btn" icon="fa-solid fa-heart" @click="toggleAlbumLiked"
+                    style="color: #F6B352" />
+                <font-awesome-icon v-else class="btn" icon="fa-regular fa-heart" @click="toggleAlbumLiked" />
             </button>
-            <button id="options">
+            <button id="albumOptions">
                 <font-awesome-icon class="btn" icon="fa-solid fa-ellipsis" />
             </button>
         </div>
@@ -78,8 +155,8 @@ export default {
             <div id="contentHeader">
                 <Song>
                     <template #order>
-                    <span>#</span>
-                </template>
+                        <span>#</span>
+                    </template>
                     <template #name>
                         <span class="header">標題</span>
                     </template>
@@ -92,7 +169,7 @@ export default {
                 </Song>
             </div>
             <div id="contentBody">
-                <Song v-for="(song, index) in album.songs" :key="song.Id" class="songContent" @mouseover="hoverSong(i)"
+                <Song v-for="(song, i) in album.songs" :key="song.Id" class="songContent" @mouseover="hoverSong(i)"
                     @mouseleave="notHoverSong(i)">
                     <template #order>
                         <p v-if="song.isHover == false">{{ i + 1 }}</p>
@@ -116,9 +193,9 @@ export default {
                     </template>
                     <template #liked>
                         <span v-if="song.isHover == true || song.isLiked == true">
-                            <!-- <font-awesome-icon v-if="song.isLiked" class="btn" icon="fa-solid fa-heart"
-                                                                                                                                                                                                                                    @click="toggleSongLiked(i)" style="color: #F6B352" />
-                                                                                                                                                                                                                                <font-awesome-icon v-else class="btn" icon="fa-regular fa-heart" @click="toggleSongLiked(i)" /> -->
+                            <font-awesome-icon v-if="song.isLiked" class="btn" icon="fa-solid fa-heart"
+                                @click="toggleSongLiked(i)" style="color: #F6B352" />
+                            <font-awesome-icon v-else class="btn" icon="fa-regular fa-heart" @click="toggleSongLiked(i)" />
                         </span>
                     </template>
                     <template #time>
@@ -224,7 +301,7 @@ export default {
         display: flex;
         align-items: center;
 
-        >#playlistPlayPause {
+        >#albumPlayPause {
             width: 5rem;
             background-color: rgba(0, 0, 0, 0);
             border: none;
@@ -240,7 +317,7 @@ export default {
             }
         }
 
-        >#playlistLiked {
+        >#albumLiked {
             background-color: rgba(0, 0, 0, 0);
             margin-right: 2rem;
             border: none;
@@ -255,7 +332,7 @@ export default {
             }
         }
 
-        >#playlistOptions {
+        >#albumOptions {
             border: none;
             background-color: rgba(0, 0, 0, 0);
 
