@@ -5,6 +5,10 @@ import {
 } from "vue-router";
 import ShopHome from "../pages/shop/views/shopHome.vue";
 import ShopSecond from "@/pages/shop/views/shopSecond.vue";
+import ProductItem from "@/pages/shop/views/productItem.vue";
+import Cart from "@/pages/shop/views/cart.vue";
+import Checkout from "@/pages/shop/views/checkout.vue";
+
 
 const routes = [
   {
@@ -17,6 +21,18 @@ const routes = [
     name: "second",
     component: ShopSecond,
   },
+  {
+    path: "/productItem",
+    component: ProductItem
+  },
+  {
+    path: "/cart",
+    component: Cart
+  },
+  {
+    path: "/checkout",
+    component: Checkout
+  }
 ];
 
 const router = createRouter({

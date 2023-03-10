@@ -5,7 +5,7 @@
   "scripts": {
     "start": "concurrently \"npm run serve\" \"npm run json-server\"",
     "serve": "vue-cli-service serve",
-    "json-server": "json-server --watch src/db/login.json --watch src/db/activities.json",
+    "json-server": "json-server --watch src/db/activities.json",
     "build": "vue-cli-service build"
   },
   "dependencies": {

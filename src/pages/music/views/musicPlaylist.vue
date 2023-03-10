@@ -14,18 +14,68 @@ export default {
     data() {
         return {
             isPlaying: false,
+            optionIsOpen: false,
         }
     },
     methods: {
         togglePlay() {
-            console.log(this.playlist.metadata[0])
+            console.log(this.playlist.isLiked)
             this.isPlaying = !this.isPlaying;
         },
-        toggleLiked() {
-            this.playlist.isliked = !this.playlist.isliked;
+        togglePlalistLiked() {
+            this.playlist.isLiked = !this.playlist.isLiked;
+            if (this.playlist.isLiked == true) {
+                fetch(`https://localhost:7043/Members/LikedPlaylists/${this.playlist.id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                })
+                    .then(response => response.json())
+                    .then(data => console.log(data))
+                    .catch(error => console.error(error))
+            } else {
+                fetch(`https://localhost:7043/Members/LikedPlaylists/${this.playlist.id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                })
+                    .then(response => response.json())
+                    .then(data => console.log(data))
+                    .catch(error => console.error(error))
+            }
         },
         toggleSongLiked(i) {
-            this.playlist.songs[i].isLiked = !this.playlist.songs[i].isLiked;
+            this.playlist.metadata[i].song.isLiked = !this.playlist.metadata[i].song.isLiked;
+            if (this.playlist.metadata[i].song.isLiked == true) {
+                fetch(`https://localhost:7043/Members/LikedSongs/${this.playlist.metadata[i].song.id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                })
+                    .then(response => response.json())
+                    .then(data => console.log(data))
+                    .catch(error => console.error(error))
+            } else {
+                fetch(`https://localhost:7043/Members/LikedSongs/${this.playlist.metadata[i].song.id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                })
+                    .then(response => response.json())
+                    .then(data => console.log(data))
+                    .catch(error => console.error(error))
+            }
+        },
+        toggleOption() {
+            this.optionIsOpen = !this.optionIsOpen;
         },
         formatTime(seconds) {
             // Compute the number of minutes and remaining seconds
@@ -41,9 +91,7 @@ export default {
         formatDate(date) {
             const year = date.splice(0, 4);
             const month = date.splice(5, 2);
-            console.log(month);
             const day = date.splice(7, 2);
-            console.log(day);
             return year + '年' + month + '月' + day + '日';
         },
         hoverSong(i) {
@@ -65,6 +113,60 @@ export default {
             const imgName = this.playlist.playlistCoverPath.slice(39);
 
             return imgName.length != 0;
+        },
+        addToQueue() {
+            fetch(`https://localhost:7043/Queues/Playlists/${this.playlist.id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+            })
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error(error))
+        },
+        changePrivacySetting() {
+            this.playlist.isPublic = !this.playlist.isPublic;
+            fetch(`https://localhost:7043/Playlists/${this.playlist.id}/PrivacySetting`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+            })
+                .then(response => response.json())
+        },
+        async deletePlaylist() {
+            try {
+                await fetch(`https://localhost:7043/Playlists/${this.playlist.id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                });
+                // Do something else here, like showing a success message
+                // before navigating to the next page.
+                this.$router.push('/');
+            } catch (error) {
+                console.error(error);
+            }
+        },
+        toggleSongOption(i) {
+            if (this.playlist.metadata[i].optionIsOpen == undefined) {
+                this.playlist.metadata[i].optionIsOpen = false;
+            }
+            this.playlist.metadata[i].optionIsOpen = !this.playlist.metadata[i].optionIsOpen;
+        },
+        setAlbum(albumId) {
+            this.$store.dispatch('setAlbum', albumId);
+        },
+        setArtist(artistId) {
+            this.$store.dispatch('setArtist', artistId);
+        },
+        setCreator(creatorId) {
+            this.$store.dispatch('setCreator', creatorId);
         }
     }
 };
@@ -73,7 +175,6 @@ export default {
     <div class="container">
         <div class="contentSpacing" id="playlistHeader">
             <div class="playlistPicture" id="playlistPic">
-
                 <img :src=playlist.playlistCoverPath alt="" v-if="checkCover()">
                 <img src="@/assets/music-note-icon-song-melody-tune-flat-symbol-free-vector.webp" v-else alt="">
             </div>
@@ -83,9 +184,9 @@ export default {
                 <div id="infoDetail">
                     <div id="ownerInfo">
                         <div class="picture" id="ownerPic">
-                            <img :src=playlistCoverPath alt="">
+                            <img :src=playlist.memberPicPath alt="">
                         </div>
-                        <div id="ownerName">{{ playlist.ownerName }}</div>
+                        <div id="ownerName">{{ playlist.memberName }}</div>
                     </div>
                     <span id="likes"> {{ playlist.totalLikes }} 人喜歡</span>
                     <span id="totalSongs">{{ Object.keys(this.playlist.metadata).length }}首歌</span>
@@ -99,13 +200,38 @@ export default {
                     @click="togglePlay" />
                 <font-awesome-icon class="btn" id="pause" icon="fa-solid fa-pause" v-else @click="togglePlay" />
             </button>
-            <button id="playlistLiked">
-                <font-awesome-icon v-if="playlist.isliked" class="btn" icon="fa-solid fa-heart" @click="toggleLiked"
+            <button id="playlistLiked" v-if="playlist.isOwner == false">
+                <font-awesome-icon v-if="playlist.isLiked" class="btn" icon="fa-solid fa-heart" @click="togglePlalistLiked"
                     style="color: #F6B352" />
-                <font-awesome-icon v-else class="btn" icon="fa-regular fa-heart" @click="toggleLiked" />
+                <font-awesome-icon v-else class="btn" icon="fa-regular fa-heart" @click="togglePlalistLiked" />
             </button>
             <button id="playlistOptions">
-                <font-awesome-icon class="btn" icon="fa-solid fa-ellipsis" />
+                <font-awesome-icon class="btn" icon="fa-solid fa-ellipsis" @click="toggleOption" />
+                <div id="POptions">
+                    <Options v-if="optionIsOpen">
+                        <template #first>
+                            <div class="option" @click="addToQueue()">加入佇列</div>
+                        </template>
+                        <template #second v-if="playlist.isOwner">
+                            <div class="option">編輯清單</div>
+                        </template>
+                        <template #third v-if="playlist.isOwner">
+                            <div class="option link" @click="deletePlaylist">
+                                刪除清單
+                            </div>
+                        </template>
+                        <template #forth v-if="playlist.isown">
+                            <div class="option" v-if="playlist.isPublic == false" @click="changePrivacySetting">設為公開</div>
+                            <div class="option" v-else @click="changePrivacySetting">設為私人</div>
+                        </template>
+                        <template #fifth v-if="playlist.isOwner == false">
+                            <div class="option" v-if="playlist.isPublic" @click="togglePlalistLiked">加入音樂庫</div>
+                            <div class="option" v-else @click="togglePlalistLiked">從音樂庫移除</div>
+                        </template>
+                        <template #sixth>
+                        </template>
+                    </Options>
+                </div>
             </button>
         </div>
         <div class="content" v-if="playlist.metadata.length != 0">
@@ -144,12 +270,21 @@ export default {
                             </div>
                             <div class="desc">
                                 <div class="songName">{{ metadata.song.songName }}</div>
-                                <div class="artistName">{{ metadata.song.artist }}</div>
+                                <RouterLink to="/artist" class="artistName" v-for="artist in metadata.song.artists"
+                                    @click="setArtist(artist.artistId)">
+                                    {{ artist.artistName }}
+                                </RouterLink>
+                                <RouterLink to="/creator" class="creatorName" v-for="creator in metadata.song.creators"
+                                    @click="setCreator(creator.creatorId)">{{
+                                        creator.creatorName
+                                    }}</RouterLink>
                             </div>
                         </div>
                     </template>
                     <template #album>
-                        <span>{{ metadata.song.album }}</span>
+                        <RouterLink to="/album" class="albumName" @click="setAlbum(metadata.song.albumId)">
+                            {{ metadata.song.albumName }}
+                        </RouterLink>
                     </template>
                     <template #addedDate>
                         <span>{{ (metadata.addedTime.slice(0, 10)) }}</span>
@@ -165,15 +300,42 @@ export default {
                         <span>{{ formatTime(metadata.song.duration) }}</span>
                     </template>
                     <template #options>
-                        <span v-if="metadata.isHover">
-                            <font-awesome-icon class="btn" icon="fa-solid fa-ellipsis" />
-                        </span>
+                        <div v-if="metadata.isHover">
+                            <font-awesome-icon class="btn" icon="fa-solid fa-ellipsis" @click="toggleSongOption(i)" />
+                        </div>
+                        <div class="songOptionParent" v-if="playlist.metadata[i].optionIsOpen">
+                            <div class="SongOptions">
+                                <Options>
+                                    <template #first>
+                                        <div class="option" @click="addToQueue()">加入佇列</div>
+                                    </template>
+                                    <template #second>
+                                        <div class="option" @click="addToQueue()">前往專輯</div>
+                                    </template>
+                                    <template #third>
+                                        <div class="option" @click="addToQueue()">顯示提供者</div>
+                                    </template>
+                                    <template #forth>
+                                        <div class="option" @click="addToQueue()">加到播放清單</div>
+                                    </template>
+                                    <template #fifth>
+                                    </template>
+                                    <template #sixth></template>
+                                </Options>
+                            </div>
+                        </div>
                     </template>
                 </Song>
             </div>
         </div>
-        <div class="content" v-else>
-
+        <div class="content">
+            <div id="searchHeader">
+                <span>為你的播放清單新增內容</span>
+            </div>
+            <div id="search">
+                <font-awesome-icon icon="fa-solid fa-magnifying-glass" style="font-size: 20px; margin-right: 6px;" />
+                <input type="text">
+            </div>
         </div>
     </div>
 </template>
@@ -318,6 +480,7 @@ export default {
         min-height: 14rem;
         height: auto;
         padding: 0 2rem;
+        margin-bottom: 2rem;
 
         >#contentHeader {
             width: 100%;
@@ -363,11 +526,110 @@ export default {
                             font-size: 16px;
                             margin-bottom: 6px;
                         }
+
+                        >.artistName {
+                            color: white;
+                            text-decoration: none;
+
+                            &:hover {
+                                text-decoration: underline;
+                            }
+                        }
+                    }
+                }
+
+                .albumName {
+                    color: white;
+                    text-decoration: none;
+
+                    &:hover {
+                        text-decoration: underline;
                     }
                 }
             }
         }
+
+
+        #searchHeader {
+            font-size: 20px;
+            color: #fff;
+            margin-bottom: 1rem;
+            margin-left: 3rem;
+        }
+
+        #search {
+            padding: 0 10px;
+            width: 16rem;
+            height: 2rem;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            background-color: #fff;
+            margin-left: 2rem;
+
+            input {
+                width: 13rem;
+                font-size: 18px;
+                border: none;
+
+                &:focus {
+                    outline: none;
+                }
+            }
+        }
     }
+}
+
+#playlistOptions {
+
+    #POptions {
+        position: absolute;
+        top: 20rem;
+        left: 31rem;
+    }
+}
+
+.songOptionParent {
+    position: relative;
+
+    .SongOptions {
+        position: absolute;
+        top: -1rem;
+        right: 1rem;
+
+        &::after {
+            content: "";
+            clear: both;
+        }
+    }
+}
+
+.btn {
+    float: left;
+}
+
+.option {
+    width: 100%;
+    height: 50px;
+    color: white;
+    font-size: 16px;
+    border-bottom: 2px solid grey;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &:hover {
+        background-color: grey;
+    }
+
+    &:last-child {
+        border-bottom: none;
+    }
+}
+
+.link {
+    text-decoration: none;
+    cursor: context-menu;
 }
 
 .header {
