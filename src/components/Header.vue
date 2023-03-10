@@ -39,7 +39,9 @@ export default {
       <!-- membership -->
       <div class="loginSection">
         <div v-if="props.isLogin" class="avatar"></div>
-        <div class="member" v-if="props.isLogin"><a href="member.html">{{ memberAccount }}</a></div>
+        <div class="member" v-if="props.isLogin">
+          <a href="member.html">{{ memberAccount }}</a>
+        </div>
         <a href="login.html" class="login" v-if="!props.isLogin">會員登入</a>
         <button v-else @click="props.handLogout" class="logout">登出</button>
         <!-- 引入font-awesome -->
@@ -55,7 +57,7 @@ header {
   height: 100px;
 }
 
-nav { 
+nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -109,12 +111,29 @@ nav {
     > .member {
       color: white;
       margin: 0 1rem;
+      padding: 0 1rem;
+      a {
+        font-size: 1.25rem;
+        text-decoration: none;
+        color: orange;
+      }
     }
 
     > a {
       text-decoration: none;
       color: white;
       padding-left: 1rem;
+    }
+    > .logout {
+      width: 60px;
+      height: 35px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      &:hover {
+        box-shadow: 0 4px 8px 0 rgba(255, 255, 255, 0.2),
+          0 6px 20px 0 rgba(255, 255, 255, 0.19);
+      }
     }
   }
 }

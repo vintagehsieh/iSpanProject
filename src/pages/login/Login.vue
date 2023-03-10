@@ -50,9 +50,11 @@ export default {
     };
 
     const redirect = () => {
+      if (store.getters.getIsLogin !== true) {
+        return;
+      }
       window.history.pushState({}, "", "/");
       window.location.reload();
-      // window.location.href = "https://localhost:8080";
     };
 
     // const errorFn = (err) => {
@@ -100,11 +102,13 @@ export default {
           {{ error_message.password }}
         </p>
       </div>
-      <a href="">忘記密碼</a>
+      <a href="" class="forgetPd">忘記密碼?</a>
       <button type="submit" class="btn" @click.prevent="handLoginFn">
         送出
       </button>
-      <a href="register.html">註冊</a>
+      <div class="registerBtn">
+        <a href="register.html">註冊</a>
+      </div>
     </form>
   </div>
   <div v-if="isLogin" class="redirection">您已經登入，網頁轉導中...</div>
@@ -158,8 +162,28 @@ form {
       padding-left: 1rem;
     }
   }
+  .forgetPd {
+    color: lightblue;
+    margin: 2rem 0 1.5rem 0;
+  }
   .btn {
-    margin-top: 1.5rem;
+    margin: 1rem auto;
+    cursor: pointer;
+    width: 100px;
+    height: 30px;
+    border-radius: 8px;
+    border: none;
+    color: black;
+    background-color: #fff;
+    font-size: 20px;
+
+    &:hover {
+      box-shadow: 0 4px 8px 0 rgba(255, 255, 255, 0.2),
+        0 6px 20px 0 rgba(255, 255, 255, 0.19);
+    }
+  }
+  .registerBtn {
+    margin-top: 1rem;
     margin-left: auto;
     margin-right: auto;
     cursor: pointer;
@@ -167,9 +191,18 @@ form {
     height: 30px;
     border-radius: 8px;
     border: none;
+    background-color: white;
     color: black;
     font-size: 20px;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    text-align: center;
+    &:hover {
+      box-shadow: 0 4px 8px 0 rgba(255, 255, 255, 0.2),
+        0 6px 20px 0 rgba(255, 255, 255, 0.19);
+    }
+    a {
+      text-decoration: none;
+      color: black;
+    }
   }
 }
 .redirection {

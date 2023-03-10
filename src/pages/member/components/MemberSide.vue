@@ -61,8 +61,8 @@ export default {
     <div class="m-input-box">
       <div class="m-input">
         <label for="name" class="label">暱稱</label>
-        <!-- <p v-if="isEdit">{{ member.memberNickName }}</p> -->
-        <input type="text" id="name" readonly="readonly" value="123" />
+        <p>{{ member.memberNickName }}</p>
+        <input type="text" id="name" readonly :value="member.memberNickName" />
       </div>
       <div class="m-input">
         <label for="name" class="label">出生日</label>
