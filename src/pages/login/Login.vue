@@ -35,7 +35,9 @@ export default {
       if (success) {
         alert("登入成功");
         saveCookie();
-        redirect();
+        setTimeout(() => {
+          redirect();
+        }, 1000);
       } else {
         alert("登入失敗，請檢查帳密");
       }
@@ -48,14 +50,9 @@ export default {
     };
 
     const redirect = () => {
-      console.log("redirect");
       window.history.pushState({}, "", "/");
       window.location.reload();
       // window.location.href = "https://localhost:8080";
-    };
-
-    const handRegisterFn = () => {
-      router.push({ path: "/register" });
     };
 
     // const errorFn = (err) => {
@@ -67,7 +64,6 @@ export default {
       loginInfo,
       memberAccount,
       handLoginFn,
-      handRegisterFn,
       redirect,
       saveCookie,
       error_message,
@@ -104,8 +100,11 @@ export default {
           {{ error_message.password }}
         </p>
       </div>
-      <button type="submit" class="btn" @click="handLoginFn">送出</button>
-      <button type="submit" class="btn" @click="handRegisterFn">註冊</button>
+      <a href="">忘記密碼</a>
+      <button type="submit" class="btn" @click.prevent="handLoginFn">
+        送出
+      </button>
+      <a href="register.html">註冊</a>
     </form>
   </div>
   <div v-if="isLogin" class="redirection">您已經登入，網頁轉導中...</div>

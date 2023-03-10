@@ -33,19 +33,7 @@ export default {
       Cookies.remove("loginInfo");
       localStorage.clear();
 
-      fetch("https://localhost:7043/Members/MemberLogOut", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      })
-        .then((response) => {
-          // 請求成功
-        })
-        .catch((error) => {
-          // 請求失敗
-        });
+      deleteCookie();
       redirect();
     };
 
@@ -54,30 +42,18 @@ export default {
     };
 
     const deleteCookie = () => {
-      fetch("https://localhost:7043/Members/MemberLogOut", {
-        method: "POST",
-        headers: {
-          "Content-Type": "Application/json",
-        },
-        Credential: "include",
-      });
-      // axios
-      //   .post(
-      //     "https://localhost:7043/Members/MemberLogOut",
-      //     {},
-      //     {
-      //       headers: {
-      //         "Content-Type": "application/json",
-      //       },
-      //     },
-      //     { withCredentials: true }
-      //   )
-      //   .then((res) => {
-      //     console.log(res);
-      //   })
-      //   .catch((err) => {
-      //     console.log(err);
-      //   });
+      axios
+        .post(
+          "https://localhost:7043/Members/MemberLogOut",
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          },
+          { withCredentials: true }
+        )
+        .then((res) => {})
+        .catch((err) => {});
     };
 
     return { isLogin, handLogout };
