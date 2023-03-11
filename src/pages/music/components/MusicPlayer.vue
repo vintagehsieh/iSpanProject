@@ -28,6 +28,9 @@ export default {
 
         return { currentSong, musicPlayer, queue, playlist };
     },
+    mounted() {
+        this.musicPlayer.onended = this.nextSong;
+    },
     data() {
         return {
             playStatus: false,
@@ -54,6 +57,13 @@ export default {
             repeat.classList.remove("active");
         }
 
+        if (this.musicPlayer.src != "") {
+            if (this.playStatus == true) {
+                this.musicPlayer.play();
+            } else {
+                this.currentTime = 0;
+            }
+        }
     },
     props: ['font-awesome-icon'],
     components: {
@@ -192,6 +202,7 @@ export default {
                 this.playStatus = true;
             }
             this.currentTime = 0;
+            console.log('reset')
         },
         async toggleShuffle() {
             this.queue.isShuffle = !this.queue.isShuffle;

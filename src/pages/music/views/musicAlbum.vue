@@ -94,6 +94,12 @@ export default {
                     .catch(error => console.error(error))
             }
         },
+        toggleSongOption(i) {
+            if (this.album.songs[i].optionIsOpen == undefined) {
+                this.album.songs[i].optionIsOpen = false;
+            }
+            this.album.songs[i].optionIsOpen = !this.album.songs[i].optionIsOpen;
+        },
         hoverSong(i) {
             this.album.songs[i].isHover = true;
         },
@@ -108,6 +114,51 @@ export default {
             const seconds = totaltime % 60;
 
             return (hours == 0) ? minutes + '分鐘' + seconds + '秒' : hours + '小時' + minutes + '分鐘';
+        },
+        async togglePlay() {
+            await fetch(`https://localhost:7043/Queues/${this.album.id}`, {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "Value": "Album"
+                }),
+                credentials: 'include',
+            })
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error(error))
+
+            this.$store.dispatch("fetchQueueDataAsync");
+        },
+        async addToQueue() {
+            await fetch(`https://localhost:7043/Queues/Albums/${this.album.id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+            })
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error(error))
+
+            this.$store.dispatch("fetchQueueDataAsync");
+        },
+        async addSongToQueue(songId) {
+            await fetch(`https://localhost:7043/Queues/Songs/${songId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+            })
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error(error))
+
+            this.$store.dispatch("fetchQueueDataAsync");
         },
     }
 };
@@ -138,9 +189,8 @@ export default {
         </div>
         <div id="btns">
             <button id="albumPlayPause">
-                <font-awesome-icon class="btn" id="play" icon="fa-solid fa-play" v-if="isPlaying == false"
-                    @click="togglePlay" />
-                <font-awesome-icon class="btn" id="pause" icon="fa-solid fa-pause" v-else @click="togglePlay" />
+                <font-awesome-icon class="btn" id="play" icon="fa-solid fa-play" @click="togglePlay" />
+                <!-- <font-awesome-icon class="btn" id="pause" icon="fa-solid fa-pause" v-else @click="togglePlay" /> -->
             </button>
             <button id="albumLiked">
                 <font-awesome-icon v-if="album.isLiked" class="btn" icon="fa-solid fa-heart" @click="toggleAlbumLiked"
@@ -202,11 +252,33 @@ export default {
                         <span>{{ formatTime(song.duration) }}</span>
                     </template>
                     <template #options>
-                        <span v-if="song.isHover">
-                            <font-awesome-icon class="btn" icon="fa-solid fa-ellipsis" />
-                        </span>
+                        <div v-if="song.isHover">
+                            <font-awesome-icon class="btn" icon="fa-solid fa-ellipsis" @click="toggleSongOption(i)" />
+                        </div>
+                        <div class="songOptionParent" v-if="song.optionIsOpen">
+                            <div class="SongOptions">
+                                <Options>
+                                    <template #first>
+                                        <div class="option" @click="addSongToQueue(song.id)">加入佇列</div>
+                                    </template>
+                                    <template #second>
+                                    </template>
+                                    <template #third>
+                                        <div class="option" @click="addToQueue()">顯示提供者</div>
+                                    </template>
+                                    <template #forth>
+                                    </template>
+                                    <template #fifth>
+                                    </template>
+                                    <template #sixth></template>
+                                </Options>
+                            </div>
+                        </div>
                     </template>
                 </Song>
+            </div>
+            <div id="company">
+                <font-awesome-icon icon="fa-regular fa-copyright" /><span>{{ album.albumCompany }}</span>
             </div>
         </div>
     </div>
@@ -215,6 +287,8 @@ export default {
 <style lang="scss" scoped>
 .container {
     width: 100%;
+    min-height: 60rem;
+    padding-bottom: 3rem;
 
     .contentSpacing {
         width: 100%;
@@ -400,6 +474,46 @@ export default {
                 }
             }
         }
+
+        #company {
+            margin-top: 1rem;
+            font-size: 14px;
+            color: white;
+        }
+    }
+}
+
+.songOptionParent {
+    position: relative;
+
+    .SongOptions {
+        position: absolute;
+        top: -1rem;
+        right: 1rem;
+
+        &::after {
+            content: "";
+            clear: both;
+        }
+    }
+}
+
+.option {
+    width: 100%;
+    height: 50px;
+    color: white;
+    font-size: 16px;
+    border-bottom: 2px solid grey;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &:hover {
+        background-color: grey;
+    }
+
+    &:last-child {
+        border-bottom: none;
     }
 }
 

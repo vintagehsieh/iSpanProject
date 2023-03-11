@@ -18,11 +18,28 @@ export default {
         return {
             isPlaying: false,
             optionIsOpen: false,
+            searchValue: "",
+            searchSongs: [],
         }
     },
     methods: {
-        togglePlay() {
-            this.isPlaying = !this.isPlaying;
+        async togglePlay() {
+            // this.isPlaying = !this.isPlaying;
+            await fetch(`https://localhost:7043/Queues/${this.playlist.id}`, {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "Value": "Playlist"
+                }),
+                credentials: 'include',
+            })
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error(error))
+
+            this.$store.dispatch("fetchQueueDataAsync");
         },
         togglePlalistLiked() {
             this.playlist.isLiked = !this.playlist.isLiked;
@@ -191,6 +208,42 @@ export default {
         },
         setCreator(creatorId) {
             this.$store.dispatch('setCreator', creatorId);
+        },
+        async searchSong() {
+            if (this.searchValue.trim().length == 0) return;
+            await fetch(`https://localhost:7043/Songs/${this.searchValue}`, { method: 'GET', headers: { 'Content-Type': 'application/json' }, credentials: 'include', })
+                .then(response => response.json())
+                .then(data => this.searchSongs = data)
+                .catch(error => console.error(error))
+        },
+        async addSongToPlaylist(songId) {
+            await fetch(`https://localhost:7043/Playlists/${this.playlist.id}/Songs/${songId}`,
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        'value': true
+                    }),
+                    credentials: 'include',
+                })
+                .then(response => response.text())
+                .then(data => console.log(data))
+                .catch(error => console.error(error))
+
+            this.$store.dispatch('setPlaylist', this.playlist.id);
+        },
+        async removeFromPlaylist(displayOrder) {
+            await fetch(`https://localhost:7043/Playlists/${this.playlist.id}/Songs/${displayOrder}`,
+                {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                })
+                .then(response => response.text())
+                .then(data => console.log(data))
+                .catch(error => console.error(error))
+
+            this.$store.dispatch('setPlaylist', this.playlist.id);
         }
     }
 };
@@ -220,9 +273,8 @@ export default {
         </div>
         <div id="btns">
             <button id="playlistPlayPause">
-                <font-awesome-icon class="btn" id="play" icon="fa-solid fa-play" v-if="isPlaying == false"
-                    @click="togglePlay" />
-                <font-awesome-icon class="btn" id="pause" icon="fa-solid fa-pause" v-else @click="togglePlay" />
+                <font-awesome-icon class="btn" id="play" icon="fa-solid fa-play" @click="togglePlay" />
+                <!-- <font-awesome-icon class="btn" id="pause" icon="fa-solid fa-pause" v-else @click="togglePlay" /> -->
             </button>
             <button id="playlistLiked" v-if="playlist.isOwner == false">
                 <font-awesome-icon v-if="playlist.isLiked" class="btn" icon="fa-solid fa-heart" @click="togglePlalistLiked"
@@ -340,7 +392,8 @@ export default {
                                         <div class="option" @click="addToQueue()">顯示提供者</div>
                                     </template>
                                     <template #forth>
-                                        <div class="option" @click="addToQueue()">加到播放清單</div>
+                                        <div class="option" @click="removeFromPlaylist(metadata.displayOrder)">從播放清單中移除
+                                        </div>
                                     </template>
                                     <template #fifth>
                                     </template>
@@ -358,7 +411,34 @@ export default {
             </div>
             <div id="search">
                 <font-awesome-icon icon="fa-solid fa-magnifying-glass" style="font-size: 20px; margin-right: 6px;" />
-                <input type="text">
+                <input type="text" @input="searchSong" v-model="searchValue" placeholder="輸入歌曲名稱">
+            </div>
+            <div id="searchSongs">
+                <Song v-for="(song, index) in searchSongs" :key="song.id" class="songContent">
+                    <template #name>
+                        <div class="songInfo">
+                            <div class="songPicture">
+                                <img :src=song.songCoverPath alt="" class="img">
+                            </div>
+                            <div class="desc">
+                                <div class="songName">{{ song.songName }}</div>
+                                <RouterLink to="/artist" class="artistName" v-for="artist in song.artistlist"
+                                    @click="setArtist(artist.artistId)">
+                                    {{ artist.artistName }}
+                                </RouterLink>
+                                <RouterLink to="/creator" class="creatorName" v-for="creator in song.creatorlist"
+                                    @click="setCreator(creator.creatorId)">{{
+                                        creator.creatorName
+                                    }}</RouterLink>
+                            </div>
+                        </div>
+                    </template>
+                    <template #time>
+                        <div class="plus" @click="addSongToPlaylist(song.id)">
+                            <font-awesome-icon icon="fa-solid fa-plus" />
+                        </div>
+                    </template>
+                </Song>
             </div>
         </div>
     </div>
@@ -514,7 +594,8 @@ export default {
             border-bottom: 1px solid rgb(152, 152, 152);
         }
 
-        >#contentBody {
+        >#contentBody,
+        #searchSongs {
             >.songContent {
                 width: 100%;
                 height: 5rem;
@@ -590,6 +671,7 @@ export default {
             align-items: center;
             background-color: #fff;
             margin-left: 2rem;
+            margin-bottom: 1rem;
 
             input {
                 width: 13rem;
@@ -660,6 +742,15 @@ export default {
     &:hover {
         color: white;
         cursor: context-menu;
+    }
+}
+
+.plus {
+    font-size: 20px;
+
+    &:hover {
+        color: #f68718;
+        cursor: pointer;
     }
 }
 </style>
