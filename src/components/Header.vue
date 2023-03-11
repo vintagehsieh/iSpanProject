@@ -115,7 +115,7 @@ nav {
       a {
         font-size: 1.25rem;
         text-decoration: none;
-        color: orange;
+        color: #f6b352;
       }
     }
 
