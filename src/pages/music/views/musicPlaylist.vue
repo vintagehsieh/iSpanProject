@@ -256,7 +256,11 @@ export default {
                 <img src="@/assets/music-note-icon-song-melody-tune-flat-symbol-free-vector.webp" v-else alt="">
             </div>
             <div id="playlistInfo">
-                <div id="type">播放清單</div>
+                <div id="type">
+                    <span v-if="playlist.isPublic">公開的</span>
+                    <span v-else>私人的</span>
+                    播放清單
+                </div>
                 <div id="playlistName">{{ playlist.listName }}</div>
                 <div id="infoDetail">
                     <div id="ownerInfo">
@@ -439,6 +443,106 @@ export default {
                         </div>
                     </template>
                 </Song>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="insertModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">新增賽事/活動</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5 class="mt-3">賽事資料 </h5>
+                                <div class="form-group">
+                                    <label class="form-label">活動名稱:</label>
+                                    <input type="text" class="form-control" v-model="name" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">活動日期:</label>
+                                    <input type="date" class="form-control" v-model="contestDate" :min="todayDate" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">報名截止日:</label>
+                                    <input type="date" class="form-control" v-model="registrationDeadline"
+                                        :max="contestDate" :min="todayDate" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">活動地區:</label>
+                                    <input type="text" class="form-control" v-model="area" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">活動地點:</label>
+                                    <input type="text" class="form-control" v-model="location" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">地圖資訊:</label>
+                                    <input type="text" class="form-control" v-model="mapUrl" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">活動簡章:</label>
+                                    <textarea rows="7" class="form-control" v-model="detail"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h5 class="mt-3">競賽項目</h5>
+                                <div class="form-group">
+                                    <label class="form-label">項目1:</label>
+                                    <select class="form-control" v-model="categoryId1">
+                                        <option v-for="item in CategoriesDTOes" :value="item.id">
+                                            {{ item.category }}{{ item.distance }}K</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">名額:</label>
+                                    <input type="text" class="form-control" v-model="quota1" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">金額:</label>
+                                    <input type="text" class="form-control" v-model="enterFee1" />
+                                </div>
+                                <div class="form-group mt-2">
+                                    <label class="form-label">項目2:</label>
+                                    <select class="form-control" v-model="categoryId2">
+                                        <option v-for="item in CategoriesDTOes" :value="item.id">
+                                            {{ item.category }}{{ item.distance }}K</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">名額:</label>
+                                    <input type="text" class="form-control" v-model="quota2" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">金額:</label>
+                                    <input type="text" class="form-control" v-model="enterFee2" />
+                                </div>
+                                <div class="form-group mt-2">
+                                    <label class="form-label">項目3:</label>
+                                    <select class="form-control" v-model="categoryId3">
+                                        <option v-for="item in CategoriesDTOes" :value="item.id">
+                                            {{ item.category }}{{ item.distance }}K</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">名額:</label>
+                                    <input type="text" class="form-control" v-model="quota3" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">金額:</label>
+                                    <input type="text" class="form-control" v-model="enterFee3" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+                    <button type="button" class="btn btn-primary" @@click="insert">新增</button>
+                </div>
             </div>
         </div>
     </div>

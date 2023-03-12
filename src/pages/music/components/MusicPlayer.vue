@@ -245,7 +245,16 @@ export default {
                 .then(data => console.log(data))
                 .catch(error => console.error(error))
             await this.$store.dispatch('fetchQueueDataAsync');
-        }
+        },
+        async setAlbum() {
+            await this.$store.dispatch('setAlbum', this.currentSong.albumId);
+        },
+        async setArtist(artistId) {
+            await this.$store.dispatch('setArtist', artistId);
+        },
+        async setCreator(creatorId) {
+            await this.$store.dispatch('setCreator', creatorId);
+        },
     }
 };
 </script>
@@ -258,9 +267,17 @@ export default {
                     <img :src=currentSong.songCoverPath alt="">
                 </div>
                 <div class="names">
-                    <p class="songName">{{ currentSong.songName }}</p>
-                    <span class="artistName" v-for="artist in currentSong.artists">{{ artist.artistName }}</span>
-                    <span class="creatorName" v-for="creator in currentSong.creators">{{ creator.creatorName }}</span>
+                    <RouterLink to="/album" @click="setAlbum" class="link">
+                        <p class="songName">{{ currentSong.songName }}</p>
+                    </RouterLink>
+                    <RouterLink to="/artist" v-for="artist in currentSong.artists" @click="setArtist(artist.artistId)"
+                        class="link artistName">
+                        <span>{{ artist.artistName }}</span>
+                    </RouterLink>
+                    <RouterLink to="/creator" v-for="creator in currentSong.creators" @click="setCreator(creator.creatorId)"
+                        class="link creatorName">
+                        <span>{{ creator.creatorName }}</span>
+                    </RouterLink>
                 </div>
                 <div class="liked">
                     <font-awesome-icon v-if="currentSong.isLiked" icon="fa-solid fa-heart"
@@ -555,6 +572,15 @@ input[type="range"] {
             width: 15px;
             height: 15px;
         }
+    }
+}
+
+.link {
+    color: white;
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: underline;
     }
 }
 

@@ -1,4 +1,5 @@
 <script>
+import { throwStatement } from "@babel/types";
 import { computed } from "vue";
 import { useStore } from 'vuex';
 
@@ -17,6 +18,7 @@ export default {
     data() {
         return {
             isPlaying: false,
+            optionIsOpen: false,
         }
     },
     methods: {
@@ -94,11 +96,17 @@ export default {
                     .catch(error => console.error(error))
             }
         },
+        toggleOption() {
+            this.optionIsOpen = !this.optionIsOpen;
+        },
         toggleSongOption(i) {
             if (this.album.songs[i].optionIsOpen == undefined) {
                 this.album.songs[i].optionIsOpen = false;
             }
             this.album.songs[i].optionIsOpen = !this.album.songs[i].optionIsOpen;
+        },
+        closeSongOption(i) {
+            this.album.songs[i].optionIsOpen = false;
         },
         hoverSong(i) {
             this.album.songs[i].isHover = true;
@@ -160,6 +168,12 @@ export default {
 
             this.$store.dispatch("fetchQueueDataAsync");
         },
+        async setArtist(artistId) {
+            await this.$store.dispatch('setArtist', artistId);
+        },
+        async setCreator(creatorId) {
+            await this.$store.dispatch('setCreator', creatorId);
+        },
     }
 };
 </script>
@@ -178,8 +192,14 @@ export default {
                             <img :src=album.mainArtistPicPath v-if="album.mainArtistName" alt="">
                             <img :src=album.mainCreatorPicPath v-else alt="">
                         </div>
-                        <div id="ownerName" v-if="album.mainArtistName">{{ album.mainArtistName }}</div>
-                        <div id="ownerName" v-else>{{ album.mainCreatorName }}</div>
+                        <RouterLink to="/artist" v-if="album.mainArtistName" class="link"
+                            @click="setArtist(album.mainArtistId)">
+                            <div id="ownerName">{{ album.mainArtistName }}</div>
+                        </RouterLink>
+                        <RouterLink to="/creator" v-else class="link" @click="setCreator(album.mainCreatorId)">
+                            <div id=" ownerName">{{ album.mainCreatorName }}
+                            </div>
+                        </RouterLink>
                     </div>
                     <span id="releasedYear" style="margin-right: 1rem">{{ formatReleased(album.released) }}</span>
                     <span id="totalSongs">{{ album.songs.length }}首歌曲</span>
@@ -198,7 +218,27 @@ export default {
                 <font-awesome-icon v-else class="btn" icon="fa-regular fa-heart" @click="toggleAlbumLiked" />
             </button>
             <button id="albumOptions">
-                <font-awesome-icon class="btn" icon="fa-solid fa-ellipsis" />
+                <font-awesome-icon class="btn" icon="fa-solid fa-ellipsis" @click="toggleOption" />
+                <div id="AOptions">
+                    <Options v-if="optionIsOpen">
+                        <template #first>
+                            <div class="option" @click="addToQueue()">加入佇列</div>
+                        </template>
+                        <template #second>
+                            <div class="option" v-if="album.isLiked == false" @click="toggleAlbumLiked">加入音樂庫</div>
+                            <div class="option" v-else @click="toggleAlbumLiked">從音樂庫中移除</div>
+                        </template>
+                        <template #third>
+                            <div class="option">加入播放清單</div>
+                        </template>
+                        <template #forth>
+                        </template>
+                        <template #fifth>
+                        </template>
+                        <template #sixth>
+                        </template>
+                    </Options>
+                </div>
             </button>
         </div>
         <div class="content">
@@ -234,7 +274,14 @@ export default {
                             </div>
                             <div class="desc">
                                 <div class="songName">{{ song.songName }}</div>
-                                <div class="artistName">{{ album.mainArtistName }}</div>
+                                <RouterLink to="/artist" v-if="album.mainArtistName" class="link artistName"
+                                    @click="setArtist(album.mainArtistId)">
+                                    <div>{{ album.mainArtistName }}</div>
+                                </RouterLink>
+                                <RouterLink to="/artist" v-if="album.mainCreatorName" class="link artistName"
+                                    @click="setCreator(album.mainCreatorId)">
+                                    <div>{{ album.mainCreatorName }}</div>
+                                </RouterLink>
                             </div>
                         </div>
                     </template>
@@ -259,12 +306,12 @@ export default {
                             <div class="SongOptions">
                                 <Options>
                                     <template #first>
-                                        <div class="option" @click="addSongToQueue(song.id)">加入佇列</div>
+                                        <div class="option" @click="addSongToQueue(song.id); closeSongOption(i)">加入佇列</div>
                                     </template>
                                     <template #second>
                                     </template>
                                     <template #third>
-                                        <div class="option" @click="addToQueue()">顯示提供者</div>
+                                        <div class="option" @click="addToQueue(); closeSongOption(i)">顯示提供者</div>
                                     </template>
                                     <template #forth>
                                     </template>
@@ -521,6 +568,24 @@ export default {
     &:hover {
         color: white;
         cursor: context-menu;
+    }
+}
+
+.link {
+    color: white;
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+#albumOptions {
+
+    #AOptions {
+        position: absolute;
+        top: 20rem;
+        left: 31rem;
     }
 }
 </style>
