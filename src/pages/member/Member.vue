@@ -1,14 +1,12 @@
 <script>
 import MemberSide from "@/pages/member/components/MemberSide";
 import MemberHome from "@/pages/member/views/memberHome";
-import MemberSubscription from "@/pages/member/components/MemberSubscription.vue";
 import Header from "@/components/Header.vue";
 import { onMounted, ref } from "vue";
 
 export default {
   components: {
     MemberSide,
-    MemberSubscription,
     MemberHome,
     Header,
   },
@@ -32,7 +30,6 @@ export default {
   <div class="Root_top-container">
     <div class="Root_top-bar"></div>
     <MemberSide class="Root_nav-bar" />
-    <!-- <MemberSubscription /> -->
     <div class="Root_main-view">
       <!-- <router-view class="routerView" /> -->
     </div>
