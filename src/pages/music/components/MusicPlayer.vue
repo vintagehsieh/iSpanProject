@@ -23,7 +23,10 @@ export default {
         })
 
         watchEffect(() => {
-            musicPlayer.src = currentSong.value?.songPath ?? "";
+            if (currentSong.value != undefined && currentSong.value.songPath != musicPlayer.src) {
+                console.log(currentSong.value, musicPlayer.src)
+                musicPlayer.src = currentSong.value?.songPath ?? "";
+            }
         })
 
         return { currentSong, musicPlayer, queue, playlist };
@@ -201,8 +204,8 @@ export default {
                 this.musicPlayer.play();
                 this.playStatus = true;
             }
+            this.musicPlayer.currentTime = 0;
             this.currentTime = 0;
-            console.log('reset')
         },
         async toggleShuffle() {
             this.queue.isShuffle = !this.queue.isShuffle;
@@ -224,6 +227,9 @@ export default {
                 .then(data => console.log(data))
                 .catch(error => console.error(error))
             await this.$store.dispatch('fetchQueueDataAsync');
+            if (this.playStatus == false) {
+                this.reSetPlayer();
+            }
         },
         async toggleRepeat() {
             this.queue.isRepeat = !this.queue.isRepeat;
