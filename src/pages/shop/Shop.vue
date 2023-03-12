@@ -17,6 +17,9 @@ export default {};
       <span>會員登入</span>
     </div>
   </nav>
+  <router-link to="/productItem">商品</router-link>
+  <router-link to="/cart">購物車</router-link>
+  <router-link to="/checkout">結帳</router-link>
   <router-view id="page" />
 </template>
 

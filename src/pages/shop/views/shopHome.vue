@@ -42,6 +42,7 @@ export default {
   .page {
     width: 60em;
     margin-bottom: 2rem;
+    
 
     #pageHeader {
       width: 100%;

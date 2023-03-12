@@ -29,9 +29,22 @@ export default {
       isLogin.value = false;
 
       // 清除cookie和localstorage
-      Cookies.remove("*");
+      Cookies.remove("loginInfo");
       localStorage.clear();
 
+      fetch("https://localhost:7043/Members/MemberLogOut", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      })
+        .then((response) => {
+          // 請求成功
+        })
+        .catch((error) => {
+          // 請求失敗
+        });
       redirect();
     };
 
