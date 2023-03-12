@@ -69,26 +69,32 @@ export default {
           // if (data === "更新成功") {
           //   alert("更新成功");
           // }
-          // window.location.reload();
+          window.location.reload();
         })
         .catch((error) => {});
     };
     const sendCode = async () => {
-      fetch("https://localhost:7043/Members", {
-        method: "PUT",
-        body: myForm,
+      const data = {};
+
+      const email = document.querySelector("#email");
+      data[email.id] = email.value;
+      const myConfirmForm = new FormData();
+      myConfirmForm.append("email", email.value);
+      fetch("https://localhost:7043/Members/ResendConfirmCode", {
+        method: "PATCH",
+        body: myConfirmForm,
         credentials: "include",
       })
         .then((response) => {
           if (response.ok) {
+            alert("已發送驗證碼，請去信箱收取信件");
+
             return response.text();
           } else {
-            openForm();
-            alert("更新失敗");
+            alert("發生錯誤");
           }
         })
         .then((data) => {
-          // console.log(data);
           // if (data === "更新成功") {
           // alert("更新成功");
           // }
@@ -99,19 +105,22 @@ export default {
       member.value.emailEdit = true;
     };
     const saveEmailForm = async () => {
+      const emailInput = document.querySelector("#email");
+      const newEmail = emailInput.value;
       const data = {};
+      if (newEmail === member.value.memberEmail) {
+        member.value.emailEdit = false;
+        return; // 值未變更，直接結束函式
+      }
       member.value.emailEdit = false;
       const email = document.querySelector("#email");
       data[email.id] = email.value;
-      console.log(data);
-      // myInputs.forEach((myinput) => {
-      //   data[myinput.id] = myinput.value;
-      // });
 
       const myEmailForm = new FormData();
-      for (const property in data) {
-        myEmailForm.append(property, data[property]);
-      }
+      // for (const property in data) {
+      //   myEmailForm.append(property, data[property]);
+      // }
+      myEmailForm.append("email.Email", email.value);
 
       fetch("https://localhost:7043/Members/UpdateEmail", {
         method: "PATCH",
@@ -122,6 +131,8 @@ export default {
           if (response.ok) {
             return response.text();
           } else {
+            openEmailForm();
+
             alert("更新失敗");
           }
         })
@@ -130,7 +141,7 @@ export default {
           // if (data === "更新成功") {
           //   alert("更新成功");
           // }
-          // window.location.reload();
+          window.location.reload();
         })
         .catch((error) => {});
     };
