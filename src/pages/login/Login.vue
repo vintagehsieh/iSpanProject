@@ -31,15 +31,20 @@ export default {
     });
 
     const handLoginFn = async () => {
+      if (isLogin.value) {
+        return;
+      }
       const success = await store.dispatch("login", loginInfo);
       if (success) {
-        alert("登入成功");
+        // alert("登入成功");
         saveCookie();
         setTimeout(() => {
           redirect();
         }, 1000);
       } else {
         alert("登入失敗，請檢查帳密");
+        loginInfo.memberAccount = ""; // 清空使用者輸入的帳號
+        loginInfo.memberPassword = ""; // 清空使用者輸入的密碼
       }
     };
 

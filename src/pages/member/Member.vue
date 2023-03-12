@@ -1,5 +1,6 @@
 <script>
 import MemberSide from "@/pages/member/components/MemberSide";
+import MemberSubscription from "@/pages/member/components/MemberSubscription";
 import MemberHome from "@/pages/member/views/memberHome";
 import Header from "@/components/Header.vue";
 import { onMounted, ref } from "vue";
@@ -7,6 +8,7 @@ import { onMounted, ref } from "vue";
 export default {
   components: {
     MemberSide,
+    MemberSubscription,
     MemberHome,
     Header,
   },
@@ -25,11 +27,12 @@ export default {
 };
 </script>
 <template>
-  <!-- <Header :isLogin="isLogin" :handLogout="handLogout" /> -->
+  <Header :isLogin="isLogin" :handLogout="handLogout" />
 
   <div class="Root_top-container">
     <div class="Root_top-bar"></div>
-    <MemberSide class="Root_nav-bar" />
+    <!-- <MemberSide class="Root_nav-bar" /> -->
+    <MemberSubscription class="Root_nav-bar" />
     <div class="Root_main-view">
       <!-- <router-view class="routerView" /> -->
     </div>
@@ -89,12 +92,13 @@ export default {
   height: 40px;
   display: flex;
   align-items: center;
-  color: black;
+  color: #383a3f;
   text-decoration: none;
+  font-size: 24px;
 
   &:hover {
     cursor: pointer;
-    color: rgb(49, 49, 49);
+    color: #eb9534;
     text-decoration: none;
   }
 
