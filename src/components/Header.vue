@@ -35,6 +35,7 @@ export default {
         <a href="music.html" id="musicPage">音樂播放</a>
         <a href="shop.html" v-if="props.isLogin" id="shopPage">音樂商城</a>
         <a href="activity.html" v-if="props.isLogin" id="actPage">音樂活動</a>
+        <a href="creator.html" v-if="props.isLogin" id="actPage">創作者</a>
       </div>
       <!-- membership -->
       <div class="loginSection">
