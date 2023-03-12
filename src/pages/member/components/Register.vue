@@ -6,12 +6,10 @@ export default {
   setup() {
     const isReg = ref(false);
     const registered = reactive({
-      username: "",
-      password: "",
-      sex: "",
+      nickname: "",
       email: "",
-      age: "",
-      terms: false,
+      password: "",
+      confirmPassword: "",
     });
     const error_message = reactive({});
 

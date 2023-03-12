@@ -3,13 +3,13 @@ import {
   createWebHistory,
   createWebHashHistory,
 } from "vue-router";
-import Login from "@/pages/login/Login.vue";
+import Register from "@/pages/register/Register.vue";
 
 const routes = [
   {
     path: "/",
-    name: "login",
-    component: Login,
+    name: "register",
+    component: Register,
   },
 ];
 

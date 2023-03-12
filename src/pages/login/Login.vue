@@ -30,6 +30,19 @@ export default {
       }
     });
 
+    const handLoginFn = async () => {
+      const success = await store.dispatch("login", loginInfo);
+      if (success) {
+        alert("登入成功");
+        saveCookie();
+        setTimeout(() => {
+          redirect();
+        }, 1000);
+      } else {
+        alert("登入失敗，請檢查帳密");
+      }
+    };
+
     // 把登入訊息存在cookie 中
     const saveCookie = () => {
       Cookies.set("loginInfo", loginInfo.memberAccount, { expires: 1 });
@@ -37,25 +50,11 @@ export default {
     };
 
     const redirect = () => {
+      if (store.getters.getIsLogin !== true) {
+        return;
+      }
       window.history.pushState({}, "", "/");
       window.location.reload();
-      // window.location.href = "https://localhost:8080";
-    };
-
-    const handLoginFn = async () => {
-      const success = await store.dispatch("login", loginInfo);
-      if (success) {
-        alert("登入成功");
-        // store.commit("setIsLogin", true);
-        saveCookie();
-        redirect();
-      } else {
-        alert("登入失敗，請檢查帳密");
-      }
-    };
-
-    const handRegisterFn = () => {
-      router.push({ path: "/register" });
     };
 
     // const errorFn = (err) => {
@@ -67,7 +66,6 @@ export default {
       loginInfo,
       memberAccount,
       handLoginFn,
-      handRegisterFn,
       redirect,
       saveCookie,
       error_message,
@@ -104,8 +102,13 @@ export default {
           {{ error_message.password }}
         </p>
       </div>
-      <button type="submit" class="btn" @click="handLoginFn">送出</button>
-      <button type="submit" class="btn" @click="handRegisterFn">註冊</button>
+      <a href="" class="forgetPd">忘記密碼?</a>
+      <button type="submit" class="btn" @click.prevent="handLoginFn">
+        送出
+      </button>
+      <div class="registerBtn">
+        <a href="register.html">註冊</a>
+      </div>
     </form>
   </div>
   <div v-if="isLogin" class="redirection">您已經登入，網頁轉導中...</div>
@@ -159,8 +162,28 @@ form {
       padding-left: 1rem;
     }
   }
+  .forgetPd {
+    color: lightblue;
+    margin: 2rem 0 1.5rem 0;
+  }
   .btn {
-    margin-top: 1.5rem;
+    margin: 1rem auto;
+    cursor: pointer;
+    width: 100px;
+    height: 30px;
+    border-radius: 8px;
+    border: none;
+    color: black;
+    background-color: #fff;
+    font-size: 20px;
+
+    &:hover {
+      box-shadow: 0 4px 8px 0 rgba(255, 255, 255, 0.2),
+        0 6px 20px 0 rgba(255, 255, 255, 0.19);
+    }
+  }
+  .registerBtn {
+    margin-top: 1rem;
     margin-left: auto;
     margin-right: auto;
     cursor: pointer;
@@ -168,9 +191,18 @@ form {
     height: 30px;
     border-radius: 8px;
     border: none;
+    background-color: white;
     color: black;
     font-size: 20px;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    text-align: center;
+    &:hover {
+      box-shadow: 0 4px 8px 0 rgba(255, 255, 255, 0.2),
+        0 6px 20px 0 rgba(255, 255, 255, 0.19);
+    }
+    a {
+      text-decoration: none;
+      color: black;
+    }
   }
 }
 .redirection {

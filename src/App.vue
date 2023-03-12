@@ -4,6 +4,7 @@ import Footer from "@/components/Footer.vue";
 import { onMounted, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import Cookies from "js-cookie";
+import axios from "axios";
 
 export default {
   components: {
@@ -32,24 +33,27 @@ export default {
       Cookies.remove("loginInfo");
       localStorage.clear();
 
-      fetch("https://localhost:7043/Members/MemberLogOut", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      })
-        .then((response) => {
-          // 請求成功
-        })
-        .catch((error) => {
-          // 請求失敗
-        });
+      deleteCookie();
       redirect();
     };
 
     const redirect = () => {
       router.push({ path: route.path });
+    };
+
+    const deleteCookie = () => {
+      axios
+        .post(
+          "https://localhost:7043/Members/MemberLogOut",
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          },
+          { withCredentials: true }
+        )
+        .then((res) => {})
+        .catch((err) => {});
     };
 
     return { isLogin, handLogout };

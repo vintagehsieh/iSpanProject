@@ -41,6 +41,13 @@ module.exports = defineConfig({
       title: "Login",
       chunks: ["chunk-vendors", "chunk-common", "login"],
     },
+    register: {
+      entry: "src/pages/register/register.js",
+      template: "public/register.html",
+      filename: "register.html",
+      title: "Register",
+      chunks: ["chunk-vendors", "chunk-common", "register"],
+    },
     index: {
       entry: "src/main.js",
       template: "public/index.html",

@@ -171,7 +171,6 @@ a {
     }
   }
   .content {
-    overflow-y: scroll;
     overflow-x: hidden;
     .head {
       width: 100%;
