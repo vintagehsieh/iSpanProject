@@ -31,12 +31,9 @@ export default {
 
   <div class="Root_top-container">
     <div class="Root_top-bar"></div>
-    <!-- <MemberSide class="Root_nav-bar" /> -->
-    <MemberSubscription class="Root_nav-bar" />
     <div class="Root_main-view">
-      <!-- <router-view class="routerView" /> -->
+      <router-view class="routerView" />
     </div>
-    <!-- <MemberHome /> -->
   </div>
 </template>
 
@@ -65,7 +62,7 @@ export default {
     left: 18rem;
     width: 100%;
     height: rem;
-    background-color: rgba(0, 0, 0, 0);
+    background-color: rgb(0, 0, 0, 0);
   }
 
   > .Root_nav-bar {
@@ -78,9 +75,6 @@ export default {
   }
 
   > .Root_main-view {
-    margin-left: 18rem;
-    background-color: #1f2124;
-
     > .routerView {
       margin-bottom: 5rem;
     }
