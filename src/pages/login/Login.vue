@@ -102,7 +102,7 @@ export default {
           {{ error_message.password }}
         </p>
       </div>
-      <a href="" class="forgetPd">忘記密碼?</a>
+      <a href="reset.html" class="forgetPd">忘記密碼?</a>
       <button type="submit" class="btn" @click.prevent="handLoginFn">
         送出
       </button>
