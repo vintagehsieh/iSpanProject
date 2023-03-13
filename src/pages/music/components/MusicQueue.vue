@@ -32,7 +32,7 @@ export default {
                 </div>
                 <div class="desc">
                     <div class="name">{{ song.songName }}</div>
-                    <div class="authorName">sss</div>
+                    <div class="authorName" v-for="artist in song.artists">{{ artist.artistName }}</div>
                 </div>
             </div>
         </div>

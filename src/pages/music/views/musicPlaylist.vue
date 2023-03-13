@@ -1,5 +1,5 @@
 <script>
-import { computed } from "vue";
+import { computed, watchEffect } from "vue";
 import { useStore } from 'vuex';
 
 export default {
@@ -8,19 +8,38 @@ export default {
         const playlist = computed(() => {
             return store.getters.getPlaylist;
         });
+        const currentSong = computed(() => {
+            return store.getters.getCurrentSong;
+        })
 
-        return { playlist };
+        return { playlist, currentSong };
     },
     data() {
         return {
             isPlaying: false,
             optionIsOpen: false,
+            searchValue: "",
+            searchSongs: [],
         }
     },
     methods: {
-        togglePlay() {
-            console.log(this.playlist.isLiked)
-            this.isPlaying = !this.isPlaying;
+        async togglePlay() {
+            // this.isPlaying = !this.isPlaying;
+            await fetch(`https://localhost:7043/Queues/${this.playlist.id}`, {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "Value": "Playlist"
+                }),
+                credentials: 'include',
+            })
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error(error))
+
+            this.$store.dispatch("fetchQueueDataAsync");
         },
         togglePlalistLiked() {
             this.playlist.isLiked = !this.playlist.isLiked;
@@ -73,6 +92,10 @@ export default {
                     .then(data => console.log(data))
                     .catch(error => console.error(error))
             }
+
+            if (this.playlist.metadata[i].song.id == this.currentSong.id) {
+                this.currentSong.isLiked = this.playlist.metadata[i].song.isLiked;
+            }
         },
         toggleOption() {
             this.optionIsOpen = !this.optionIsOpen;
@@ -114,8 +137,8 @@ export default {
 
             return imgName.length != 0;
         },
-        addToQueue() {
-            fetch(`https://localhost:7043/Queues/Playlists/${this.playlist.id}`, {
+        async addToQueue() {
+            await fetch(`https://localhost:7043/Queues/Playlists/${this.playlist.id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -125,6 +148,22 @@ export default {
                 .then(response => response.json())
                 .then(data => console.log(data))
                 .catch(error => console.error(error))
+
+            this.$store.dispatch("fetchQueueDataAsync");
+        },
+        async addSongToQueue(songId) {
+            await fetch(`https://localhost:7043/Queues/Songs/${songId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+            })
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error(error))
+
+            this.$store.dispatch("fetchQueueDataAsync");
         },
         changePrivacySetting() {
             this.playlist.isPublic = !this.playlist.isPublic;
@@ -152,6 +191,8 @@ export default {
             } catch (error) {
                 console.error(error);
             }
+
+            this.$router.go(-1);
         },
         toggleSongOption(i) {
             if (this.playlist.metadata[i].optionIsOpen == undefined) {
@@ -167,6 +208,42 @@ export default {
         },
         setCreator(creatorId) {
             this.$store.dispatch('setCreator', creatorId);
+        },
+        async searchSong() {
+            if (this.searchValue.trim().length == 0) return;
+            await fetch(`https://localhost:7043/Songs/${this.searchValue}`, { method: 'GET', headers: { 'Content-Type': 'application/json' }, credentials: 'include', })
+                .then(response => response.json())
+                .then(data => this.searchSongs = data)
+                .catch(error => console.error(error))
+        },
+        async addSongToPlaylist(songId) {
+            await fetch(`https://localhost:7043/Playlists/${this.playlist.id}/Songs/${songId}`,
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        'value': true
+                    }),
+                    credentials: 'include',
+                })
+                .then(response => response.text())
+                .then(data => console.log(data))
+                .catch(error => console.error(error))
+
+            this.$store.dispatch('setPlaylist', this.playlist.id);
+        },
+        async removeFromPlaylist(displayOrder) {
+            await fetch(`https://localhost:7043/Playlists/${this.playlist.id}/Songs/${displayOrder}`,
+                {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                })
+                .then(response => response.text())
+                .then(data => console.log(data))
+                .catch(error => console.error(error))
+
+            this.$store.dispatch('setPlaylist', this.playlist.id);
         }
     }
 };
@@ -179,7 +256,11 @@ export default {
                 <img src="@/assets/music-note-icon-song-melody-tune-flat-symbol-free-vector.webp" v-else alt="">
             </div>
             <div id="playlistInfo">
-                <div id="type">播放清單</div>
+                <div id="type">
+                    <span v-if="playlist.isPublic">公開的</span>
+                    <span v-else>私人的</span>
+                    播放清單
+                </div>
                 <div id="playlistName">{{ playlist.listName }}</div>
                 <div id="infoDetail">
                     <div id="ownerInfo">
@@ -196,9 +277,8 @@ export default {
         </div>
         <div id="btns">
             <button id="playlistPlayPause">
-                <font-awesome-icon class="btn" id="play" icon="fa-solid fa-play" v-if="isPlaying == false"
-                    @click="togglePlay" />
-                <font-awesome-icon class="btn" id="pause" icon="fa-solid fa-pause" v-else @click="togglePlay" />
+                <font-awesome-icon class="btn" id="play" icon="fa-solid fa-play" @click="togglePlay" />
+                <!-- <font-awesome-icon class="btn" id="pause" icon="fa-solid fa-pause" v-else @click="togglePlay" /> -->
             </button>
             <button id="playlistLiked" v-if="playlist.isOwner == false">
                 <font-awesome-icon v-if="playlist.isLiked" class="btn" icon="fa-solid fa-heart" @click="togglePlalistLiked"
@@ -220,7 +300,7 @@ export default {
                                 刪除清單
                             </div>
                         </template>
-                        <template #forth v-if="playlist.isown">
+                        <template #forth v-if="playlist.isOwner">
                             <div class="option" v-if="playlist.isPublic == false" @click="changePrivacySetting">設為公開</div>
                             <div class="option" v-else @click="changePrivacySetting">設為私人</div>
                         </template>
@@ -303,11 +383,11 @@ export default {
                         <div v-if="metadata.isHover">
                             <font-awesome-icon class="btn" icon="fa-solid fa-ellipsis" @click="toggleSongOption(i)" />
                         </div>
-                        <div class="songOptionParent" v-if="playlist.metadata[i].optionIsOpen">
+                        <div class="songOptionParent" v-if="metadata.optionIsOpen">
                             <div class="SongOptions">
                                 <Options>
                                     <template #first>
-                                        <div class="option" @click="addToQueue()">加入佇列</div>
+                                        <div class="option" @click="addSongToQueue(metadata.song.id)">加入佇列</div>
                                     </template>
                                     <template #second>
                                         <div class="option" @click="addToQueue()">前往專輯</div>
@@ -316,7 +396,8 @@ export default {
                                         <div class="option" @click="addToQueue()">顯示提供者</div>
                                     </template>
                                     <template #forth>
-                                        <div class="option" @click="addToQueue()">加到播放清單</div>
+                                        <div class="option" @click="removeFromPlaylist(metadata.displayOrder)">從播放清單中移除
+                                        </div>
                                     </template>
                                     <template #fifth>
                                     </template>
@@ -334,7 +415,134 @@ export default {
             </div>
             <div id="search">
                 <font-awesome-icon icon="fa-solid fa-magnifying-glass" style="font-size: 20px; margin-right: 6px;" />
-                <input type="text">
+                <input type="text" @input="searchSong" v-model="searchValue" placeholder="輸入歌曲名稱">
+            </div>
+            <div id="searchSongs">
+                <Song v-for="(song, index) in searchSongs" :key="song.id" class="songContent">
+                    <template #name>
+                        <div class="songInfo">
+                            <div class="songPicture">
+                                <img :src=song.songCoverPath alt="" class="img">
+                            </div>
+                            <div class="desc">
+                                <div class="songName">{{ song.songName }}</div>
+                                <RouterLink to="/artist" class="artistName" v-for="artist in song.artistlist"
+                                    @click="setArtist(artist.artistId)">
+                                    {{ artist.artistName }}
+                                </RouterLink>
+                                <RouterLink to="/creator" class="creatorName" v-for="creator in song.creatorlist"
+                                    @click="setCreator(creator.creatorId)">{{
+                                        creator.creatorName
+                                    }}</RouterLink>
+                            </div>
+                        </div>
+                    </template>
+                    <template #time>
+                        <div class="plus" @click="addSongToPlaylist(song.id)">
+                            <font-awesome-icon icon="fa-solid fa-plus" />
+                        </div>
+                    </template>
+                </Song>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="insertModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">新增賽事/活動</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5 class="mt-3">賽事資料 </h5>
+                                <div class="form-group">
+                                    <label class="form-label">活動名稱:</label>
+                                    <input type="text" class="form-control" v-model="name" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">活動日期:</label>
+                                    <input type="date" class="form-control" v-model="contestDate" :min="todayDate" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">報名截止日:</label>
+                                    <input type="date" class="form-control" v-model="registrationDeadline"
+                                        :max="contestDate" :min="todayDate" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">活動地區:</label>
+                                    <input type="text" class="form-control" v-model="area" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">活動地點:</label>
+                                    <input type="text" class="form-control" v-model="location" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">地圖資訊:</label>
+                                    <input type="text" class="form-control" v-model="mapUrl" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">活動簡章:</label>
+                                    <textarea rows="7" class="form-control" v-model="detail"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h5 class="mt-3">競賽項目</h5>
+                                <div class="form-group">
+                                    <label class="form-label">項目1:</label>
+                                    <select class="form-control" v-model="categoryId1">
+                                        <option v-for="item in CategoriesDTOes" :value="item.id">
+                                            {{ item.category }}{{ item.distance }}K</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">名額:</label>
+                                    <input type="text" class="form-control" v-model="quota1" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">金額:</label>
+                                    <input type="text" class="form-control" v-model="enterFee1" />
+                                </div>
+                                <div class="form-group mt-2">
+                                    <label class="form-label">項目2:</label>
+                                    <select class="form-control" v-model="categoryId2">
+                                        <option v-for="item in CategoriesDTOes" :value="item.id">
+                                            {{ item.category }}{{ item.distance }}K</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">名額:</label>
+                                    <input type="text" class="form-control" v-model="quota2" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">金額:</label>
+                                    <input type="text" class="form-control" v-model="enterFee2" />
+                                </div>
+                                <div class="form-group mt-2">
+                                    <label class="form-label">項目3:</label>
+                                    <select class="form-control" v-model="categoryId3">
+                                        <option v-for="item in CategoriesDTOes" :value="item.id">
+                                            {{ item.category }}{{ item.distance }}K</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">名額:</label>
+                                    <input type="text" class="form-control" v-model="quota3" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">金額:</label>
+                                    <input type="text" class="form-control" v-model="enterFee3" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+                    <button type="button" class="btn btn-primary" @@click="insert">新增</button>
+                </div>
             </div>
         </div>
     </div>
@@ -490,7 +698,8 @@ export default {
             border-bottom: 1px solid rgb(152, 152, 152);
         }
 
-        >#contentBody {
+        >#contentBody,
+        #searchSongs {
             >.songContent {
                 width: 100%;
                 height: 5rem;
@@ -566,6 +775,7 @@ export default {
             align-items: center;
             background-color: #fff;
             margin-left: 2rem;
+            margin-bottom: 1rem;
 
             input {
                 width: 13rem;
@@ -636,6 +846,15 @@ export default {
     &:hover {
         color: white;
         cursor: context-menu;
+    }
+}
+
+.plus {
+    font-size: 20px;
+
+    &:hover {
+        color: #f68718;
+        cursor: pointer;
     }
 }
 </style>

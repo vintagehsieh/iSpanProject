@@ -1,4 +1,5 @@
 <script>
+import { throwStatement } from "@babel/types";
 import { computed } from "vue";
 import { useStore } from 'vuex';
 
@@ -8,11 +9,16 @@ export default {
         const album = computed(() => {
             return store.getters.getAlbum;
         });
+        const currentSong = computed(() => {
+            return store.getters.getCurrentSong;
+        })
 
-        return { album };
+        return { album, currentSong };
     },
     data() {
         return {
+            isPlaying: false,
+            optionIsOpen: false,
         }
     },
     methods: {
@@ -31,9 +37,143 @@ export default {
             // Combine the minutes and seconds into a string
             return `${minutes}:${paddedSeconds}`;
         },
-    },
-    onMounted() {
+        formatReleased(released) {
+            return released.slice(0, 10);
+        },
+        toggleSongLiked(i) {
+            this.album.songs[i].isLiked = !this.album.songs[i].isLiked;
+            if (this.album.songs[i].isLiked == true) {
+                fetch(`https://localhost:7043/Members/LikedSongs/${this.album.songs[i].id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                })
+                    .then(response => response.json())
+                    .then(data => console.log(data))
+                    .catch(error => console.error(error))
+            } else {
+                fetch(`https://localhost:7043/Members/LikedSongs/${this.album.songs[i].id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                })
+                    .then(response => response.json())
+                    .then(data => console.log(data))
+                    .catch(error => console.error(error))
+            }
 
+            if (this.album.sogns[i].id == this.currentSong.id) {
+                this.currentSong.isLiked = this.album.sogns[i].isLiked;
+            }
+        },
+        toggleAlbumLiked() {
+            this.album.isLiked = !this.album.isLiked;
+            if (this.album.isLiked == true) {
+                fetch(`https://localhost:7043/Members/LikedAlbums/${this.album.id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                })
+                    .then(response => response.json())
+                    .then(data => console.log(data))
+                    .catch(error => console.error(error))
+            } else {
+                fetch(`https://localhost:7043/Members/LikedAlbums/${this.album.id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                })
+                    .then(response => response.json())
+                    .then(data => console.log(data))
+                    .catch(error => console.error(error))
+            }
+        },
+        toggleOption() {
+            this.optionIsOpen = !this.optionIsOpen;
+        },
+        toggleSongOption(i) {
+            if (this.album.songs[i].optionIsOpen == undefined) {
+                this.album.songs[i].optionIsOpen = false;
+            }
+            this.album.songs[i].optionIsOpen = !this.album.songs[i].optionIsOpen;
+        },
+        closeSongOption(i) {
+            this.album.songs[i].optionIsOpen = false;
+        },
+        hoverSong(i) {
+            this.album.songs[i].isHover = true;
+        },
+        notHoverSong(i) {
+            this.album.songs[i].isHover = false;
+        },
+        getAlbumTotalTime() {
+            const totaltime = Object.values(this.album.songs).reduce((acc, cur) => acc + cur.duration, 0);
+
+            const hours = Math.floor(totaltime / 3600);
+            const minutes = Math.floor((totaltime % 3600) / 60);
+            const seconds = totaltime % 60;
+
+            return (hours == 0) ? minutes + '分鐘' + seconds + '秒' : hours + '小時' + minutes + '分鐘';
+        },
+        async togglePlay() {
+            await fetch(`https://localhost:7043/Queues/${this.album.id}`, {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "Value": "Album"
+                }),
+                credentials: 'include',
+            })
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error(error))
+
+            this.$store.dispatch("fetchQueueDataAsync");
+        },
+        async addToQueue() {
+            await fetch(`https://localhost:7043/Queues/Albums/${this.album.id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+            })
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error(error))
+
+            this.$store.dispatch("fetchQueueDataAsync");
+        },
+        async addSongToQueue(songId) {
+            await fetch(`https://localhost:7043/Queues/Songs/${songId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+            })
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error(error))
+
+            this.$store.dispatch("fetchQueueDataAsync");
+        },
+        async setArtist(artistId) {
+            await this.$store.dispatch('setArtist', artistId);
+        },
+        async setCreator(creatorId) {
+            await this.$store.dispatch('setCreator', creatorId);
+        },
     }
 };
 </script>
@@ -49,37 +189,64 @@ export default {
                 <div id="infoDetail">
                     <div id="ownerInfo">
                         <div class="picture" id="ownerPic">
-                            <img :src=albumCoverPath alt="">
+                            <img :src=album.mainArtistPicPath v-if="album.mainArtistName" alt="">
+                            <img :src=album.mainCreatorPicPath v-else alt="">
                         </div>
-                        <div id="ownerName">{{ album.mainArtistName }}</div>
+                        <RouterLink to="/artist" v-if="album.mainArtistName" class="link"
+                            @click="setArtist(album.mainArtistId)">
+                            <div id="ownerName">{{ album.mainArtistName }}</div>
+                        </RouterLink>
+                        <RouterLink to="/creator" v-else class="link" @click="setCreator(album.mainCreatorId)">
+                            <div id=" ownerName">{{ album.mainCreatorName }}
+                            </div>
+                        </RouterLink>
                     </div>
-                    <span id="releasedYear">{{ album.released }}</span>
-                    <!-- <span id="totalSongs">{{ album.songs.length }}首歌曲</span> -->
-                    <!-- <span id="totaltime">{{ getAlbumTotalTime() }}</span> -->
+                    <span id="releasedYear" style="margin-right: 1rem">{{ formatReleased(album.released) }}</span>
+                    <span id="totalSongs">{{ album.songs.length }}首歌曲</span>
+                    <span id="totaltime">{{ getAlbumTotalTime() }}</span>
                 </div>
             </div>
         </div>
         <div id="btns">
-            <button id="playPause">
-                <!-- <font-awesome-icon class="btn" id="play" icon="fa-solid fa-play" v-if="isPlaying == false"
-                                                                                                                                                                                                        @click="togglePlay" />
-                                                                                                                                                                                                    <font-awesome-icon class="btn" id="pause" icon="fa-solid fa-pause" v-else @click="togglePlay" /> -->
+            <button id="albumPlayPause">
+                <font-awesome-icon class="btn" id="play" icon="fa-solid fa-play" @click="togglePlay" />
+                <!-- <font-awesome-icon class="btn" id="pause" icon="fa-solid fa-pause" v-else @click="togglePlay" /> -->
             </button>
-            <button id="liked">
-                <!-- <font-awesome-icon v-if="album.isliked" class="btn" icon="fa-solid fa-heart" @click="toggleLiked"
-                                                                                                                                                                                                        style="color: #F6B352" />
-                                                                                                                                                                                                    <font-awesome-icon v-else class="btn" icon="fa-regular fa-heart" @click="toggleLiked" /> -->
+            <button id="albumLiked">
+                <font-awesome-icon v-if="album.isLiked" class="btn" icon="fa-solid fa-heart" @click="toggleAlbumLiked"
+                    style="color: #F6B352" />
+                <font-awesome-icon v-else class="btn" icon="fa-regular fa-heart" @click="toggleAlbumLiked" />
             </button>
-            <button id="options">
-                <font-awesome-icon class="btn" icon="fa-solid fa-ellipsis" />
+            <button id="albumOptions">
+                <font-awesome-icon class="btn" icon="fa-solid fa-ellipsis" @click="toggleOption" />
+                <div id="AOptions">
+                    <Options v-if="optionIsOpen">
+                        <template #first>
+                            <div class="option" @click="addToQueue()">加入佇列</div>
+                        </template>
+                        <template #second>
+                            <div class="option" v-if="album.isLiked == false" @click="toggleAlbumLiked">加入音樂庫</div>
+                            <div class="option" v-else @click="toggleAlbumLiked">從音樂庫中移除</div>
+                        </template>
+                        <template #third>
+                            <div class="option">加入播放清單</div>
+                        </template>
+                        <template #forth>
+                        </template>
+                        <template #fifth>
+                        </template>
+                        <template #sixth>
+                        </template>
+                    </Options>
+                </div>
             </button>
         </div>
         <div class="content">
             <div id="contentHeader">
                 <Song>
                     <template #order>
-                    <span>#</span>
-                </template>
+                        <span>#</span>
+                    </template>
                     <template #name>
                         <span class="header">標題</span>
                     </template>
@@ -92,7 +259,7 @@ export default {
                 </Song>
             </div>
             <div id="contentBody">
-                <Song v-for="(song, index) in album.songs" :key="song.Id" class="songContent" @mouseover="hoverSong(i)"
+                <Song v-for="(song, i) in album.songs" :key="song.Id" class="songContent" @mouseover="hoverSong(i)"
                     @mouseleave="notHoverSong(i)">
                     <template #order>
                         <p v-if="song.isHover == false">{{ i + 1 }}</p>
@@ -107,7 +274,14 @@ export default {
                             </div>
                             <div class="desc">
                                 <div class="songName">{{ song.songName }}</div>
-                                <div class="artistName">{{ album.mainArtistName }}</div>
+                                <RouterLink to="/artist" v-if="album.mainArtistName" class="link artistName"
+                                    @click="setArtist(album.mainArtistId)">
+                                    <div>{{ album.mainArtistName }}</div>
+                                </RouterLink>
+                                <RouterLink to="/artist" v-if="album.mainCreatorName" class="link artistName"
+                                    @click="setCreator(album.mainCreatorId)">
+                                    <div>{{ album.mainCreatorName }}</div>
+                                </RouterLink>
                             </div>
                         </div>
                     </template>
@@ -116,20 +290,42 @@ export default {
                     </template>
                     <template #liked>
                         <span v-if="song.isHover == true || song.isLiked == true">
-                            <!-- <font-awesome-icon v-if="song.isLiked" class="btn" icon="fa-solid fa-heart"
-                                                                                                                                                                                                                                    @click="toggleSongLiked(i)" style="color: #F6B352" />
-                                                                                                                                                                                                                                <font-awesome-icon v-else class="btn" icon="fa-regular fa-heart" @click="toggleSongLiked(i)" /> -->
+                            <font-awesome-icon v-if="song.isLiked" class="btn" icon="fa-solid fa-heart"
+                                @click="toggleSongLiked(i)" style="color: #F6B352" />
+                            <font-awesome-icon v-else class="btn" icon="fa-regular fa-heart" @click="toggleSongLiked(i)" />
                         </span>
                     </template>
                     <template #time>
                         <span>{{ formatTime(song.duration) }}</span>
                     </template>
                     <template #options>
-                        <span v-if="song.isHover">
-                            <font-awesome-icon class="btn" icon="fa-solid fa-ellipsis" />
-                        </span>
+                        <div v-if="song.isHover">
+                            <font-awesome-icon class="btn" icon="fa-solid fa-ellipsis" @click="toggleSongOption(i)" />
+                        </div>
+                        <div class="songOptionParent" v-if="song.optionIsOpen">
+                            <div class="SongOptions">
+                                <Options>
+                                    <template #first>
+                                        <div class="option" @click="addSongToQueue(song.id); closeSongOption(i)">加入佇列</div>
+                                    </template>
+                                    <template #second>
+                                    </template>
+                                    <template #third>
+                                        <div class="option" @click="addToQueue(); closeSongOption(i)">顯示提供者</div>
+                                    </template>
+                                    <template #forth>
+                                    </template>
+                                    <template #fifth>
+                                    </template>
+                                    <template #sixth></template>
+                                </Options>
+                            </div>
+                        </div>
                     </template>
                 </Song>
+            </div>
+            <div id="company">
+                <font-awesome-icon icon="fa-regular fa-copyright" /><span>{{ album.albumCompany }}</span>
             </div>
         </div>
     </div>
@@ -138,6 +334,8 @@ export default {
 <style lang="scss" scoped>
 .container {
     width: 100%;
+    min-height: 60rem;
+    padding-bottom: 3rem;
 
     .contentSpacing {
         width: 100%;
@@ -224,7 +422,7 @@ export default {
         display: flex;
         align-items: center;
 
-        >#playlistPlayPause {
+        >#albumPlayPause {
             width: 5rem;
             background-color: rgba(0, 0, 0, 0);
             border: none;
@@ -240,7 +438,7 @@ export default {
             }
         }
 
-        >#playlistLiked {
+        >#albumLiked {
             background-color: rgba(0, 0, 0, 0);
             margin-right: 2rem;
             border: none;
@@ -255,7 +453,7 @@ export default {
             }
         }
 
-        >#playlistOptions {
+        >#albumOptions {
             border: none;
             background-color: rgba(0, 0, 0, 0);
 
@@ -323,6 +521,46 @@ export default {
                 }
             }
         }
+
+        #company {
+            margin-top: 1rem;
+            font-size: 14px;
+            color: white;
+        }
+    }
+}
+
+.songOptionParent {
+    position: relative;
+
+    .SongOptions {
+        position: absolute;
+        top: -1rem;
+        right: 1rem;
+
+        &::after {
+            content: "";
+            clear: both;
+        }
+    }
+}
+
+.option {
+    width: 100%;
+    height: 50px;
+    color: white;
+    font-size: 16px;
+    border-bottom: 2px solid grey;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &:hover {
+        background-color: grey;
+    }
+
+    &:last-child {
+        border-bottom: none;
     }
 }
 
@@ -330,6 +568,24 @@ export default {
     &:hover {
         color: white;
         cursor: context-menu;
+    }
+}
+
+.link {
+    color: white;
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+#albumOptions {
+
+    #AOptions {
+        position: absolute;
+        top: 20rem;
+        left: 31rem;
     }
 }
 </style>

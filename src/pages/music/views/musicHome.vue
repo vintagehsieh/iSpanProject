@@ -1,6 +1,7 @@
 <script>
 import { computed } from "vue";
 import { useStore } from 'vuex';
+import { debounce } from 'lodash';
 
 export default {
   setup() {
@@ -64,12 +65,27 @@ export default {
       this.$store.dispatch('setCreator', creatorId);
     },
     setPopSongRowNumber() {
-      this.$store.dispatch('setPopSongRowNumber', 2);
+      this.$store.dispatch('increasePopSongRowNumber');
       this.$store.dispatch('fetchSongDataAsync');
     },
     setPopAlbumRowNumber() {
       this.$store.dispatch('setPopAlbumRowNumber', 2);
       this.$store.dispatch('fetchAlbumDataAsync');
+    },
+    handleScroll: async function () {
+      const myDiv = document.getElementById('allPopular');
+      const scrollPosition = myDiv.scrollTop;
+      const divHeight = myDiv.clientHeight;
+      const contentHeight = myDiv.scrollHeight;
+      const distanceToBottom = contentHeight - (scrollPosition + divHeight);
+      console.log(this.popularSongs.items.length);
+      if (distanceToBottom < 70 && this.popularSongs.items.length < 20) {
+        await this.$store.dispatch('increasePopSongRowNumber');
+        await this.$store.dispatch('fetchSongDataAsync');
+      }
+    },
+    slicePopulars(populars) {
+      return Object.entries(populars.items).slice(0, 5).map(entry => entry[1]);
     }
   }
 };
@@ -87,7 +103,7 @@ export default {
             }}</span>
           </div>
           <div class="content">
-            <RouterLink v-for="song in popularSongs.items.slice(0, 5)" :key="song.id" to="/album"
+            <RouterLink v-for="song in slicePopulars(popularSongs)" :key="song.id" to="/album"
               @click="setAlbum(song.albumId)">
               <Card>
                 <template #picture>
@@ -112,7 +128,7 @@ export default {
               showAll }}</span>
           </div>
           <div class="content">
-            <RouterLink v-for="album in popularAlbums.items.slice(0, 5)" :key="album.id" to="/album"
+            <RouterLink v-for="album in slicePopulars(popularAlbums)" :key="album.id" to="/album"
               @click="setAlbum(album.id)">
               <Card>
                 <template #picture>
@@ -136,7 +152,7 @@ export default {
             <span class="showAll" @click="showAllPopSongs(popularPlaylists)">{{ showAll }}</span>
           </div>
           <div class="content">
-            <RouterLink v-for="playlist in popularPlaylists.items.slice(0, 5)" :key="playlist.id" to="/playlist"
+            <RouterLink v-for="playlist in slicePopulars(popularPlaylists)" :key="playlist.id" to="/playlist"
               @click="setPlaylist(playlist.id)">
               <Card>
                 <template #picture>
@@ -160,7 +176,7 @@ export default {
             <span class="showAll" @click="showAllPopSongs(popularArtists)">{{ showAll }}</span>
           </div>
           <div class="content">
-            <RouterLink v-for="artist in popularArtists.items.slice(0, 5)" :key="artist.id" to="/artist"
+            <RouterLink v-for="artist in slicePopulars(popularArtists)" :key="artist.id" to="/artist"
               @click="setArtist(artist.id)">
               <Card>
                 <template #picture>
@@ -181,7 +197,7 @@ export default {
             <span class="showAll" @click="showAllPopSongs(popularCreators)">{{ showAll }}</span>
           </div>
           <div class="content">
-            <RouterLink v-for="creator in popularCreators.items.slice(0, 5)" :key="creator.id" to="/artist"
+            <RouterLink v-for="creator in slicePopulars(popularCreators)" :key="creator.id" to="/artist"
               @click="setCreator(creator.id)">
               <Card>
                 <template #picture>
@@ -197,7 +213,7 @@ export default {
       </div>
     </div>
   </div>
-  <div class="container" id="allPopular" v-show="!isMain">
+  <div class="container" id="allPopular" v-show="!isMain" @scroll="handleScroll">
     <div class="header">
       <div class="returnBtn">
         <font-awesome-icon icon="fa-solid fa-angle-left" style="margin-right: 5px" />
@@ -349,9 +365,17 @@ export default {
   }
 
   >.contentAll {
+    padding-bottom: 3rem;
+    height: auto;
     display: flex;
     flex-wrap: wrap;
   }
+}
+
+#allPopular {
+  height: 100vh;
+  max-height: 400px;
+  overflow: scroll;
 }
 
 .slide-left-leave-active,

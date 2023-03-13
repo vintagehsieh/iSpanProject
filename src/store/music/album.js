@@ -22,6 +22,7 @@ const actions = {
 const mutations = {
     setAlbum(state, payload) {
         state.album = payload;
+        state.album.songs.forEach(song => song.isHover = false);
     },
 }
 

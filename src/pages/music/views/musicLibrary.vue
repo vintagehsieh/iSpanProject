@@ -1,5 +1,30 @@
 <script>
+import { computed } from 'vue';
+import { useStore } from 'vuex';
 export default {
+    setup() {
+        const store = useStore();
+
+        store.dispatch('setAlbums');
+        store.dispatch('setPlaylists');
+        store.dispatch('setArtists');
+        store.dispatch('setCreators');
+
+        const albums = computed(() => {
+            return store.getters.getAlbums;
+        })
+        const playlists = computed(() => {
+            return store.getters.getPlaylists;
+        })
+        const artists = computed(() => {
+            return store.getters.getArtists;
+        })
+        const creators = computed(() => {
+            return store.getters.getCreators;
+        })
+
+        return { playlists, albums, artists, creators };
+    },
     data() {
         return {
             sortType: "playlist",
@@ -12,134 +37,6 @@ export default {
                     name: "Alphabetically",
                     value: "依字母排序"
                 }
-            ],
-            playlists: [
-                {
-                    id: 1,
-                    name: "yahaha",
-                    owner: "Maru",
-                },
-                {
-                    id: 2,
-                    name: "yahaha",
-                    owner: "Maru",
-                },
-                {
-                    id: 3,
-                    name: "yahaha",
-                    owner: "Maru",
-                },
-                {
-                    id: 4,
-                    name: "yahaha",
-                    owner: "Maru",
-                },
-                {
-                    id: 5,
-                    name: "yahaha",
-                    owner: "Maru",
-                },
-                {
-                    id: 6,
-                    name: "yahaha",
-                    owner: "Maru",
-                },
-                {
-                    id: 7,
-                    name: "yahaha",
-                    owner: "Maru",
-                },
-            ],
-            artistsAndCreators: [
-                {
-                    id: 1,
-                    name: "artist",
-                },
-                {
-                    id: 2,
-                    name: "album",
-                },
-                {
-                    id: 3,
-                    name: "album",
-                },
-                {
-                    id: 4,
-                    name: "album",
-                },
-                {
-                    id: 5,
-                    name: "album",
-                },
-                {
-                    id: 6,
-                    name: "album",
-                },
-                {
-                    id: 1,
-                    name: "creator",
-                },
-                {
-                    id: 2,
-                    name: "creator",
-                },
-                {
-                    id: 3,
-                    name: "creator",
-                },
-                {
-                    id: 4,
-                    name: "creator",
-                },
-                {
-                    id: 5,
-                    name: "creator",
-                },
-                {
-                    id: 6,
-                    name: "creator",
-                },
-                {
-                    id: 7,
-                    name: "creator",
-                },
-            ],
-            albums: [
-                {
-                    id: 1,
-                    name: "album",
-                    owner: "Ruma",
-                },
-                {
-                    id: 2,
-                    name: "album",
-                    owner: "Ruma",
-                },
-                {
-                    id: 3,
-                    name: "album",
-                    owner: "Ruma",
-                },
-                {
-                    id: 4,
-                    name: "album",
-                    owner: "Ruma",
-                },
-                {
-                    id: 5,
-                    name: "album",
-                    owner: "Ruma",
-                },
-                {
-                    id: 6,
-                    name: "album",
-                    owner: "Ruma",
-                },
-                {
-                    id: 7,
-                    name: "album",
-                    owner: "Ruma",
-                },
             ],
             sortByOpen: false,
             selectedSortBy: {},
@@ -155,6 +52,22 @@ export default {
         changeSortOption(option) {
             this.selectedSortBy = option;
             this.toggleSortByOpen();
+        },
+        checkPath(playlist) {
+            console.log(playlist.playlistCoverPath)
+            return playlist.playlistCoverPath != '' ? playlist.playlistCoverPath : "https://localhost:44373/Uploads/Covers/note.png";
+        },
+        setPlaylist(playlistId) {
+            this.$store.dispatch("setPlaylist", playlistId);
+        },
+        setAlbum(albumId) {
+            this.$store.dispatch("setAlbum", albumId);
+        },
+        setArtist(artistId) {
+            this.$store.dispatch("setArtist", artistId);
+        },
+        setCreator(creatorId) {
+            this.$store.dispatch("setCreator", creatorId);
         }
     },
     created() {
@@ -182,20 +95,23 @@ export default {
         </div>
         <div class="content" v-if="sortType == 'playlist'">
             <div class="header">
-                <h2>藝人與創作者</h2>
+                <h2>播放清單</h2>
             </div>
             <div class="innerContent">
-                <Card v-for="playlist in playlists" :key="playlist.id" class="playlistCard">
-                    <template #picture>
-                        <img src="" alt="">
-                    </template>
-                    <template #name>
-                        <span>{{ playlist.name }}</span>
-                    </template>
-                    <template #desc>
-                        <div>擁有者:{{ playlist.owner }}</div>
-                    </template>
-                </Card>
+                <RouterLink to="/playlist" v-for="playlist in playlists" :key="playlist.id"
+                    @click="setPlaylist(playlist.id)">
+                    <Card class="playlistCard">
+                        <template #picture>
+                            <img :src=checkPath(playlist) alt="">
+                        </template>
+                        <template #name>
+                            <span>{{ playlist.listName }}</span>
+                        </template>
+                        <template #desc>
+                            <div>擁有者:{{ playlist.owner }}</div>
+                        </template>
+                    </Card>
+                </RouterLink>
             </div>
         </div>
         <div class="content" v-else-if="sortType == 'artistAndCreator'">
@@ -203,14 +119,26 @@ export default {
                 <h2>藝人與創作者</h2>
             </div>
             <div class="innerContent">
-                <Card v-for="creator in artistsAndCreators" :key="creator.id">
-                    <template #picture>
-                        <img src="" alt="">
-                    </template>
-                    <template #name>
-                        <span>{{ creator.name }}</span>
-                    </template>
-                </Card>
+                <RouterLink to="/creator" v-for="creator in creators" :key="creator.id" @click="setCreator(creator.Id)">
+                    <Card>
+                        <template #picture>
+                            <img src="" alt="">
+                        </template>
+                        <template #name>
+                            <span>{{ creator.name }}</span>
+                        </template>
+                    </Card>
+                </RouterLink>
+                <RouterLink to="/artist" v-for="artist in artists" :key="artist.id" @click="setCreator(artist.Id)">
+                    <Card>
+                        <template #picture>
+                            <img src="" alt="">
+                        </template>
+                        <template #name>
+                            <span>{{ artist.name }}</span>
+                        </template>
+                    </Card>
+                </RouterLink>
             </div>
         </div>
         <div class="content" v-else>
@@ -218,17 +146,19 @@ export default {
                 <h2>專輯</h2>
             </div>
             <div class="innerContent">
-                <Card v-for="album in albums" :key="album.id">
-                    <template #picture>
-                        <img src="" alt="">
-                    </template>
-                    <template #name>
-                        <span>{{ album.name }}</span>
-                    </template>
-                    <template #desc>
-                        <div>擁有者:{{ album.owner }}</div>
-                    </template>
-                </Card>
+                <RouterLink to="/album" v-for="album in albums" :key="album.id" @click="setAlbum(album.id)">
+                    <Card>
+                        <template #picture>
+                            <img :src=album.albumCoverPath alt="">
+                        </template>
+                        <template #name>
+                            <span>{{ album.albumName }}</span>
+                        </template>
+                        <template #desc>
+                            <div>{{ album.mainArtistName }}</div>
+                        </template>
+                    </Card>
+                </RouterLink>
             </div>
         </div>
     </div>
@@ -236,8 +166,9 @@ export default {
 <style lang="scss" scoped>
 .container {
     width: 100%;
+    min-height: 42rem;
     height: auto;
-    padding: 4rem 3rem;
+    padding: 3rem 3rem 4rem 3rem;
     background-color: #1F2124;
 
     >#librarySort {
