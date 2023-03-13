@@ -17,16 +17,20 @@
           <td>{{ item.productPrice }}</td>
           <td>
             <button
-              @click="decreaseItemQuantity(item)"
+              @click="decreaseItemQuantity(item, item.productId)"
               :disabled="item.qty <= 1"
             >
               -
             </button>
             {{ item.qty }}
-            <button @click="increaseItemQuantity(item)">+</button>
+            <button @click="increaseItemQuantity(item, item.productId)">
+              +
+            </button>
           </td>
           <td>{{ item.productPrice * item.qty }}</td>
-          <td><button @click="removeItem(index)">Remove</button></td>
+          <td>
+            <button @click="removeItem(index, item.id)">Remove</button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -76,35 +80,67 @@ export default {
     const membercart = reactive({ value: [] });
     const addcart = reactive("");
 
-    const addCartItem = (itemId) => {
-      fetch("https://localhost:7043/Carts/1/CartAdd/4", {
+    const increaseCartItem = (id) => {
+      fetch(`https://localhost:7043/Carts/increaseCart/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
+          Accepted: "text/plain",
         },
-        body: JSON.stringify({
-          qty: itemId, // 將 qty 的值更新為 10，可以根據實際需求修改
-        }),
+
+        credentials: "include",
+      })
+        .then((res) => res.text())
+        .then((data) => {
+          console.log(data);
+        });
+    };
+
+    const decreaseCartItem = (id) => {
+      fetch(`https://localhost:7043/Carts/decreaseCart/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Accepted: "text/plain",
+        },
+
+        credentials: "include",
+      })
+        .then((res) => res.text())
+        .then((data) => {
+          console.log(data);
+        });
+    };
+
+    const deleteCartItem = (id) => {
+      fetch(`https://localhost:7043/Carts/DeleteCart/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        credentials: "include",
       })
         .then((res) => res.json())
         .then((data) => {
-          addcart.value = data.qty;
-          console.log(addcart);
+          console.log(data);
         });
     };
 
     onMounted(() => {
-      fetch("https://localhost:7043/Carts/CartItem?memberId=12", {
+      fetch("https://localhost:7043/Carts/CartItem", {
         method: "GET",
+        credentials: "include",
       })
         .then((res) => res.json())
         .then((data) => {
           membercart.value = data;
 
-          console.log(membercart);
+          console.log("this", membercart);
         });
       fetch("https://localhost:7043/Carts/CartCoupon", {
         method: "GET",
+        credentials: "include",
       })
         .then((res) => res.json())
         .then((data) => {
@@ -112,13 +148,7 @@ export default {
 
           console.log(options);
         });
-      // const select = document.querySelector(".selected-option");
-      // const defaultOption = document.createElement("option");
-      // defaultOption.value = "";
-      // defaultOption.disabled = true;
-      // defaultOption.selected = true;
-      // defaultOption.textContent = "請選擇一個選項";
-      // select.insertBefore(defaultOption, select.firstChild);
+
     });
 
     const cartTotal = computed(() => {
@@ -132,17 +162,24 @@ export default {
       console.log(e.target.value);
     };
 
-    const decreaseItemQuantity = (item) => {
+    const decreaseItemQuantity = (item, productId) => {
       item.qty--;
+      const id = productId;
+      decreaseCartItem(id);
     };
 
-    const increaseItemQuantity = (item) => {
+    const increaseItemQuantity = (item, productId) => {
       item.qty++;
-      addCartItem(item.id);
+      const id = productId;
+      increaseCartItem(id);
     };
 
-    const removeItem = (index) => {
-      cartItems.splice(index, 1);
+    const removeItem = (index, itemid) => {
+      const id = itemid;
+
+      membercart.value.splice(index, 1);
+
+      deleteCartItem(id);
     };
 
     return {
@@ -153,7 +190,9 @@ export default {
       increaseItemQuantity,
       removeItem,
       showvalue,
-      addCartItem,
+      increaseCartItem,
+      decreaseCartItem,
+      deleteCartItem,
     };
   },
 };
