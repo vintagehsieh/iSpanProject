@@ -12,7 +12,7 @@ const getters = {
 // actions 也是以 Object 形式建構。
 const actions = {
     async setCreator({ commit }, creatorId) {
-        const response = await http(`https://localhost:7043/Creators/${creatorId}`);
+        const response = await http(`https://localhost:7043/Creators/${creatorId}/Detail`);
         const responseCreator = await response.json();
         commit("setCreator", responseCreator);
     }
@@ -22,6 +22,7 @@ const actions = {
 const mutations = {
     setCreator(state, payload) {
         state.creator = payload;
+        console.log(state.creator)
     },
 }
 
