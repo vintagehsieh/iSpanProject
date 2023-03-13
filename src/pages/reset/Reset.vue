@@ -25,9 +25,8 @@ export default {
 
     const handReset = async () => {
       await axios
-        .patch(
-          "https://localhost:7043//Members/ResendConfirmCode",
-          reset,
+        .get(
+          `https://localhost:7043/Members/ForgetPassword?email=${reset.email}`,
           {
             headers: {
               "Content-Type": "application/json",
