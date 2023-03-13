@@ -49,8 +49,8 @@ module.exports = defineConfig({
       chunks: ["chunk-vendors", "chunk-common", "index"],
     },
   },
-  // devServer: {
-  //   port: "8080",
-  //   https: true,
-  // },
+  devServer: {
+    port: "8080",
+    https: true,
+  },
 });

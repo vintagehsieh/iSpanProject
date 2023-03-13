@@ -9,6 +9,7 @@ export default {};
       </a>
     </div>
     <div id="links">
+      <a href="shop.html" class="pageLink">商城</a>
       <a href="music.html" class="pageLink">音樂</a>
       <a href="activity.html" class="pageLink">活動</a>
     </div>
@@ -16,10 +17,16 @@ export default {};
       <font-awesome-icon icon="fa-regular fa-circle-user" class="icon" />
       <span>會員登入</span>
     </div>
+    <div id="cart">
+      <a href="http://localhost:8080/shop.html#/cart" class="pageLink"
+        >購物車</a
+      >
+    </div>
   </nav>
   <router-link to="/productItem">商品</router-link>
   <router-link to="/cart">購物車</router-link>
   <router-link to="/checkout">結帳</router-link>
+  <router-link to="/shopSecond">測試</router-link>
   <router-view id="page" />
 </template>
 
