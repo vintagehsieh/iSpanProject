@@ -93,6 +93,12 @@ export default {
         notHoverSong(i) {
             this.artist.popularSongs[i].isHover = false;
         },
+        setAlbum(albumId) {
+            this.$store.dispatch('setAlbum', albumId);
+        },
+        setPlaylist(playlistId) {
+            this.$store.dispatch('setPlaylist', playlistId);
+        },
     }
 };
 </script>
@@ -166,14 +172,17 @@ export default {
                     <span>專輯作品</span>
                 </div>
                 <div class="items" id="albums">
-                    <Card v-for="album in artist.popularAlbums" :key="album.id">
-                        <template #picture>
-                            <img :src=album.albumCoverPath alt="">
-                        </template>
-                        <template #name>
-                            <h3>{{ album.albumName }}</h3>
-                        </template>
-                    </Card>
+                    <RouterLink to="/album" v-for="album in artist.popularAlbums" :key="album.id"
+                        @click="setAlbum(album.id)">
+                        <Card>
+                            <template #picture>
+                                <img :src=album.albumCoverPath alt="">
+                            </template>
+                            <template #name>
+                                <h3>{{ album.albumName }}</h3>
+                            </template>
+                        </Card>
+                    </RouterLink>
                 </div>
             </div>
             <div id="popPlaylists">
@@ -181,17 +190,20 @@ export default {
                     <span>演出清單</span>
                 </div>
                 <div class="items" id="playlists">
-                    <Card v-for="playlist in artist.includedPlaylists" :key="playlist.id">
-                        <template #picture>
-                            <img :src=playlist.playlistCoverPath alt="">
-                        </template>
-                        <template #name>
-                            <h3>{{ playlist.listName }}</h3>
-                        </template>
-                        <template #desc>
-                            <!-- <p>{{ playlist.mainArtistName[0] }}</p> -->
-                        </template>
-                    </Card>
+                    <RouterLink to="/playlist" v-for="playlist in artist.includedPlaylists" :key="playlist.id"
+                        @click="setPlaylist(playlist.id)">
+                        <Card>
+                            <template #picture>
+                                <img :src=playlist.playlistCoverPath alt="">
+                            </template>
+                            <template #name>
+                                <h3>{{ playlist.listName }}</h3>
+                            </template>
+                            <template #desc>
+                                <!-- <p>{{ playlist.mainArtistName[0] }}</p> -->
+                            </template>
+                        </Card>
+                    </RouterLink>
                 </div>
             </div>
             <div id="relatedArtists">

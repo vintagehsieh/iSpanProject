@@ -256,12 +256,9 @@ export default {
             this.modalOpen = false;
         },
         async updatePlaylist() {
+            console.log("hello")
             var form = document.querySelector('#form');
             const formData = new FormData(form);
-
-            // for (let [key, value] of formData.entries()) {
-            //     console.log(key + ': ' + value);
-            // }
 
             await fetch(`https://localhost:7043/Playlists/${this.playlist.id}/Detail`, {
                 method: 'PUT',
@@ -498,8 +495,10 @@ export default {
                 <div class="pic">
                     <input type="file" id="imageUpload" name="PlaylistCover" style="display: none" @change="setPic">
                     <label for="imageUpload">
+                        <img :src=playlist.playlistCoverPath alt=""
+                            v-if="playlist.playlistCoverPath != 'https://localhost:44373/Uploads/Covers/'" id="preview">
                         <img src="@/assets/music-note-icon-song-melody-tune-flat-symbol-free-vector.webp" alt=""
-                            id="preview">
+                            id="preview" v-else>
                     </label>
                 </div>
                 <div class="name">
@@ -510,7 +509,7 @@ export default {
                         <textarea rows="7" cols="40" placeholder="關於" name="Description" />
                     </div>
                     <div id="submit">
-                        <button type="button" @click="updatePlaylist, hideModal">完成</button>
+                        <button type="button" @click="updatePlaylist(), hideModal()">完成</button>
                     </div>
                 </div>
             </form>

@@ -101,6 +101,9 @@ export default {
     setAlbum(albumId) {
       this.$store.dispatch('setAlbum', albumId);
     },
+    setPlaylist(playlistId) {
+      this.$store.dispatch('setPlaylist', playlistId);
+    },
     setArtist(artistId) {
       this.$store.dispatch('setArtist', artistId);
     },
@@ -167,52 +170,61 @@ export default {
         </div>
         <div id="artistHeader" class="header" v-if="searchArtists != undefined && searchArtists.length != 0">藝人</div>
         <div id="Artists">
-          <Card v-for="artist in searchArtists" :keys="artist.id">
-            <template #picture>
-              <img :src=artist.artistPicPath alt="">
-            </template>
-            <template #name>
-              <div>{{ artist.artistName }}</div>
-            </template>
-          </Card>
+          <RouterLink to="/artist" v-for="artist in searchArtists" :keys="artist.id" @click="setArtist(artist.id)">
+            <Card>
+              <template #picture>
+                <img :src=artist.artistPicPath alt="">
+              </template>
+              <template #name>
+                <div>{{ artist.artistName }}</div>
+              </template>
+            </Card>
+          </RouterLink>
         </div>
         <div id="creatorHeader" class="header" v-if="searchCreators != undefined && searchCreators.length != 0">創作者</div>
         <div id="Creators">
-          <Card v-for="creator in searchCreators" :keys="creator.id">
-            <template #picture>
-              <img :src=creator.creatorPicPath alt="">
-            </template>
-            <template #name>
-              <div>{{ creator.creatorName }}</div>
-            </template>
-          </Card>
+          <RouterLink to="/creator" v-for="creator in searchCreators" :keys="creator.id" @click="setCreator(creator.id)">
+            <Card>
+              <template #picture>
+                <img :src=creator.creatorPicPath alt="">
+              </template>
+              <template #name>
+                <div>{{ creator.creatorName }}</div>
+              </template>
+            </Card>
+          </RouterLink>
         </div>
         <div id="albumHeader" class="header" v-if="searchAlbums != undefined && searchAlbums.length != 0">專輯</div>
         <div id="Albums">
-          <Card v-for="album in searchAlbums" :keys="album.id">
-            <template #picture>
-              <img :src=album.albumCoverPath alt="">
-            </template>
-            <template #name>
-              <div>{{ album.albumName }}</div>
-            </template>
-            <template #desc>
-              <div v-if="album.mainArtistName != ''">{{ album.mainArtistName }}</div>
-              <div v-else>{{ album.mainCreatorName }}</div>
-            </template>
-          </Card>
+          <RouterLink to="/album" v-for="album in searchAlbums" :keys="album.id" @click="setAlbum(album.id)">
+            <Card>
+              <template #picture>
+                <img :src=album.albumCoverPath alt="">
+              </template>
+              <template #name>
+                <div>{{ album.albumName }}</div>
+              </template>
+              <template #desc>
+                <div v-if="album.mainArtistName != ''">{{ album.mainArtistName }}</div>
+                <div v-else>{{ album.mainCreatorName }}</div>
+              </template>
+            </Card>
+          </RouterLink>
         </div>
         <div id="playlistHeader" class="header" v-if="searchPlaylists != undefined && searchPlaylists.length != 0">播放清單
         </div>
         <div id="Playlists">
-          <Card v-for="playlist in searchPlaylists" :keys="playlist.id">
-            <template #picture>
-              <img :src=playlist.playlistCoverPath alt="">
-            </template>
-            <template #name>
-              <span>{{ playlist.listName }}</span>
-            </template>
-          </Card>
+          <RouterLink to="/playlist" v-for="playlist in searchPlaylists" :keys="playlist.id"
+            @click="setPlaylist(playlist.id)">
+            <Card>
+              <template #picture>
+                <img :src=playlist.playlistCoverPath alt="">
+              </template>
+              <template #name>
+                <span>{{ playlist.listName }}</span>
+              </template>
+            </Card>
+          </RouterLink>
         </div>
       </div>
     </div>
