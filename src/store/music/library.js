@@ -1,10 +1,10 @@
 import http from "@/plugins/http";
 // count state 必須是 Object
 const state = {
-    albums: {},
-    playlists: {},
-    artists: {},
-    creators: {},
+    albums: [],
+    playlists: [],
+    artists: [],
+    creators: [],
 }
 
 // getters 也可以整理到這邊直接返回 count 內容
@@ -12,7 +12,7 @@ const getters = {
     getAlbums: state => state.albums,
     getPlaylists: state => state.playlists,
     getArtists: state => state.artists,
-    getCreators: state => state.Creators,
+    getCreators: state => state.creators,
 }
 
 // actions 也是以 Object 形式建構。

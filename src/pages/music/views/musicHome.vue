@@ -197,11 +197,11 @@ export default {
             <span class="showAll" @click="showAllPopSongs(popularCreators)">{{ showAll }}</span>
           </div>
           <div class="content">
-            <RouterLink v-for="creator in slicePopulars(popularCreators)" :key="creator.id" to="/artist"
+            <RouterLink v-for="creator in slicePopulars(popularCreators)" :key="creator.id" to="/creator"
               @click="setCreator(creator.id)">
               <Card>
                 <template #picture>
-                  <img :src=creator.creatorCoverPath alt="">
+                  <img :src=creator.creatorPicPath alt="">
                 </template>
                 <template #name>
                   <h3>{{ creator.creatorName }}</h3>
@@ -278,10 +278,10 @@ export default {
         </Card>
       </RouterLink>
       <RouterLink v-show="showAllName == popularCreators.headerName" v-for="creator in popularCreators.items"
-        :key="creator.id" to="/artist" @click="setCreator(creator.id)">
+        :key="creator.id" to="/creator" @click="setCreator(creator.id)">
         <Card>
           <template #picture>
-            <img :src=creator.creatorCoverPath alt="">
+            <img :src=creator.creatorPicPath alt="">
           </template>
           <template #name>
             <h3>{{ creator.creatorName }}</h3>

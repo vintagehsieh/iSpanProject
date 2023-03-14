@@ -9,6 +9,7 @@ export default {
         var musicPlayer = new Audio();
 
         store.dispatch('fetchQueueDataAsync');
+        store.dispatch('fetchRecentlyPlayed');
 
         const currentSong = computed(() => {
             return store.getters.getCurrentSong;
@@ -178,6 +179,7 @@ export default {
                 .catch(error => console.error(error))
             await this.$store.dispatch('fetchQueueDataAsync');
             this.reSetPlayer();
+            this.$store.dispatch('fetchRecentlyPlayed')
         },
         async previousSong() {
             if (this.musicPlayer.currentTime > 5) {
@@ -197,6 +199,7 @@ export default {
                 .catch(error => console.error(error))
             await this.$store.dispatch('fetchQueueDataAsync');
             this.reSetPlayer();
+            this.$store.dispatch('fetchRecentlyPlayed')
         },
         reSetPlayer() {
             if (this.playStatus) {

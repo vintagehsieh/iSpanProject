@@ -10,6 +10,7 @@ import MusicPlaylist from "@/pages/music/views/musicPlaylist.vue"
 import CategorySearch from "@/pages/music/views/categorySearch.vue";
 import MusicAlbum from "@/pages/music/views/musicAlbum.vue";
 import MusicArtist from "@/pages/music/views/musicArtist.vue";
+import MusicCreator from "@/pages/music/views/musicCreator.vue";
 
 const routes = [
   {
@@ -46,7 +47,12 @@ const routes = [
     path: "/artist",
     name: "artist",
     component: MusicArtist,
-  }
+  },
+  {
+    path: "/creator",
+    name: "creator",
+    component: MusicCreator,
+  },
 ];
 
 const router = createRouter({
