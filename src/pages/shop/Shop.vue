@@ -17,10 +17,9 @@ export default {
     <div class="sideContainer">
       <ShopSide />
     </div>
-    <router-link to="/productItem">商品</router-link>
+    <!-- <router-link to="/productItem">商品</router-link>
     <router-link to="/cart">購物車</router-link>
-    <router-link to="/checkout">結帳</router-link>
-    <router-view id="page" />
+    <router-link to="/checkout">結帳</router-link> -->
   </div>
 </template>
 
@@ -73,6 +72,7 @@ body {
       left: 0;
       top: 20px;
       height: 100%;
+      width: 100%;
     }
     .view {
       flex: 1;
@@ -81,8 +81,8 @@ body {
       display: flex;
       justify-content: start;
       align-items: start;
-      padding-top: 7rem;
-      margin-left: 9rem;
+      margin-top: -8rem;
+      margin-left: 3rem;
     }
   }
 }

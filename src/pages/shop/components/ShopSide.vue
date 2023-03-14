@@ -17,7 +17,9 @@ export default {
   <div class="content">
     <div class="navbar">
       <p>
-        歡迎！<span style="color: orange">{{ username }}</span>
+        嗨，<span style="color: orange">{{ username }}</span
+        ><br />
+        今天想買什麼?
       </p>
       <div class="logo">
         <img src="@/assets/ae86bc6c9055369fd5ebd8d884a587ae.jpg" alt="" />
@@ -65,11 +67,12 @@ export default {
       font-size: 1.5rem;
       margin-bottom: 1.75rem;
       letter-spacing: 4px;
+      text-align: center;
     }
     .logo {
       position: relative;
-      width: 225px;
-      height: 225px;
+      width: 175px;
+      height: 175px;
       overflow: hidden;
       border-radius: 50%;
       img {
@@ -81,7 +84,7 @@ export default {
       }
     }
     .link {
-      margin-top: 5rem;
+      margin-top: 4rem;
       margin-left: -10px;
       a {
         display: flex;

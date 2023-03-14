@@ -159,7 +159,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .shopping-cart {
   font-family: Arial, sans-serif;
   max-width: 2000px;
