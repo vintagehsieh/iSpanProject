@@ -124,6 +124,7 @@ export default {
             return (hours == 0) ? minutes + '分鐘' + seconds + '秒' : hours + '小時' + minutes + '分鐘';
         },
         async togglePlay() {
+            this.$store.dispatch('setForcePlayMode', true);
             await fetch(`https://localhost:7043/Queues/${this.album.id}`, {
                 method: "PUT",
                 headers: {

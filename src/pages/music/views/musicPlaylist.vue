@@ -26,6 +26,7 @@ export default {
     },
     methods: {
         async togglePlay() {
+            this.$store.dispatch('setForcePlayMode', true);
             // this.isPlaying = !this.isPlaying;
             await fetch(`https://localhost:7043/Queues/${this.playlist.id}`, {
                 method: "PUT",
@@ -41,7 +42,7 @@ export default {
                 .then(data => console.log(data))
                 .catch(error => console.error(error))
 
-            this.$store.dispatch("fetchQueueDataAsync");
+            await this.$store.dispatch("fetchQueueDataAsync");
         },
         togglePlalistLiked() {
             this.playlist.isLiked = !this.playlist.isLiked;
@@ -256,7 +257,6 @@ export default {
             this.modalOpen = false;
         },
         async updatePlaylist() {
-            console.log("hello")
             var form = document.querySelector('#form');
             const formData = new FormData(form);
 
