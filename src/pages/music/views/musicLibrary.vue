@@ -30,7 +30,7 @@ export default {
             sortType: "playlist",
             sortByOptions: [
                 {
-                    name: "recentlyAdded",
+                    name: "RecentlyAdded",
                     value: "最近新增"
                 },
                 {
@@ -40,11 +40,18 @@ export default {
             ],
             sortByOpen: false,
             selectedSortBy: {},
+            query: {
+                IncludedLiked: true,
+                Condition: "RecentlyAdded",
+                Value: "",
+            },
+            searchValue: "",
         }
     },
     methods: {
         changeSortType(value) {
             this.sortType = value;
+            this.storeDispatch();
         },
         toggleSortByOpen() {
             this.sortByOpen = !this.sortByOpen;
@@ -52,12 +59,27 @@ export default {
         changeSortOption(option) {
             this.selectedSortBy = option;
             this.toggleSortByOpen();
+            this.query["IncludedLiked"] = true;
+            this.query["Condition"] = this.selectedSortBy.name;
+            this.query["Value"] = this.searchValue;
+            this.storeDispatch();
+        },
+        storeDispatch() {
+            if (this.sortType == "playlist") {
+                this.$store.dispatch('setPlaylists', this.query);
+            } else if (this.sortType == "album") {
+                this.$store.dispatch('setAlbums', this.query);
+            } else {
+                this.$store.dispatch('setArtists', this.query);
+                this.$store.dispatch('setCreators', this.query);
+            }
         },
         checkPath(playlist) {
             console.log(playlist.playlistCoverPath)
             return playlist.playlistCoverPath != '' ? playlist.playlistCoverPath : "https://localhost:44373/Uploads/Covers/note.png";
         },
         setPlaylist(playlistId) {
+
             this.$store.dispatch("setPlaylist", playlistId);
         },
         setAlbum(albumId) {
@@ -68,6 +90,9 @@ export default {
         },
         setCreator(creatorId) {
             this.$store.dispatch("setCreator", creatorId);
+        }, search() {
+            this.query["Value"] = this.searchValue;
+            this.storeDispatch();
         }
     },
     created() {
@@ -81,6 +106,10 @@ export default {
             <div class="box" id="playlist" @click="changeSortType('playlist')">播放清單</div>
             <div class="box" id="artistAndCreator" @click="changeSortType('artistAndCreator')">藝人與創作者</div>
             <div class="box" id="album" @click="changeSortType('album')">專輯</div>
+            <div id="search">
+                <font-awesome-icon icon="fa-solid fa-magnifying-glass" style="font-size: 20px; margin-right: 8px;" />
+                <input type="text" placeholder="搜尋" v-model="searchValue" @keyup="search" />
+            </div>
             <div id="sortBy">
                 <div id="sortByBtn" @click="toggleSortByOpen()">
                     {{ selectedSortBy.value }}
@@ -201,7 +230,7 @@ export default {
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-left: auto;
+            margin-left: 1rem;
             background-color: #6b6b6b;
             border-radius: 50px;
             position: relative;
@@ -242,6 +271,27 @@ export default {
                 display: flex;
                 flex-wrap: wrap;
             }
+        }
+    }
+}
+
+#search {
+    width: 15rem;
+    height: 35px;
+    padding: 0 1rem;
+    margin-left: auto;
+    background-color: #fff;
+    border-radius: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    >input {
+        font-size: large;
+        border: none;
+
+        &:focus {
+            outline: none;
         }
     }
 }

@@ -44,11 +44,6 @@ export default {
     checkSearchValue() {
       return this.searchValue.trim().length != 0
     },
-    handleLinkClick(item) {
-      // Modify the shareData before navigating to the next page
-      this.sharedData.category.name = item.genreName;
-      this.sharedData.category.id = item.id;
-    },
     async search() {
       if (this.searchValue == "") return;
       this.searchAlbums = [];
@@ -110,6 +105,10 @@ export default {
     setCreator(creatorId) {
       this.$store.dispatch('setCreator', creatorId);
     },
+    async setGenre(category) {
+      await this.$store.dispatch('setGenre', category);
+      await this.$store.dispatch('loadGenreSongData');
+    }
   }
 };
 </script>
@@ -131,10 +130,13 @@ export default {
     </div>
     <div class="row">
       <div id="categories" v-if="checkSearchValue() == false">
-        <RouterLink v-for="item in SongGenres" :key="item.id" to="/categorySearch" @click="handleLinkClick(item)">
+        <RouterLink v-for="item in SongGenres" :key="item.id" to="/categorySearch" @click="setGenre(item)">
           <Card class="card">
+            <template #picture>
+              <img src="https://localhost:44373/Uploads/Covers/colorful-dots.jpg" alt="">
+            </template>
             <template #name>
-              <p>{{ item.genreName }}</p>
+              <p style="font-size: 20px">{{ item.genreName }}</p>
             </template>
           </Card>
         </RouterLink>

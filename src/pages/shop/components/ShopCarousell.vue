@@ -1,3 +1,27 @@
+<script>
+// Import Swiper Vue.js components
+import { Swiper, SwiperSlide } from "swiper/vue";
+
+// Import Swiper styles
+import "swiper/css";
+import "swiper/css/effect-coverflow";
+import "swiper/css/pagination";
+
+// import required modules
+import { EffectCoverflow, Pagination } from "swiper";
+
+export default {
+  components: {
+    Swiper,
+    SwiperSlide,
+  },
+  setup() {
+    return {
+      modules: [EffectCoverflow, Pagination],
+    };
+  },
+};
+</script>
 <template>
   <swiper
     :effect="'coverflow'"
@@ -15,9 +39,13 @@
     :modules="modules"
     class="mySwiper"
   >
+    <!-- <img
+            src="https://localhost:44373/Uploads/Covers/a34e5d0ba87b4801a54f119f77165616.jpg" /></router-link></swiper-slide
+      > -->
     <swiper-slide
-      ><img
-        src="https://swiperjs.com/demos/images/nature-1.jpg" /></swiper-slide
+      ><router-link to="/productItem/1">
+        <img
+          src="https://swiperjs.com/demos/images/nature-1.jpg" /></router-link></swiper-slide
     ><swiper-slide
       ><img
         src="https://swiperjs.com/demos/images/nature-2.jpg" /></swiper-slide
@@ -44,33 +72,8 @@
     /></swiper-slide>
   </swiper>
 </template>
-<script>
-// Import Swiper Vue.js components
-import { Swiper, SwiperSlide } from "swiper/vue";
 
-// Import Swiper styles
-import "swiper/css";
-
-import "swiper/css/effect-coverflow";
-import "swiper/css/pagination";
-
-// import required modules
-import { EffectCoverflow, Pagination } from "swiper";
-
-export default {
-  components: {
-    Swiper,
-    SwiperSlide,
-  },
-  setup() {
-    return {
-      modules: [EffectCoverflow, Pagination],
-    };
-  },
-};
-</script>
-
-<style>
+<style lang="scss" scoped>
 .swiper {
   width: 100%;
   padding-top: 50px;
@@ -82,10 +85,9 @@ export default {
   background-size: cover;
   width: 300px;
   height: 300px;
-}
-
-.swiper-slide img {
-  display: block;
-  width: 100%;
+  img {
+    display: block;
+    width: 100%;
+  }
 }
 </style>

@@ -135,6 +135,7 @@ export default {
     thead {
       background-color: #707070;
       tr {
+        font-size: 1.25rem;
         &:nth-child(odd) {
           background-color: #f7f7f7;
         }

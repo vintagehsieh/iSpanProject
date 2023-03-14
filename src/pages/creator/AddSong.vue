@@ -2,7 +2,6 @@
 <template>
   <div>
     <a-form :model="song" name="basic" layout="vertical" autocomplete="off">
-
       <div class="row">
         <div class="col-lg-6 col-12">
           <a-form-item label="歌名" name="歌名">
@@ -181,8 +180,5 @@ const addsong = () => {
       submit_load.value = false;
     });
 }
-
-
-
 </script>
 <style></style>

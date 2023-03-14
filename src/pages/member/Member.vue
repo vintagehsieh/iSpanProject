@@ -1,15 +1,20 @@
 <script>
 import MemberSide from "@/pages/member/components/MemberSide";
-import Header from "@/pages/member/components/Header.vue";
+import MemberHeader from "@/pages/member/components/MemberHeader.vue";
+import Cookies from "js-cookie";
+import axios from "axios";
+import { useRouter, useRoute } from "vue-router";
 import { onMounted, ref } from "vue";
 
 export default {
   components: {
     MemberSide,
-    Header,
+    MemberHeader,
   },
   setup() {
     const isLogin = ref(false);
+    const router = useRouter();
+    const route = useRoute();
     onMounted(() => {
       const isLoginLocalStorage = localStorage.getItem("isLogin");
       if (isLoginLocalStorage) {
@@ -18,7 +23,41 @@ export default {
         isLogin.value = false;
       }
     });
-    return { isLogin };
+    const handLogout = () => {
+      // 把isLogin改回false
+      isLogin.value = false;
+
+      // 清除cookie和localstorage
+      Cookies.remove("loginInfo");
+      Cookies.remove("UserID");
+      localStorage.clear();
+
+      deleteCookie();
+      setTimeout(() => {
+        redirect();
+      }, 1000);
+    };
+
+    const redirect = () => {
+      window.history.pushState({}, "", "/");
+      window.location.reload();
+    };
+
+    const deleteCookie = () => {
+      axios
+        .post(
+          "https://localhost:7043/Members/MemberLogOut",
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          },
+          { withCredentials: true }
+        )
+        .then((res) => {})
+        .catch((err) => {});
+    };
+    return { isLogin, handLogout };
   },
 };
 </script>
@@ -26,7 +65,7 @@ export default {
   <div class="container">
     <!-- header -->
     <div class="headContainer">
-      <Header :isLogin="isLogin" :handLogout="handLogout" />
+      <MemberHeader :isLogin="isLogin" :handLogout="handLogout" />
     </div>
     <!-- side -->
     <div class="sideContainer">

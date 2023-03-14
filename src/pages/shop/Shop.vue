@@ -1,33 +1,26 @@
 <script>
-export default {};
+import ShopHeader from "@/pages/shop/components/ShopHeader";
+import ShopSide from "@/pages/shop/components/ShopSide";
+
+export default {
+  components: {
+    ShopHeader,
+    ShopSide,
+  },
+};
 </script>
 <template>
-  <nav id="header">
-    <div id="logo">
-      <a href="index.html">
-        <img src="@/assets/logo.png" alt="" />
-      </a>
+  <div class="container">
+    <div class="headContainer">
+      <ShopHeader />
     </div>
-    <div id="links">
-      <a href="shop.html" class="pageLink">商城</a>
-      <a href="music.html" class="pageLink">音樂</a>
-      <a href="activity.html" class="pageLink">活動</a>
+    <div class="sideContainer">
+      <ShopSide />
     </div>
-    <div id="user">
-      <font-awesome-icon icon="fa-regular fa-circle-user" class="icon" />
-      <span>會員登入</span>
-    </div>
-    <div id="cart">
-      <a href="http://localhost:8080/shop.html#/cart" class="pageLink"
-        >購物車</a
-      >
-    </div>
-  </nav>
-  <router-link to="/productItem">商品</router-link>
-  <router-link to="/cart">購物車</router-link>
-  <router-link to="/checkout">結帳</router-link>
-  <router-link to="/shopSecond">測試</router-link>
-  <router-view id="page" />
+    <!-- <router-link to="/productItem">商品</router-link>
+    <router-link to="/cart">購物車</router-link>
+    <router-link to="/checkout">結帳</router-link> -->
+  </div>
 </template>
 
 <style lang="scss">
@@ -42,54 +35,55 @@ export default {};
   list-style: none;
 }
 
-#header {
-  width: 100%;
-  height: 8rem;
-  background-color: #2c7dd8;
-  display: flex;
-  align-items: center;
-
-  #logo {
-    display: flex;
-    width: 200px;
-    height: 70px;
-    overflow: hidden;
-    margin-left: 4rem;
-    margin-bottom: 2rem;
-
-    a img {
-      display: flex;
-      width: max(10vw, 200px);
-      scale: 2;
-    }
-  }
-
-  #links {
-    width: 16rem;
-    margin-left: 45rem;
-    display: flex;
-    justify-content: space-around;
-
-    .pageLink {
-      color: white;
-      width: 5rem;
-      font-size: 30px;
-      text-decoration: none;
-    }
-  }
-
-  #user {
-    margin-left: 5rem;
-    color: white;
-    font-size: 25px;
-
-    .icon {
-      margin-right: 5px;
-    }
-  }
+img {
+  display: block;
 }
 
-#page {
-  padding: 2rem 8rem;
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+
+#shop {
+  width: 100%;
+  height: 100%;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: hsl(210, 29%, 24%);
+
+  .container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    .headContainer {
+      display: block;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    .sideContainer {
+      position: sticky;
+      left: 0;
+      top: 20px;
+      height: 100%;
+      width: 100%;
+    }
+    .view {
+      flex: 1;
+      overflow-y: scroll;
+      background-color: white;
+      display: flex;
+      justify-content: start;
+      align-items: start;
+      margin-top: -8rem;
+      margin-left: 3rem;
+    }
+  }
 }
 </style>
