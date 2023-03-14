@@ -2,14 +2,14 @@ import http from "@/plugins/http";
 
 // count state 必須是 Object
 const state = {
-    popSongRowNumber: 2,
+    popSongRowNumber: 1,
     popAlbumRowNumber: 1,
     popPlaylistRowNumber: 1,
     popArtistRowNumber: 1,
     popCreatorRowNumber: 1,
     popularSongs: {
         headerName: "熱門歌曲",
-        items: []
+        items: {}
     },
     popularAlbums: {
         headerName: "熱門專輯",
@@ -71,8 +71,8 @@ const actions = {
         const creators = await responseCreators.json();
         commit("setPopCreators", creators);
     },
-    increasePopSongRowNumber({ commit }) {
-        commit("increasePopSongRowNumber");
+    setPopSongRowNumber({ commit }, newRowNumber) {
+        commit("setPopSongRowNumber", newRowNumber);
     },
     setPopAlbumRowNumber({ commit }, newRowNumber) {
         commit("setPopAlbumRowNumber", newRowNumber);
@@ -82,9 +82,7 @@ const actions = {
 // mutations
 const mutations = {
     setPopSongs(state, payload) {
-        payload.forEach(element => {
-            state.popularSongs.items.push(element);
-        });
+        state.popularSongs.items = payload
     },
     setPopAlbums(state, payload) {
         state.popularAlbums.items = payload
@@ -98,8 +96,8 @@ const mutations = {
     setPopCreators(state, payload) {
         state.popularCreators.items = payload
     },
-    increasePopSongRowNumber(state) {
-        state.popSongRowNumber++;
+    setPopSongRowNumber(state, payload) {
+        state.popSongRowNumber = payload
         console.log(state.popSongRowNumber)
     },
     setPopAlbumRowNumber(state, payload) {

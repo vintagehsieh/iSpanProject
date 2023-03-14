@@ -6,16 +6,6 @@ export default {
   setup() {
     const member = ref([]);
     onMounted(() => {
-      getMember();
-    });
-    const formatDate = (dateString) => {
-      const date = new Date(dateString);
-      const year = date.getFullYear();
-      const month = (date.getMonth() + 1).toString().padStart(2, "0");
-      const day = date.getDate().toString().padStart(2, "0");
-      return `${year}/${month}/${day}`;
-    };
-    const getMember = () => {
       fetch("https://localhost:7043/Members", {
         method: "GET",
         credentials: "include",
@@ -25,19 +15,47 @@ export default {
         })
         .then((data) => {
           member.value = data;
-          data.memberEdit = false;
-          data.emailEdit = false;
         })
         .catch((error) => {
           console.error(error);
         });
+    });
+    const formatDate = (dateString) => {
+      const date = new Date(dateString);
+      const year = date.getFullYear();
+      const month = (date.getMonth() + 1).toString().padStart(2, "0");
+      const day = date.getDate().toString().padStart(2, "0");
+      return `${year}/${month}/${day}`;
     };
     const openForm = () => {
-      member.value.memberEdit = true;
+      var inputs = document.querySelectorAll(".name");
+      inputs.forEach((input) => {
+        input.removeAttribute("readonly");
+      });
+      var checkbox = document.querySelectorAll(".checkbox");
+      checkbox.forEach((input) => {
+        input.removeAttribute("disabled");
+      });
+      var openBtn = document.querySelector("#openBtn");
+      openBtn.setAttribute("hidden", true);
+      var saveBtn = document.querySelector("#saveBtn");
+      saveBtn.removeAttribute("hidden");
     };
     const saveForm = async () => {
+      var inputs = document.querySelectorAll(".name");
+      inputs.forEach((input) => {
+        input.setAttribute("readonly", true);
+      });
+      var checkbox = document.querySelectorAll(".checkbox");
+      checkbox.forEach((input) => {
+        input.setAttribute("disabled", true);
+      });
+      var openBtn = document.querySelector("#openBtn");
+      openBtn.removeAttribute("hidden", true);
+      var saveBtn = document.querySelector("#saveBtn");
+      saveBtn.setAttribute("hidden", true);
+      // =====================================================================================================================
       const data = {};
-      member.value.memberEdit = false;
       const myInputs = document.querySelectorAll(".name");
       const mycheckboxs = document.querySelectorAll(".checkbox");
       myInputs.forEach((myinput) => {
@@ -69,70 +87,20 @@ export default {
           // if (data === "更新成功") {
           //   alert("更新成功");
           // }
-          window.location.reload();
         })
         .catch((error) => {});
     };
     const sendCode = async () => {
-      const data = {};
-
-      const email = document.querySelector("#email");
-      data[email.id] = email.value;
-      const myConfirmForm = new FormData();
-      myConfirmForm.append("email", email.value);
-      fetch("https://localhost:7043/Members/ResendConfirmCode", {
-        method: "PATCH",
-        body: myConfirmForm,
-        credentials: "include",
-      })
-        .then((response) => {
-          if (response.ok) {
-            alert("已發送驗證碼，請去信箱收取信件");
-
-            return response.text();
-          } else {
-            alert("發生錯誤");
-          }
-        })
-        .then((data) => {
-          // if (data === "更新成功") {
-          // alert("更新成功");
-          // }
-        })
-        .catch((error) => {});
-    };
-    const openEmailForm = async () => {
-      member.value.emailEdit = true;
-    };
-    const saveEmailForm = async () => {
-      const emailInput = document.querySelector("#email");
-      const newEmail = emailInput.value;
-      const data = {};
-      if (newEmail === member.value.memberEmail) {
-        member.value.emailEdit = false;
-        return; // 值未變更，直接結束函式
-      }
-      member.value.emailEdit = false;
-      const email = document.querySelector("#email");
-      data[email.id] = email.value;
-
-      const myEmailForm = new FormData();
-      // for (const property in data) {
-      //   myEmailForm.append(property, data[property]);
-      // }
-      myEmailForm.append("email.Email", email.value);
-
-      fetch("https://localhost:7043/Members/UpdateEmail", {
-        method: "PATCH",
-        body: myEmailForm,
+      fetch("https://localhost:7043/Members", {
+        method: "PUT",
+        body: myForm,
         credentials: "include",
       })
         .then((response) => {
           if (response.ok) {
             return response.text();
           } else {
-            openEmailForm();
-
+            openForm();
             alert("更新失敗");
           }
         })
@@ -141,7 +109,51 @@ export default {
           // if (data === "更新成功") {
           //   alert("更新成功");
           // }
-          window.location.reload();
+        })
+        .catch((error) => {});
+    };
+    const openEmailInput = async () => {
+      var openBtn = document.querySelector("#emailOpenBtn");
+      openBtn.setAttribute("hidden", true);
+      var saveBtn = document.querySelector("#emailSaveBtn");
+      saveBtn.removeAttribute("hidden");
+      var input = document.querySelector("#email");
+      input.removeAttribute("readonly");
+    };
+    const saveEmailInput = async () => {
+      var openBtn = document.querySelector("#emailOpenBtn");
+      openBtn.removeAttribute("hidden");
+      var saveBtn = document.querySelector("#emailSaveBtn");
+      saveBtn.setAttribute("hidden", true);
+      var input = document.querySelector("#email");
+      input.setAttribute("readonly", true);
+      // ================================================================================================================
+      const data = {};
+      const myEmail = document.querySelector("#email");
+      data[email.id] = myEmail.value;
+      const myForm = new FormData();
+      for (const property in data) {
+        myForm.append(property, data[property]);
+      }
+
+      fetch("https://localhost:7043/Members/UpdateEmail", {
+        method: "PATCH",
+        body: myForm,
+        credentials: "include",
+      })
+        .then((response) => {
+          if (response.ok) {
+            return response.text();
+          } else {
+            openEmailInput();
+            alert("更新失敗");
+          }
+        })
+        .then((data) => {
+          console.log(data);
+          // if (data === "更新成功") {
+          //   alert("更新成功");
+          // }
         })
         .catch((error) => {});
     };
@@ -151,9 +163,8 @@ export default {
       openForm,
       saveForm,
       sendCode,
-      openEmailForm,
-      saveEmailForm,
-      getMember,
+      openEmailInput,
+      saveEmailInput,
     };
   },
 };
@@ -188,255 +199,138 @@ export default {
   </aside>
   <form class="form" id="myForm" @submit.prevent="saveForm">
     <h1 class="h1">使用者資訊</h1>
-    <!-- 如果是編輯狀態 就顯示 -->
-    <div v-if="member.memberEdit == true">
-      <div class="header">
-        <label class="title">個人資訊</label>
-        <!-- <button type="button" class="btn" id="openBtn" @click="openForm()">
-          變更
-        </button> -->
-        <button type="submit" class="btn" id="saveBtn" @click="saveForm()">
-          確認變更
-        </button>
+    <div class="header">
+      <label class="title">個人資訊</label>
+      <button type="button" class="btn" id="openBtn" @click="openForm()">
+        變更
+      </button>
+      <button type="submit" class="btn" id="saveBtn" hidden>確認變更</button>
+    </div>
+    <div class="m-input-box">
+      <div class="m-input">
+        <label for="name" class="label">暱稱</label>
+        <input
+          type="text"
+          class="name"
+          id="memberNickName"
+          readonly
+          :value="member.memberNickName"
+        />
       </div>
-
-      <div class="m-input-box">
-        <div class="m-input">
-          <label for="name" class="label">暱稱</label>
-          <input
-            type="text"
-            class="name"
-            id="memberNickName"
-            :value="member.memberNickName"
-          />
-        </div>
-        <div class="m-input">
-          <label for="name" class="label">出生日</label>
-          <input
-            type="text"
-            class="name"
-            id="memberDateOfBirth"
-            :value="formatDate(member.memberDateOfBirth)"
-          />
-        </div>
-        <div class="m-input">
-          <label for="name" class="label">地址</label>
-          <input
-            type="text"
-            class="name"
-            id="memberAddress"
-            :value="member.memberAddress"
-          />
-        </div>
-        <div class="m-input">
-          <label for="name" class="label">手機號碼：</label>
-          <input
-            type="text"
-            class="name"
-            id="memberCellphone"
-            :value="member.memberCellphone"
-          />
-        </div>
-        <div class="m-input">
-          <label for="name" class="label">接收郵件資訊</label>
-          <input
-            type="checkbox"
-            class="checkbox"
-            id="memberReceivedMessage"
-            :checked="member.memberReceivedMessage"
-          />
-        </div>
-        <div class="m-input">
-          <label for="name" class="label">分享資訊給平台</label>
-          <input
-            type="checkbox"
-            class="checkbox"
-            id="memberSharedData"
-            :checked="member.memberSharedData"
-          />
-        </div>
-        <div class="m-input">
-          <label for="name" class="label">公開行事曆</label>
-          <input
-            type="checkbox"
-            class="checkbox"
-            id="calenderPrivacy"
-            :checked="member.calenderPrivacy"
-          />
-        </div>
+      <div class="m-input">
+        <label for="name" class="label">出生日</label>
+        <input
+          type="text"
+          class="name"
+          id="memberDateOfBirth"
+          readonly="readonly"
+          :value="formatDate(member.memberDateOfBirth)"
+        />
+      </div>
+      <div class="m-input">
+        <label for="name" class="label">地址</label>
+        <input
+          type="text"
+          class="name"
+          id="memberAddress"
+          readonly="readonly"
+          :value="member.memberAddress"
+        />
+      </div>
+      <div class="m-input">
+        <label for="name" class="label">手機號碼：</label>
+        <input
+          type="text"
+          class="name"
+          id="memberCellphone"
+          readonly="readonly"
+          :value="member.memberCellphone"
+        />
+      </div>
+      <div class="m-input">
+        <label for="name" class="label">接收郵件資訊</label>
+        <input
+          type="checkbox"
+          class="checkbox"
+          id="memberReceivedMessage"
+          disabled
+          :checked="member.memberReceivedMessage"
+        />
+      </div>
+      <div class="m-input">
+        <label for="name" class="label">分享資訊給平台</label>
+        <input
+          type="checkbox"
+          class="checkbox"
+          id="memberSharedData"
+          disabled
+          :checked="member.memberSharedData"
+        />
+      </div>
+      <div class="m-input">
+        <label for="name" class="label">公開行事曆</label>
+        <input
+          type="checkbox"
+          class="checkbox"
+          id="calenderPrivacy"
+          disabled
+          :checked="member.calenderPrivacy"
+        />
       </div>
     </div>
-    <!-- 如果不是編輯狀態，就不顯示 -->
-    <div v-else>
-      <div class="header">
-        <label class="title">個人資訊</label>
-        <button type="button" class="btn" id="openBtn" @click="openForm()">
-          變更
-        </button>
-        <!-- <button type="submit" class="btn" id="saveBtn" hidden>確認變更</button> -->
-      </div>
-      <div class="m-input-box">
-        <div class="m-input">
-          <label for="name" class="label">暱稱</label>
-          <input
-            type="text"
-            class="name"
-            id="memberNickName"
-            readonly
-            :value="member.memberNickName"
-          />
-        </div>
-        <div class="m-input">
-          <label for="name" class="label">出生日</label>
-          <input
-            type="text"
-            class="name"
-            id="memberDateOfBirth"
-            readonly="readonly"
-            :value="formatDate(member.memberDateOfBirth)"
-          />
-        </div>
-        <div class="m-input">
-          <label for="name" class="label">地址</label>
-          <input
-            type="text"
-            class="name"
-            id="memberAddress"
-            readonly="readonly"
-            :value="member.memberAddress"
-          />
-        </div>
-        <div class="m-input">
-          <label for="name" class="label">手機號碼：</label>
-          <input
-            type="text"
-            class="name"
-            id="memberCellphone"
-            readonly="readonly"
-            :value="member.memberCellphone"
-          />
-        </div>
-        <div class="m-input">
-          <label for="name" class="label">接收郵件資訊</label>
-          <input
-            type="checkbox"
-            class="checkbox"
-            id="memberReceivedMessage"
-            disabled
-            :checked="member.memberReceivedMessage"
-          />
-        </div>
-        <div class="m-input">
-          <label for="name" class="label">分享資訊給平台</label>
-          <input
-            type="checkbox"
-            class="checkbox"
-            id="memberSharedData"
-            disabled
-            :checked="member.memberSharedData"
-          />
-        </div>
-        <div class="m-input">
-          <label for="name" class="label">公開行事曆</label>
-          <input
-            type="checkbox"
-            class="checkbox"
-            id="calenderPrivacy"
-            disabled
-            :checked="member.calenderPrivacy"
-          />
-        </div>
-      </div>
-    </div>
-  </form>
-  <form class="form" id="myEmailForm">
-    <div v-if="member.emailEdit == true">
-      <div class="header">
-        <label class="title">電子郵件信箱</label>
-        <button
-          type="submit"
-          class="btn"
-          id="emailSaveBtn"
-          @click="saveEmailForm()"
-        >
-          確認變更
-        </button>
-      </div>
 
-      <div class="email-input-box">
-        <div class="email-input">
-          <label for="email" class="label">電子郵件信箱</label>
-          <input type="text" id="email" :value="member.memberEmail" />
-        </div>
-        <!-- <button class="btn">變更</button> -->
-        <button class="btn-send" v-if="member.isConfirmed" hidden>
-          重發驗證信
-        </button>
-        <button type="submit" class="btn-send" v-else @click="sendCode()">
-          重發驗證信
-        </button>
-        <div class="email-input">
-          <label for="email" class="label">驗證狀態</label>
-          <span v-if="member.isConfirmed"
-            >驗證完成<i
-              class="fa-solid fa-circle-check"
-              style="color: #f6b352"
-            ></i
-          ></span>
-          <span v-else
-            >尚未完成<i
-              class="fa-solid fa-circle-xmark"
-              style="color: #df3737"
-            ></i
-          ></span>
-        </div>
-      </div>
+    <!-- -------------------------------------------------------------------------------------------- -->
+    <div class="header">
+      <label class="title">電子郵件信箱</label>
+      <button
+        type="button"
+        class="btn"
+        id="emailOpenBtn"
+        @click="openEmailInput()"
+      >
+        變更
+      </button>
+      <button
+        type="submit"
+        class="btn"
+        id="emailSaveBtn"
+        hidden
+        @click="saveEmailInput()"
+      >
+        確認變更
+      </button>
     </div>
-    <div v-else>
-      <div class="header">
-        <label class="title">電子郵件信箱</label>
-        <button
-          type="button"
-          class="btn"
-          id="emailOpenBtn"
-          @click="openEmailForm()"
-        >
-          變更
-        </button>
+    <div class="email-input-box">
+      <div class="email-input">
+        <label for="email" class="label">電子郵件信箱</label>
+        <input
+          type="text"
+          id="email"
+          readonly="readonly"
+          :value="member.memberEmail"
+        />
       </div>
-
-      <div class="email-input-box">
-        <div class="email-input">
-          <label for="email" class="label">電子郵件信箱</label>
-          <input
-            type="text"
-            id="email"
-            readonly="readonly"
-            :value="member.memberEmail"
-          />
-        </div>
-        <!-- <button class="btn">變更</button> -->
-        <button class="btn-send" v-if="member.isConfirmed" hidden>
-          重發驗證信
-        </button>
-        <button type="submit" class="btn-send" v-else @click="sendCode()">
-          重發驗證信
-        </button>
-        <div class="email-input">
-          <label for="email" class="label">驗證狀態</label>
-          <span v-if="member.isConfirmed"
-            >驗證完成<i
-              class="fa-solid fa-circle-check"
-              style="color: #f6b352"
-            ></i
-          ></span>
-          <span v-else
-            >尚未完成<i
-              class="fa-solid fa-circle-xmark"
-              style="color: #df3737"
-            ></i
-          ></span>
-        </div>
+      <!-- <button class="btn">變更</button> -->
+      <button class="btn-send" v-if="member.isConfirmed" hidden>
+        重發驗證信
+      </button>
+      <button type="submit" class="btn-send" v-else @click="sendCode()">
+        重發驗證信
+      </button>
+      <div class="email-input">
+        <label for="email" class="label">驗證狀態</label>
+        <span v-if="member.isConfirmed"
+          >驗證完成<i
+            class="fa-solid fa-circle-check"
+            style="color: #f6b352"
+          ></i
+        ></span>
+        <span v-else
+          >尚未完成<i
+            class="fa-solid fa-circle-xmark"
+            style="color: #df3737"
+          ></i
+        ></span>
       </div>
     </div>
   </form>
@@ -508,8 +402,7 @@ form {
     input {
       width: 300px;
       margin-left: 50px;
-      // border: none;
-      // background-color: white;
+      border: none;
     }
   }
 }
