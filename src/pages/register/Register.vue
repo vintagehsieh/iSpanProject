@@ -36,8 +36,8 @@ export default {
           successFn();
         })
         .catch((err) => {
-          console.log(err.response.data.errors);
-          errorFn(err.response.data.errors);
+          // console.log(err.response.data.errors);
+          // errorFn(err.response.data.errors);
         });
     };
 

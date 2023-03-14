@@ -9,6 +9,7 @@ export default {
       email: "",
     });
     const error_message = reactive({});
+    const isSubmitting = ref(false);
 
     const successFn = () => {
       alert("驗證信寄送成功");
@@ -24,6 +25,9 @@ export default {
     };
 
     const handReset = async () => {
+      if (isSubmitting.value) return;
+
+      isSubmitting.value = true;
       await axios
         .get(
           `https://localhost:7043/Members/ForgetPassword?email=${reset.email}`,
@@ -37,6 +41,7 @@ export default {
           }
         )
         .then(() => {
+          isSubmitting.value = false;
           successFn();
         })
         .catch((err) => {
@@ -52,7 +57,7 @@ export default {
       window.location.reload();
     };
 
-    return { isReset, reset, error_message, handReset };
+    return { isReset, reset, error_message, handReset, isSubmitting };
   },
 };
 </script>
@@ -81,7 +86,9 @@ export default {
           {{ error_message.NickName[0] }}
         </p> -->
       </div>
-      <button type="submit" @click.prevent="handReset">送出</button>
+      <button :disabled="isSubmitting" type="submit" @click.prevent="handReset">
+        送出
+      </button>
     </form>
   </div>
   <div v-if="isReset" class="redirection">
