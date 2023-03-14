@@ -11,7 +11,6 @@ const routes = [
     name: "reset",
     component: Reset,
   },
-
 ];
 
 const router = createRouter({
