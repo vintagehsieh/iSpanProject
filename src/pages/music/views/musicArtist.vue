@@ -99,6 +99,24 @@ export default {
         setPlaylist(playlistId) {
             this.$store.dispatch('setPlaylist', playlistId);
         },
+        async togglePlay() {
+            this.$store.dispatch('setForcePlayMode', true);
+            await fetch(`https://localhost:7043/Queues/${this.artist.id}`, {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "Value": "Artist"
+                }),
+                credentials: 'include',
+            })
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error(error))
+
+            this.$store.dispatch("fetchQueueDataAsync");
+        },
     }
 };
 </script>
@@ -128,7 +146,7 @@ export default {
             </button>
         </div>
         <div class="content">
-            <div id="popSongs">
+            <div id="popSongs" v-if="artist.popularSongs.length != 0">
                 <div class="header">
                     <span>熱門</span>
                 </div>
@@ -167,7 +185,7 @@ export default {
                     </Song>
                 </div>
             </div>
-            <div id="popAlbums">
+            <div id="popAlbums" v-if="artist.popularAlbums.length != 0">
                 <div class="header">
                     <span>專輯作品</span>
                 </div>
@@ -185,7 +203,7 @@ export default {
                     </RouterLink>
                 </div>
             </div>
-            <div id="popPlaylists">
+            <div id="popPlaylists" v-if="artist.includedPlaylists.length != 0">
                 <div class="header">
                     <span>演出清單</span>
                 </div>

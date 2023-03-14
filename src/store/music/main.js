@@ -76,7 +76,7 @@ const actions = {
     },
     setPopAlbumRowNumber({ commit }, newRowNumber) {
         commit("setPopAlbumRowNumber", newRowNumber);
-    }
+    },
 }
 
 // mutations
@@ -104,7 +104,8 @@ const mutations = {
     },
     setPopAlbumRowNumber(state, payload) {
         state.popAlbumRowNumber = payload
-    }
+    },
+
 }
 
 export default {

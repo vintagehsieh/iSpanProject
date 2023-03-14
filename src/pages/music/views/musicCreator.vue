@@ -8,7 +8,7 @@ export default {
         const creator = computed(() => {
             return store.getters.getCreator;
         });
-        console.log(creator.value)
+
         const currentSong = computed(() => {
             return store.getters.getCurrentSong;
         })
@@ -91,6 +91,24 @@ export default {
         },
         notHoverSong(i) {
             this.creator.popularSongs[i].isHover = false;
+        },
+        async togglePlay() {
+            this.$store.dispatch('setForcePlayMode', true);
+            await fetch(`https://localhost:7043/Queues/${this.creator.id}`, {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "Value": "Creator"
+                }),
+                credentials: 'include',
+            })
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error(error))
+
+            await this.$store.dispatch("fetchQueueDataAsync");
         },
     }
 };

@@ -1,7 +1,7 @@
 <script>
 import Queue from './MusicQueue.vue';
 import { useStore } from 'vuex';
-import { computed, watchEffect } from 'vue';
+import { computed, watchEffect, ref } from 'vue';
 
 export default {
     setup() {
@@ -23,23 +23,39 @@ export default {
             return store.getters.getPlaylist;
         })
 
+        const forceMode = computed(() => {
+            return store.getters.getForcePlayMode;
+        })
+
+        var playStatus = ref(false);
+        var currentTime = ref(0);
+
         watchEffect(() => {
             if (currentSong.value != undefined && currentSong.value.songPath != musicPlayer.src) {
-                console.log(currentSong.value, musicPlayer.src)
                 musicPlayer.src = currentSong.value?.songPath ?? "";
+
+                // musicPlayer.play();
+                // console.log(musicPlayer.duration)
+                // musicPlayer.currentTime = queue.currentSongTime;
+
+                if (playStatus == true || store.state.music.main.forcePlayMode == true) {
+                    musicPlayer.play();
+                    playStatus = true;
+                    store.dispatch('setForcePlayMode', false);
+                } else {
+                    currentTime = 0;
+                }
             }
         })
 
-        return { currentSong, musicPlayer, queue, playlist };
+        return { currentSong, musicPlayer, queue, playlist, forceMode, playStatus, currentTime };
     },
     mounted() {
         this.musicPlayer.onended = this.nextSong;
     },
     data() {
         return {
-            playStatus: false,
             showQueue: false,
-            currentTime: 0,
             musicInterval: '',
             volume: 50,
             oldVolume: 0,
@@ -60,16 +76,7 @@ export default {
         } else {
             repeat.classList.remove("active");
         }
-
-        if (this.musicPlayer.src != "") {
-            if (this.playStatus == true) {
-                this.musicPlayer.play();
-            } else {
-                this.currentTime = 0;
-            }
-        }
     },
-    props: ['font-awesome-icon'],
     components: {
         Queue,
     },
@@ -264,6 +271,12 @@ export default {
         async setCreator(creatorId) {
             await this.$store.dispatch('setCreator', creatorId);
         },
+        savePlayTime() {
+            fetch(`https://localhost:7043/Queues/SavePlayTime/${this.currentTime}`, {
+                method: "PATCH",
+                credentials: 'include'
+            })
+        }
     }
 };
 </script>
