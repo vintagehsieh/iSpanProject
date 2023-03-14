@@ -1,13 +1,11 @@
 <script>
 import MemberSide from "@/pages/member/components/MemberSide";
-import MemberHome from "@/pages/member/views/memberHome";
-import Header from "@/components/Header.vue";
+import Header from "@/pages/member/components/Header.vue";
 import { onMounted, ref } from "vue";
 
 export default {
   components: {
     MemberSide,
-    MemberHome,
     Header,
   },
   setup() {
@@ -25,18 +23,28 @@ export default {
 };
 </script>
 <template>
-  <!-- <Header :isLogin="isLogin" :handLogout="handLogout" /> -->
+  <div class="container">
+    <!-- header -->
+    <div class="headContainer">
+      <Header :isLogin="isLogin" :handLogout="handLogout" />
+    </div>
+    <!-- side -->
+    <div class="sideContainer">
+      <MemberSide />
+    </div>
+    <!-- router-view -->
+    <!-- <div class="view"></div> -->
+  </div>
 
-  <div class="Root_top-container">
+  <!-- <div class="Root_top-container">
     <div class="Root_top-bar"></div>
     <MemberSide class="Root_nav-bar" />
-    <div class="Root_main-view">
-      <!-- <router-view class="routerView" /> -->
-    </div>
-    <!-- <MemberHome /> -->
-  </div>
+    <div class="Root_main-view"> -->
+  <!-- <router-view class="routerView" /> -->
+  <!-- </div> -->
+  <!-- <MemberHome /> -->
+  <!-- </div> -->
 </template>
-
 
 <style lang="scss">
 * {
@@ -50,56 +58,107 @@ export default {
   list-style: none;
 }
 
-.Root_top-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+img {
+  display: block;
+}
+
+html,
+body {
   width: 100%;
-  > .Root_top-bar {
-    position: fixed;
-    z-index: 10;
-    top: 0;
-    left: 18rem;
+  height: 100%;
+}
+
+#member {
+  width: 100%;
+  height: 100%;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: hsl(210, 29%, 24%);
+
+  .container {
     width: 100%;
-    height: rem;
-    background-color: rgba(0, 0, 0, 0);
-  }
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 
-  > .Root_nav-bar {
-    margin-top: 15rem;
-    width: 18rem;
-    height: 88vh;
-    top: 0;
-    position: fixed;
-    z-index: 10;
-  }
-
-  > .Root_main-view {
-    margin-left: 18rem;
-    background-color: #1f2124;
-
-    > .routerView {
-      margin-bottom: 5rem;
+    .headContainer {
+      display: block;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    .sideContainer {
+      position: sticky;
+      left: 0;
+      top: 20px;
+      height: 100%;
+    }
+    .view {
+      flex: 1;
+      overflow-y: scroll;
+      background-color: white;
+      display: flex;
+      justify-content: start;
+      align-items: start;
+      padding-top: 7rem;
+      margin-left: 9rem;
     }
   }
 }
 
-.routerLink {
-  width: 100%;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  color: black;
-  text-decoration: none;
+// .Root_top-container {
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   width: 100%;
+//   > .Root_top-bar {
+//     position: fixed;
+//     z-index: 10;
+//     top: 0;
+//     left: 18rem;
+//     width: 100%;
+//     height: rem;
+//     background-color: rgba(0, 0, 0, 0);
+//   }
 
-  &:hover {
-    cursor: pointer;
-    color: rgb(49, 49, 49);
-    text-decoration: none;
-  }
+//   > .Root_nav-bar {
+//     margin-top: 15rem;
+//     width: 18rem;
+//     height: 88vh;
+//     top: 0;
+//     position: fixed;
+//     z-index: 10;
+//   }
 
-  > h3 {
-    margin-left: 1rem;
-  }
-}
+//   > .Root_main-view {
+//     margin-left: 18rem;
+//     background-color: #1f2124;
+
+//     > .routerView {
+//       margin-bottom: 5rem;
+//     }
+//   }
+// }
+
+// .routerLink {
+//   width: 100%;
+//   height: 40px;
+//   display: flex;
+//   align-items: center;
+//   color: black;
+//   text-decoration: none;
+
+//   &:hover {
+//     cursor: pointer;
+//     color: rgb(49, 49, 49);
+//     text-decoration: none;
+//   }
+
+//   > h3 {
+//     margin-left: 1rem;
+//   }
+// }
 </style>

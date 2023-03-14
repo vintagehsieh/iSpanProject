@@ -2,6 +2,7 @@
 export default {};
 </script>
 <template>
-  <h1>This is Member Second Page.</h1>
+  MemberOrder
 </template>
+
 <style></style>

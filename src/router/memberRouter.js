@@ -3,8 +3,11 @@ import {
   createWebHistory,
   createWebHashHistory,
 } from "vue-router";
-import MemberHome from "../pages/member/views/memberHome.vue";
-import MemberSecond from "../pages/member/views/memberSecond.vue";
+import MemberHome from "../pages/member/views/MemberHome.vue";
+import MemberInfo from "../pages/member/views/MemberInfo.vue";
+import MemberSubscription from "../pages/member/views/MemberSubscription.vue";
+import MemberOrder from "../pages/member/views/MemberOrder.vue";
+import MusicLibrary from "../pages/member/views/MusicLibrary.vue";
 
 const routes = [
   {
@@ -13,11 +16,25 @@ const routes = [
     component: MemberHome,
   },
   {
-    path: "/memberSecond",
-    name: "second",
-    component: MemberSecond,
+    path: "/memberInfo",
+    name: "memberInfo",
+    component: MemberInfo,
   },
-
+  {
+    path: "/memberSubscription",
+    name: "memberSubscription",
+    component: MemberSubscription,
+  },
+  {
+    path: "/memberOrder",
+    name: "memberOrder",
+    component: MemberOrder,
+  },
+  {
+    path: "/musicLibrary",
+    name: "musicLibrary",
+    component: MusicLibrary,
+  },
 ];
 
 const router = createRouter({
