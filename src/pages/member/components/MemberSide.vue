@@ -20,7 +20,7 @@ export default {
         歡迎！<span style="color: orange">{{ username }}</span>
       </p>
       <div class="logo">
-        <img src="@/assets/ae86bc6c9055369fd5ebd8d884a587ae.jpg" alt="" />
+        <img src="@/assets/3884851.png" alt="" />
       </div>
       <div class="link">
         <router-link to="/memberInfo">
@@ -28,16 +28,16 @@ export default {
           <h3>個人資訊</h3>
         </router-link>
         <router-link to="/memberSubscription">
-          <span class="icon"><i class="fa-solid fa-user"></i></span>
+          <span class="icon"><i class="fa-solid fa-list"></i></span>
           <h3>訂閱記錄</h3>
         </router-link>
         <router-link to="/memberOrder">
-          <span class="icon"><i class="fa-solid fa-user"></i></span>
+          <span class="icon"><i class="fa-solid fa-cart-shopping"></i></span>
           <h3>訂單紀錄</h3>
         </router-link>
         <router-link to="/musicLibrary">
-          <span class="icon"><i class="fa-solid fa-user"></i></span>
-          <h3>音樂庫</h3>
+          <span class="icon"><i class="fa-solid fa-calendar"></i></span>
+          <h3>行事曆</h3>
         </router-link>
       </div>
     </div>

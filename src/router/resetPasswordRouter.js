@@ -3,13 +3,13 @@ import {
   createWebHistory,
   createWebHashHistory,
 } from "vue-router";
-import Reset from "@/pages/reset/Reset.vue";
+import ResetPassword from "@/pages/resetPassword/ResetPassword.vue";
 
 const routes = [
   {
     path: "/",
-    name: "reset",
-    component: Reset,
+    name: "resetPassword/:memberId/:confirmCode",
+    component: ResetPassword,
   },
 ];
 

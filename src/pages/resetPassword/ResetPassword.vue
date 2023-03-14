@@ -4,16 +4,23 @@ import axios from "axios";
 
 export default {
   setup() {
+    var url = window.location.href;
+    var lastSlashIndex = url.lastIndexOf("/");
+    const confirmCode = url.substring(lastSlashIndex + 1);
+    url = url.slice(0, lastSlashIndex);
+    lastSlashIndex = url.lastIndexOf("/");
+    const memberId = url.substring(lastSlashIndex + 1);
+
     const isReset = ref(false);
     const reset = reactive({
-      email: "",
+      password: "",
+      ConfirmPassword: "",
     });
     const error_message = reactive({});
     const isSubmitting = ref(false);
 
-
     const successFn = () => {
-      alert("驗證信寄送成功");
+      alert("更改成功");
       isReset.value = true;
       setTimeout(() => {
         redirect();
@@ -29,9 +36,11 @@ export default {
       if (isSubmitting.value) return;
 
       isSubmitting.value = true;
+      console.log(reset);
       await axios
-        .get(
-          `https://localhost:7043/Members/ForgetPassword?email=${reset.email}`,
+        .patch(
+          `https://localhost:7043/Members/ResetPassword?memberid=${memberId}&confirmCode=${confirmCode}`,
+          reset,
           {
             headers: {
               "Content-Type": "application/json",
@@ -42,13 +51,14 @@ export default {
           }
         )
         .then(() => {
+          isSubmitting.value = true;
           successFn();
         })
         .catch((err) => {
-          console.log(err);
           isSubmitting.value = false;
+          console.log(err);
           // console.log(err.response.data.errors);
-          errorFn(err.response.data.errors);
+          // errorFn(err.response.data.errors);
         });
     };
 
@@ -69,19 +79,22 @@ export default {
     </div>
     <hr />
     <div class="title">
-      <h2>密碼重新設定</h2>
-      <p>
-        請輸入您註冊時所填寫的電子信箱，我們將寄送驗證連結至您的電子信箱以完成後續的密碼重新驗證。
-      </p>
+      <h2>輸入新密碼</h2>
     </div>
 
     <form>
       <div class="input-box">
-        <p>電子信箱</p>
+        <p>輸入新密碼</p>
         <input
-          type="email"
-          placeholder="請輸入電子信箱"
-          v-model.lazy.trim="reset.email"
+          type="text"
+          placeholder="請輸入密碼"
+          v-model.lazy.trim="reset.password"
+        />
+        <p>再次輸入新密碼</p>
+        <input
+          type="text"
+          placeholder="請輸入密碼"
+          v-model.lazy.trim="reset.ConfirmPassword"
         />
         <!-- <p v-if="error_message" class="error">
           {{ error_message.NickName[0] }}
@@ -92,9 +105,7 @@ export default {
       </button>
     </form>
   </div>
-  <div v-if="isReset" class="redirection">
-    寄送成功，稍後請至您的電子信箱收取驗證信...
-  </div>
+  <div v-if="isReset" class="redirection">更改成功，重新導向至首頁...</div>
 </template>
 <style lang="scss">
 * {

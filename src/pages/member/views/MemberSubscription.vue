@@ -59,6 +59,7 @@ export default {
           <th>訂閱價格</th>
           <th>訂閱時間</th>
           <th>到期時間</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -87,6 +88,7 @@ export default {
           <th>價格</th>
           <th>帳戶</th>
           <th>描述</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -95,6 +97,29 @@ export default {
           <td>{{ subscribePlan.price }}</td>
           <td>{{ subscribePlan.numberOfUsers }}</td>
           <td>{{ subscribePlan.description }}</td>
+          <td><i class="fa-solid fa-store"></i></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="m-subscribePlan">
+    <table>
+      <thead>
+        <tr>
+          <th>訂閱方案</th>
+          <th>價格</th>
+          <th>帳戶</th>
+          <th>描述</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(subscribePlan, index) in subscribeDes" :key="index">
+          <td>{{ subscribePlan.planName }}</td>
+          <td>{{ subscribePlan.price }}</td>
+          <td>{{ subscribePlan.numberOfUsers }}</td>
+          <td>{{ subscribePlan.description }}</td>
+          <td><i class="fa-solid fa-store"></i></td>
         </tr>
       </tbody>
     </table>
