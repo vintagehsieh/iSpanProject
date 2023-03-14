@@ -96,8 +96,8 @@ const song = ref({
   //SongCoverPath: "",
   //SongPath: "",
   Status: false,
-  //AlbumId : "",
-  AlbumId: null,
+  AlbumId : "",
+  // AlbumId: null,
   SongList: null,
   Cover: null,
 
