@@ -31,6 +31,7 @@ export default {
 
       // 清除cookie和localstorage
       Cookies.remove("loginInfo");
+      Cookies.remove("UserID");
       localStorage.clear();
 
       deleteCookie();

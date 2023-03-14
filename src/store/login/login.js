@@ -1,4 +1,5 @@
 import axios from "axios";
+import Cookies from "js-cookie";
 
 const state = {
   isLogin: false,
@@ -33,6 +34,7 @@ const actions = {
         commit("setIsLogin", bool);
         commit("setLoginInfo", loginInfo);
         commit("setMemberAccount", loginInfo.memberAccount);
+        Cookies.set("UserID", res.data, { expires: 1 });
         return true;
       }
     } catch (err) {

@@ -47,14 +47,14 @@ export default {
       window.location.reload();
     };
 
-    return { isReg, register, error_message, handRegister, redirect };
+    return { isReg, register, error_message, handRegister };
   },
 };
 </script>
 <template>
   <div v-if="!isReg">
     <div class="logo">
-      <a href="index.html"><img src="@/assets/logo.png" alt="" /></a>
+      <img src="@/assets/logo.png" alt="" />
     </div>
     <hr />
     <form>
