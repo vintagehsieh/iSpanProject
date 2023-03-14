@@ -119,23 +119,23 @@ export default {
                 <h2>藝人與創作者</h2>
             </div>
             <div class="innerContent">
-                <RouterLink to="/creator" v-for="creator in creators" :key="creator.id" @click="setCreator(creator.Id)">
+                <RouterLink to="/creator" v-for="creator in creators" :key="creator.id" @click="setCreator(creator.id)">
                     <Card>
                         <template #picture>
-                            <img src="" alt="">
+                            <img :src=creator.creatorPicPath alt="">
                         </template>
                         <template #name>
-                            <span>{{ creator.name }}</span>
+                            <span>{{ creator.creatorName }}</span>
                         </template>
                     </Card>
                 </RouterLink>
-                <RouterLink to="/artist" v-for="artist in artists" :key="artist.id" @click="setCreator(artist.Id)">
+                <RouterLink to="/artist" v-for="artist in artists" :key="artist.id" @click="setArtist(artist.id)">
                     <Card>
                         <template #picture>
-                            <img src="" alt="">
+                            <img :src=artist.artistPicPath alt="">
                         </template>
                         <template #name>
-                            <span>{{ artist.name }}</span>
+                            <span>{{ artist.artistName }}</span>
                         </template>
                     </Card>
                 </RouterLink>

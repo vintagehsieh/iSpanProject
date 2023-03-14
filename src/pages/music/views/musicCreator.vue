@@ -5,25 +5,24 @@ import { useStore } from 'vuex';
 export default {
     setup() {
         const store = useStore();
-        const artist = computed(() => {
-            return store.getters.getArtist;
+        const creator = computed(() => {
+            return store.getters.getCreator;
         });
+        console.log(creator.value)
         const currentSong = computed(() => {
             return store.getters.getCurrentSong;
         })
 
-        return { artist, currentSong };
+        return { creator, currentSong };
     },
     data() {
-        return {
-
-        }
+        return {}
     },
     methods: {
-        toggleArtistLiked() {
-            this.artist.isLiked = !this.artist.isLiked;
-            if (this.artist.isLiked == true) {
-                fetch(`https://localhost:7043/Members/FollowedArtists/${this.artist.id}`, {
+        toggleCreatorLiked() {
+            this.creator.isLiked = !this.creator.isLiked;
+            if (this.creator.isLiked == true) {
+                fetch(`https://localhost:7043/Members/FollowedCreators/${this.creator.id}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -34,7 +33,7 @@ export default {
                     .then(data => console.log(data))
                     .catch(error => console.error(error))
             } else {
-                fetch(`https://localhost:7043/Members/FollowedArtists/${this.artist.id}`, {
+                fetch(`https://localhost:7043/Members/FollowedCreators/${this.creator.id}`, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json'
@@ -47,9 +46,9 @@ export default {
             }
         },
         toggleSongLiked(i) {
-            this.artist.popularSongs[i].isLiked = !this.artist.popularSongs[i].isLiked;
-            if (this.artist.popularSongs[i].isLiked == true) {
-                fetch(`https://localhost:7043/Members/LikedSongs/${this.artist.popularSongs[i].id}`, {
+            this.creator.popularSongs[i].isLiked = !this.creator.popularSongs[i].isLiked;
+            if (this.creator.popularSongs[i].isLiked == true) {
+                fetch(`https://localhost:7043/Members/LikedSongs/${this.creator.popularSongs[i].id}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -60,7 +59,7 @@ export default {
                     .then(data => console.log(data))
                     .catch(error => console.error(error))
             } else {
-                fetch(`https://localhost:7043/Members/LikedSongs/${this.artist.popularSongs[i].id}`, {
+                fetch(`https://localhost:7043/Members/LikedSongs/${this.creator.popularSongs[i].id}`, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json'
@@ -72,8 +71,8 @@ export default {
                     .catch(error => console.error(error))
             }
 
-            if (this.artist.popularSongs[i].id == this.currentSong.id) {
-                this.currentSong.isLiked = this.artist.popularSongs[i].isLiked;
+            if (this.creator.popularSongs[i].id == this.currentSong.id) {
+                this.currentSong.isLiked = this.creator.popularSongs[i].isLiked;
             }
         },
         formatTime(seconds) {
@@ -88,10 +87,10 @@ export default {
             return `${minutes}:${paddedSeconds}`;
         },
         hoverSong(i) {
-            this.artist.popularSongs[i].isHover = true;
+            this.creator.popularSongs[i].isHover = true;
         },
         notHoverSong(i) {
-            this.artist.popularSongs[i].isHover = false;
+            this.creator.popularSongs[i].isHover = false;
         },
     }
 };
@@ -100,13 +99,13 @@ export default {
     <div class="container">
         <div class="contentSpacing" id="playlistHeader">
             <div class="picture">
-                <img :src=artist.artistPicPath alt="">
+                <img :src=creator.creatorPicPath alt="">
             </div>
             <div id="artistInfo">
-                <div id="type">藝人</div>
-                <div id="artistName">{{ artist.artistName }}</div>
+                <div id="type">創作者</div>
+                <div id="artistName">{{ creator.creatorName }}</div>
                 <div id="infoDetail">
-                    <span id="likes">追蹤人數 {{ artist.totalFollows }}</span>
+                    <span id="likes">追蹤人數 {{ creator.totalFollows }}</span>
                 </div>
             </div>
         </div>
@@ -116,18 +115,18 @@ export default {
                 <!-- <font-awesome-icon class="btn" id="pause" icon="fa-solid fa-pause" v-else @click="togglePlay" /> -->
             </button>
             <button id="artistFollowed">
-                <font-awesome-icon v-if="artist.isLiked" class="btn" icon="fa-solid fa-heart" @click="toggleArtistLiked"
+                <font-awesome-icon v-if="creator.isLiked" class="btn" icon="fa-solid fa-heart" @click="toggleCreatorLiked"
                     style="color: #F6B352" />
-                <font-awesome-icon v-else class="btn" icon="fa-regular fa-heart" @click="toggleArtistLiked" />
+                <font-awesome-icon v-else class="btn" icon="fa-regular fa-heart" @click="toggleCreatorLiked" />
             </button>
         </div>
         <div class="content">
-            <div id="popSongs">
+            <div id="popSongs" v-if="creator.popularSongs.length > 0">
                 <div class="header">
                     <span>熱門</span>
                 </div>
                 <div class="items" id="songs">
-                    <Song v-for="(song, i) in artist.popularSongs" :key="song.id" class="song" @mouseover="hoverSong(i)"
+                    <Song v-for="(song, i) in creator.popularSongs" :key="song.id" class="song" @mouseover="hoverSong(i)"
                         @mouseleave="notHoverSong(i)">
                         <template #order>
                             <p v-if="song.isHover == false">{{ i + 1 }}</p>
@@ -161,12 +160,12 @@ export default {
                     </Song>
                 </div>
             </div>
-            <div id="popAlbums">
+            <div id="popAlbums" v-if="creator.popularAlbums.length > 0">
                 <div class="header">
                     <span>專輯作品</span>
                 </div>
                 <div class="items" id="albums">
-                    <Card v-for="album in artist.popularAlbums" :key="album.id">
+                    <Card v-for="album in creator.popularAlbums" :key="album.id">
                         <template #picture>
                             <img :src=album.albumCoverPath alt="">
                         </template>
@@ -176,12 +175,12 @@ export default {
                     </Card>
                 </div>
             </div>
-            <div id="popPlaylists">
+            <div id="popPlaylists" v-if="creator.includedPlaylists.length > 0">
                 <div class="header">
                     <span>演出清單</span>
                 </div>
                 <div class="items" id="playlists">
-                    <Card v-for="playlist in artist.includedPlaylists" :key="playlist.id">
+                    <Card v-for="playlist in creator.includedPlaylists" :key="playlist.id">
                         <template #picture>
                             <img :src=playlist.playlistCoverPath alt="">
                         </template>
@@ -201,11 +200,11 @@ export default {
                 <div class="header">關於</div>
                 <div class="block">
                     <div id="pic">
-                        <img :src=artist.artistPicPath alt="">
+                        <img :src=creator.creatorPicPath alt="">
                     </div>
                     <div id="desc">
-                        <h2>{{ artist.artistName }}</h2>
-                        <p>{{ artist.about }}</p>
+                        <h2>{{ creator.creatorName }}</h2>
+                        <p>{{ creator.about }}</p>
                     </div>
                 </div>
             </div>

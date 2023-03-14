@@ -20,6 +20,8 @@ export default {
             optionIsOpen: false,
             searchValue: "",
             searchSongs: [],
+            modalOpen: false,
+            previewSrc: '',
         }
     },
     methods: {
@@ -244,6 +246,43 @@ export default {
                 .catch(error => console.error(error))
 
             this.$store.dispatch('setPlaylist', this.playlist.id);
+        },
+        showModal() {
+            this.modalOpen = true;
+            this.optionIsOpen = false;
+            this.previewSrc = this.playlist.playlistCoverPath
+        },
+        hideModal() {
+            this.modalOpen = false;
+        },
+        async updatePlaylist() {
+            var form = document.querySelector('#form');
+            const formData = new FormData(form);
+
+            // for (let [key, value] of formData.entries()) {
+            //     console.log(key + ': ' + value);
+            // }
+
+            await fetch(`https://localhost:7043/Playlists/${this.playlist.id}/Detail`, {
+                method: 'PUT',
+                headers: {
+                    // 'Content-Type': 'multipart/form-data'
+                    'Accept': '*/*'
+                },
+                body: formData,
+                credentials: 'include',
+            })
+                .then(response => response.text())
+                .then(data => console.log(data))
+                .catch(error => console.error(error))
+
+            this.$store.dispatch('setPlaylist', this.playlist.id)
+        },
+        setPic(e) {
+            const file = e.target.files[0];
+            const objectURL = URL.createObjectURL(file);
+            const preview = document.querySelector('#preview');
+            preview.setAttribute('src', objectURL);
         }
     }
 };
@@ -261,7 +300,9 @@ export default {
                     <span v-else>私人的</span>
                     播放清單
                 </div>
-                <div id="playlistName">{{ playlist.listName }}</div>
+                <div id="playlistName">
+                    {{ playlist.listName }}
+                </div>
                 <div id="infoDetail">
                     <div id="ownerInfo">
                         <div class="picture" id="ownerPic">
@@ -293,7 +334,7 @@ export default {
                             <div class="option" @click="addToQueue()">加入佇列</div>
                         </template>
                         <template #second v-if="playlist.isOwner">
-                            <div class="option">編輯清單</div>
+                            <div class="option" @click="showModal">編輯清單</div>
                         </template>
                         <template #third v-if="playlist.isOwner">
                             <div class="option link" @click="deletePlaylist">
@@ -446,104 +487,33 @@ export default {
             </div>
         </div>
     </div>
-    <div class="modal fade" id="insertModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">新增賽事/活動</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="modal-container" v-if="modalOpen">
+        <div class="modal">
+            <div>
+                <span style="font-size: 2rem; font-weight:bold">編輯播放清單</span>
+                <font-awesome-icon icon="fa-solid fa-xmark" style="font-size: 2rem; margin-left: 24rem"
+                    @click="hideModal" />
+            </div>
+            <form class="form" id="form" enctype="multipart/form-data">
+                <div class="pic">
+                    <input type="file" id="imageUpload" name="PlaylistCover" style="display: none" @change="setPic">
+                    <label for="imageUpload">
+                        <img src="@/assets/music-note-icon-song-melody-tune-flat-symbol-free-vector.webp" alt=""
+                            id="preview">
+                    </label>
                 </div>
-                <div class="modal-body">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h5 class="mt-3">賽事資料 </h5>
-                                <div class="form-group">
-                                    <label class="form-label">活動名稱:</label>
-                                    <input type="text" class="form-control" v-model="name" />
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">活動日期:</label>
-                                    <input type="date" class="form-control" v-model="contestDate" :min="todayDate" />
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">報名截止日:</label>
-                                    <input type="date" class="form-control" v-model="registrationDeadline"
-                                        :max="contestDate" :min="todayDate" />
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">活動地區:</label>
-                                    <input type="text" class="form-control" v-model="area" />
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">活動地點:</label>
-                                    <input type="text" class="form-control" v-model="location" />
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">地圖資訊:</label>
-                                    <input type="text" class="form-control" v-model="mapUrl" />
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">活動簡章:</label>
-                                    <textarea rows="7" class="form-control" v-model="detail"></textarea>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <h5 class="mt-3">競賽項目</h5>
-                                <div class="form-group">
-                                    <label class="form-label">項目1:</label>
-                                    <select class="form-control" v-model="categoryId1">
-                                        <option v-for="item in CategoriesDTOes" :value="item.id">
-                                            {{ item.category }}{{ item.distance }}K</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">名額:</label>
-                                    <input type="text" class="form-control" v-model="quota1" />
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">金額:</label>
-                                    <input type="text" class="form-control" v-model="enterFee1" />
-                                </div>
-                                <div class="form-group mt-2">
-                                    <label class="form-label">項目2:</label>
-                                    <select class="form-control" v-model="categoryId2">
-                                        <option v-for="item in CategoriesDTOes" :value="item.id">
-                                            {{ item.category }}{{ item.distance }}K</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">名額:</label>
-                                    <input type="text" class="form-control" v-model="quota2" />
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">金額:</label>
-                                    <input type="text" class="form-control" v-model="enterFee2" />
-                                </div>
-                                <div class="form-group mt-2">
-                                    <label class="form-label">項目3:</label>
-                                    <select class="form-control" v-model="categoryId3">
-                                        <option v-for="item in CategoriesDTOes" :value="item.id">
-                                            {{ item.category }}{{ item.distance }}K</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">名額:</label>
-                                    <input type="text" class="form-control" v-model="quota3" />
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">金額:</label>
-                                    <input type="text" class="form-control" v-model="enterFee3" />
-                                </div>
-                            </div>
-                        </div>
+                <div class="name">
+                    <div>
+                        <input type="text" :value="playlist.listName" name="ListName">
+                    </div>
+                    <div id="about">
+                        <textarea rows="7" cols="40" placeholder="關於" name="Description" />
+                    </div>
+                    <div id="submit">
+                        <button type="button" @click="updatePlaylist, hideModal">完成</button>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
-                    <button type="button" class="btn btn-primary" @@click="insert">新增</button>
-                </div>
-            </div>
+            </form>
         </div>
     </div>
 </template>
@@ -855,6 +825,89 @@ export default {
     &:hover {
         color: #f68718;
         cursor: pointer;
+    }
+}
+
+.modal-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border-radius: 10px;
+    transform: translate(-50%, -50%);
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
+    padding: 20px;
+
+    .form {
+        margin-top: 1rem;
+        display: flex;
+
+        .pic {
+            width: 15rem;
+            height: 15rem;
+            margin-right: 1rem;
+
+            img {
+                width: 100%;
+                height: 100%;
+            }
+        }
+
+        .name {
+
+            input {
+                font-size: 2rem;
+                border: none;
+            }
+
+            #about {
+                height: 10rem;
+                border-radius: 10px;
+                border: 1px solid black;
+                margin-bottom: 1rem;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                textarea {
+                    font-size: 16px;
+                    border: none;
+                    resize: none;
+
+                    &:focus {
+                        outline: none;
+                    }
+                }
+            }
+
+            #submit {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                button {
+                    width: 3rem;
+                    height: 2rem;
+                    border: none;
+                    border-radius: 5px;
+
+                    &:hover {
+                        color: #fff;
+                        background-color: #f68718;
+                    }
+                }
+            }
+        }
     }
 }
 </style>
