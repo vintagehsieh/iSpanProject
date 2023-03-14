@@ -16,7 +16,6 @@
           <td>{{ item.productPrice }}</td>
           <td>{{ item.qty }}</td>
           <td>{{ item.productPrice * item.qty }}</td>
-          <td>{{ coupon }}</td>
         </tr>
       </tbody>
     </table>
@@ -26,12 +25,11 @@
     <div>
       <h3>優惠券</h3>
       <tr>
-        <td>couponText</td>
-        <td>-10</td>
+        <td>{{ coupon.couponText }}</td>
       </tr>
 
-      <h3>Total: {{ cartTotal - 10 }}</h3>
-      <button @click="chekout">結帳</button>
+      <h3>最後Total: {{ totalprice() }}</h3>
+      <button @click="chekout()">結帳</button>
     </div>
     <div id="test"></div>
   </div>
@@ -39,20 +37,71 @@
 
 <script>
 import { reactive, computed, onMounted } from "vue";
+import { useStore } from "vuex";
 
 export default {
   setup() {
+    const store = useStore();
     const membercart = reactive({ value: [] });
     let productName = [];
     let Total = [];
+    const coupon = computed(() => {
+      console.log(store.getters.getCoupon);
+      return store.getters.getCoupon;
+    });
+
+    const totalprice = () => {
+      if (store.getters.getCoupon.discount[0] == "*") {
+        const discountNumber = parseFloat(
+          store.getters.getCoupon.discount.substring(1)
+        );
+        const totalPriceWithDiscount =
+          membercart.value.reduce(
+            (total, item) => total + item.productPrice * item.qty,
+            0
+          ) * discountNumber;
+        return totalPriceWithDiscount;
+      } else if (store.getters.getCoupon.discount[0] == "-") {
+        const discountNumber = parseFloat(
+          store.getters.getCoupon.discount.substring(1)
+        );
+        const totalPriceWithDiscount =
+          membercart.value.reduce(
+            (total, item) => total + item.productPrice * item.qty,
+            0
+          ) - discountNumber;
+        return totalPriceWithDiscount;
+      } else {
+        return membercart.value.reduce(
+          (total, item) => total + item.productPrice * item.qty,
+          0
+        );
+      }
+    };
+
+    const deleteAllCartItem = () => {
+      fetch(`https://localhost:7043/Carts/DeleteAllCart`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        credentials: "include",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+        });
+    };
 
     console.log(membercart.value);
-    const chekout = () => {
+    const chekout = async () => {
       productName = membercart.value.map((x) => x.productName);
-      Total = membercart.value.map((x) => x.productPrice * x.qty);
+      Total = totalprice();
       console.log(productName);
+      await deleteAllCartItem();
       $.ajax({
-        url: `https://localhost:7043/EcPay?cartId=${membercart.value[0].cartId}&Total=50&productName=${productName}`,
+        url: `https://localhost:7043/EcPay?cartId=${membercart.value[0].cartId}&Total=${Total}&productName=${productName}`,
         method: "POST",
         dataType: "text",
         xhrFields: {
@@ -100,6 +149,9 @@ export default {
 
     return {
       chekout,
+      totalprice,
+      deleteAllCartItem,
+      coupon,
       membercart,
       cartTotal,
     };

@@ -22,7 +22,8 @@ const routes = [
     component: ShopSecond,
   },
   {
-    path: "/productItem",
+    path: "/productItem/:id",
+    name: "productItem_id",
     component: ProductItem
   },
   {

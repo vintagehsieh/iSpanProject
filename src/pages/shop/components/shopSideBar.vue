@@ -11,6 +11,7 @@
 </template>
 
 
+
 <style lang="scss" scoped>
 .CleanList {
     padding-top: 5rem;
@@ -33,7 +34,7 @@
         }
 
         &:hover {
-            background-color: rgb(37, 95, 171);
+            background-color: rgb(139, 95, 38);
 
             a {
                 color: white;

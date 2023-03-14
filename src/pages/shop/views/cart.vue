@@ -40,27 +40,22 @@
     <div>
       <h3>優惠券</h3>
       <label for="select-option" class="custom-label">請選擇一個優惠券：</label>
-      <!-- <select class="custom-select">
-          <option value="" disabled selected >請選擇一個選項</option>
-        <select id="select-option" v-model="selectedOption" class="custom-select" @change="showvalue">
-          <option v-for="option in options.value" :key="option.id" :value="option.id" @change="showvalue($event)" >{{ option.couponText }}</option>
-          
-        </select> -->
       <select
         id="select-option"
         v-model="options"
         class="custom-select"
-        @change="showvalue"
+        @change="setCoupon"
       >
         <option value="" disabled>請選擇一個選項</option>
         <option
-          v-for="option in options.value"
+          v-for="(option, index) in options.value"
           :key="option.id"
           :value="option.id"
         >
           {{ option.couponText }}
         </option>
       </select>
+      <button><a href="#/checkout" class="">前往結帳</a></button>
     </div>
 
     <hr />
@@ -72,9 +67,11 @@
 import axios from "axios";
 import { reactive, computed, onMounted } from "vue";
 import http from "@/plugins/http";
+import { useStore } from "vuex";
 
 export default {
   setup() {
+    const store = useStore();
     const options = reactive([]);
 
     const membercart = reactive({ value: [] });
@@ -91,9 +88,16 @@ export default {
         credentials: "include",
       })
         .then((res) => res.text())
-        .then((data) => {
-          console.log(data);
-        });
+        .then((data) => {});
+    };
+
+    const setCoupon = (e) => {
+      // console.log("this", e.target.value-1);
+      const coupon =[options.value[e.target.value - 1].couponText,options.value[e.target.value - 1].discounts]
+      store.dispatch(
+        "setCoupon",
+        coupon
+      );
     };
 
     const decreaseCartItem = (id) => {
@@ -135,8 +139,6 @@ export default {
         .then((res) => res.json())
         .then((data) => {
           membercart.value = data;
-
-          console.log("this", membercart);
         });
       fetch("https://localhost:7043/Carts/CartCoupon", {
         method: "GET",
@@ -148,7 +150,6 @@ export default {
 
           console.log(options);
         });
-
     });
 
     const cartTotal = computed(() => {
@@ -186,6 +187,7 @@ export default {
       options,
       membercart,
       cartTotal,
+      setCoupon,
       decreaseItemQuantity,
       increaseItemQuantity,
       removeItem,
@@ -209,6 +211,10 @@ table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
+}
+button a {
+  text-decoration: none;
+  color: white;
 }
 
 th,

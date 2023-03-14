@@ -7,7 +7,6 @@ import main from "./music/main";
 import queue from "./music/queue";
 import SongGenres from "./music/songGenres";
 import Login from "./login/login";
-import library from "./music/library";
 
 const loginModule = {
   state: {},
@@ -57,7 +56,8 @@ const shopModule = {
   getters: {},
   mutations: {},
   actions: {},
-  modules: {},
+  modules: {shop},
+  
 };
 
 export default createStore({
