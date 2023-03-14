@@ -29,9 +29,9 @@ export default {
 
   <div class="Root_top-container">
     <div class="Root_top-bar"></div>
-    <MemberSide class="Root_nav-bar" />
+    <!-- <MemberSide class="Root_nav-bar" /> -->
     <div class="Root_main-view">
-      <!-- <router-view class="routerView" /> -->
+      <router-view class="routerView" />
     </div>
     <!-- <MemberHome /> -->
   </div>
@@ -75,7 +75,6 @@ export default {
   }
 
   > .Root_main-view {
-    margin-left: 18rem;
     background-color: #1f2124;
 
     > .routerView {

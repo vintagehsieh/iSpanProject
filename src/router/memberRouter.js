@@ -5,6 +5,7 @@ import {
 } from "vue-router";
 import MemberHome from "../pages/member/views/memberHome.vue";
 import MemberSecond from "../pages/member/views/memberSecond.vue";
+import ResetPassword from "../pages/member/views/ResetPassword.vue"
 
 const routes = [
   {
@@ -17,7 +18,11 @@ const routes = [
     name: "second",
     component: MemberSecond,
   },
-
+  {
+    path: "/resetPassword/:memberid/:confirmCode",
+    name: "resetPassword",
+    component: ResetPassword,
+  },
 ];
 
 const router = createRouter({

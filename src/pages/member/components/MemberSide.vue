@@ -163,7 +163,10 @@ export default {
   <aside>
     <div id="logo">
       <a href="index.html">
-        <img src="@/assets/ae86bc6c9055369fd5ebd8d884a587ae.jpg" alt="" />
+        <img
+          src="@/assets/music-note-icon-song-melody-tune-flat-symbol-free-vector.webp"
+          alt=""
+        />
       </a>
     </div>
     <div id="default">
