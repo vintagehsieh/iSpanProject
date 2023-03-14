@@ -59,6 +59,7 @@ export default {
           <th>訂閱價格</th>
           <th>訂閱時間</th>
           <th>到期時間</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -110,6 +111,7 @@ export default {
     thead {
       background-color: #707070;
       tr {
+        font-size: 1.25rem;
         &:nth-child(odd) {
           background-color: #f7f7f7;
         }

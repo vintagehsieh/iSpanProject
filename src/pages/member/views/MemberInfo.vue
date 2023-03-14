@@ -162,8 +162,8 @@ export default {
 
 <template>
   <div class="memberInfo">
+    <h1 class="h1">使用者資訊</h1>
     <form class="form" id="myForm" @submit.prevent="saveForm">
-      <h1 class="h1">使用者資訊</h1>
       <!-- 如果是編輯狀態 就顯示 -->
       <div v-if="member.memberEdit == true">
         <div class="header">
@@ -175,7 +175,6 @@ export default {
             確認變更
           </button>
         </div>
-
         <div class="m-input-box">
           <div class="m-input">
             <label for="name" class="label">暱稱</label>
@@ -394,7 +393,6 @@ export default {
             變更
           </button>
         </div>
-
         <div class="email-input-box">
           <div class="email-input">
             <label for="email" class="label">電子郵件信箱</label>
@@ -437,6 +435,14 @@ export default {
   display: flex;
   flex-direction: column;
   width: 100%;
+  h1 {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 32px;
+    text-align: left;
+    width: 75%;
+    color: black;
+  }
   .form {
     border: 1px solid black;
     width: 75%;
@@ -446,11 +452,7 @@ export default {
     color: black;
     text-align: left;
     padding: 3rem;
-    .h1 {
-      font-size: 3rem;
-      font-weight: bold;
-      margin-bottom: 32px;
-    }
+
     .header {
       display: flex;
       align-items: center;
