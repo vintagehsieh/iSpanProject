@@ -19,8 +19,12 @@ export default {
             isPlaying: false,
             optionIsOpen: false,
             searchValue: "",
+            searchPlaylistValue: "",
             searchSongs: [],
+            searchPlaylists: [],
             modalOpen: false,
+            songModalOpen: false,
+            modalSongId: 0,
             previewSrc: '',
         }
     },
@@ -219,6 +223,14 @@ export default {
                 .then(data => this.searchSongs = data)
                 .catch(error => console.error(error))
         },
+        async searchPlaylist() {
+            if (this.searchPlaylistValue == "") return;
+            await fetch(`https://localhost:7043/Members/Playlists?RowNumber=2&IncludedLiked=false&Condition=RecentlyAdded&Value=${this.searchPlaylistValue}`,
+                { method: 'GET', headers: { 'Content-Type': 'application/json' }, credentials: 'include', })
+                .then(response => response.json())
+                .then(data => this.searchPlaylists = data)
+                .catch(error => console.error(error))
+        },
         async addSongToPlaylist(songId) {
             await fetch(`https://localhost:7043/Playlists/${this.playlist.id}/Songs/${songId}`,
                 {
@@ -234,6 +246,23 @@ export default {
                 .catch(error => console.error(error))
 
             this.$store.dispatch('setPlaylist', this.playlist.id);
+        },
+        async addSongToPlaylistEx(playlistId) {
+            await fetch(`https://localhost:7043/Playlists/${playlistId}/Songs/${this.modalSongId}`,
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        'value': true
+                    }),
+                    credentials: 'include',
+                })
+                .then(response => response.text())
+                .then(data => console.log(data))
+                .catch(error => console.error(error))
+
+            if (playlistId == this.playlist.id)
+                this.$store.dispatch('setPlaylist', this.playlist.id);
         },
         async removeFromPlaylist(displayOrder) {
             await fetch(`https://localhost:7043/Playlists/${this.playlist.id}/Songs/${displayOrder}`,
@@ -255,6 +284,15 @@ export default {
         },
         hideModal() {
             this.modalOpen = false;
+        },
+        showSongModal(songId, i) {
+            this.playlist.metadata[i].optionIsOpen = false;
+            this.modalSongId = songId;
+            this.songModalOpen = true;
+        },
+        hideSongModal() {
+            this.songModalOpen = false;
+            this.searchPlaylistValue = "";
         },
         async updatePlaylist() {
             var form = document.querySelector('#form');
@@ -438,6 +476,8 @@ export default {
                                         </div>
                                     </template>
                                     <template #fifth>
+                                        <div class="option" @click="(event) => showSongModal(metadata.song.id, i)">加入播放清單
+                                        </div>
                                     </template>
                                     <template #sixth></template>
                                 </Options>
@@ -484,13 +524,12 @@ export default {
             </div>
         </div>
     </div>
-    <div class="modal-container" v-if="modalOpen">
-        <div class="modal">
-            <div>
-                <span style="font-size: 2rem; font-weight:bold">編輯播放清單</span>
-                <font-awesome-icon icon="fa-solid fa-xmark" style="font-size: 2rem; margin-left: 24rem"
-                    @click="hideModal" />
-            </div>
+    <Modal v-if="modalOpen">
+        <template #header>
+            <span style="font-size: 2rem; font-weight:bold">編輯播放清單</span>
+            <font-awesome-icon icon="fa-solid fa-xmark" style="font-size: 2rem; margin-left: 24rem" @click="hideModal" />
+        </template>
+        <template #content>
             <form class="form" id="form" enctype="multipart/form-data">
                 <div class="pic">
                     <input type="file" id="imageUpload" name="PlaylistCover" style="display: none" @change="setPic">
@@ -513,8 +552,36 @@ export default {
                     </div>
                 </div>
             </form>
-        </div>
-    </div>
+        </template>
+    </Modal>
+    <Modal v-if="songModalOpen">
+        <template #header>
+            <div id="searchPlaylist"
+                style="width: 16rem; height: 35px; padding: 0 1rem; background-color: #a7a7a7; border-radius: 30px; display: flex; justify-content: center; align-items: center;">
+                <font-awesome-icon icon="fa-solid fa-magnifying-glass" style="font-size: 20px; margin-right: 8px;" />
+                <input type="text" placeholder="想聽什麼?" v-model="searchPlaylistValue" @keyup="searchPlaylist"
+                    style="font-size:large; border: none; background-color: #a7a7a7; outline: none;" />
+            </div>
+            <font-awesome-icon icon="fa-solid fa-xmark" style="font-size: 2rem; margin-left: 10rem"
+                @click="hideSongModal" />
+        </template>
+        <template #content>
+            <div id="scrollable-div" style="overflow-y;:scroll">
+                <div id="searchPlaylists">
+                    <div class="playlist" v-for="playlist in searchPlaylists"
+                        style="width: 100%; height: 3rem;display: flex; align-items: center;">
+                        <div class="playlistName">
+                            <span>{{ playlist.listName }}</span>
+                        </div>
+                        <div class="plus" @click="addSongToPlaylistEx(playlist.id)" style="color: black; margin-left: auto"
+                            onmouseover="this.style.color='#f68718'" onmouseout="this.style.color='black'">
+                            <font-awesome-icon icon="fa-solid fa-plus" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </Modal>
 </template>
 
 <style lang="scss" scoped>
@@ -827,83 +894,62 @@ export default {
     }
 }
 
-.modal-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 9999;
-    background-color: rgba(0, 0, 0, 0.3);
-}
+.form {
+    margin-top: 1rem;
+    display: flex;
 
-.modal {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    border-radius: 10px;
-    transform: translate(-50%, -50%);
-    background-color: #ffffff;
-    color: rgb(0, 0, 0);
-    padding: 20px;
+    .pic {
+        width: 15rem;
+        height: 15rem;
+        margin-right: 1rem;
 
-    .form {
-        margin-top: 1rem;
-        display: flex;
+        img {
+            width: 100%;
+            height: 100%;
+        }
+    }
 
-        .pic {
-            width: 15rem;
-            height: 15rem;
-            margin-right: 1rem;
+    .name {
 
-            img {
-                width: 100%;
-                height: 100%;
+        input {
+            font-size: 2rem;
+            border: none;
+        }
+
+        #about {
+            height: 10rem;
+            border-radius: 10px;
+            border: 1px solid black;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            textarea {
+                font-size: 16px;
+                border: none;
+                resize: none;
+
+                &:focus {
+                    outline: none;
+                }
             }
         }
 
-        .name {
+        #submit {
+            display: flex;
+            justify-content: center;
+            align-items: center;
 
-            input {
-                font-size: 2rem;
+            button {
+                width: 3rem;
+                height: 2rem;
                 border: none;
-            }
+                border-radius: 5px;
 
-            #about {
-                height: 10rem;
-                border-radius: 10px;
-                border: 1px solid black;
-                margin-bottom: 1rem;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-
-                textarea {
-                    font-size: 16px;
-                    border: none;
-                    resize: none;
-
-                    &:focus {
-                        outline: none;
-                    }
-                }
-            }
-
-            #submit {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-
-                button {
-                    width: 3rem;
-                    height: 2rem;
-                    border: none;
-                    border-radius: 5px;
-
-                    &:hover {
-                        color: #fff;
-                        background-color: #f68718;
-                    }
+                &:hover {
+                    color: #fff;
+                    background-color: #f68718;
                 }
             }
         }
