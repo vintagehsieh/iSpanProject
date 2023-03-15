@@ -11,7 +11,6 @@ export default {
     const error_message = reactive({});
     const isSubmitting = ref(false);
 
-
     const successFn = () => {
       alert("驗證信寄送成功");
       isReset.value = true;
@@ -21,7 +20,7 @@ export default {
     };
 
     const errorFn = (err) => {
-      // Object.keys(err).forEach((key) => (error_message[key] = err[key]));
+      Object.keys(err).forEach((key) => (error_message[key] = err[key]));
       // console.log(error_message.Email);
     };
 

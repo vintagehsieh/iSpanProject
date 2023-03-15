@@ -4,6 +4,8 @@ export default {
   setup() {
     const subscribe = ref([]);
     const subscribeDes = ref([]);
+    const data = ref(null);
+
     onMounted(() => {
       fetch("https://localhost:7043/Members/SubscriptionRecord", {
         method: "GET",
@@ -44,7 +46,18 @@ export default {
         });
     };
     subscribePlan();
-    return { subscribe, subscribeDes, formatDate, subscribePlan };
+
+    const fetchData = async () => {
+      await axios
+        .get("/api/data")
+        .then((response) => {
+          data.value = response.data;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };
+    return { subscribe, subscribeDes, formatDate, subscribePlan, fetchData };
   },
 };
 </script>
@@ -102,6 +115,15 @@ export default {
       </tbody>
     </table>
   </div>
+  <!-- ==================================================================================================================================== -->
+  <div>
+    <button @click="fetchData">Fetch Data</button>
+    <div v-if="data">
+      <h2>123</h2>
+      <p>456</p>
+    </div>
+  </div>
+  <!-- ==================================================================================================================================== -->
   <div class="m-subscribePlan">
     <table>
       <thead>

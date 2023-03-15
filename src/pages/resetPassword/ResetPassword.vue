@@ -28,15 +28,14 @@ export default {
     };
 
     const errorFn = (err) => {
-      // Object.keys(err).forEach((key) => (error_message[key] = err[key]));
-      // console.log(error_message.Email);
+      Object.keys(err).forEach((key) => (error_message[key] = err[key]));
+      console.log(error_message);
     };
 
     const handReset = async () => {
       if (isSubmitting.value) return;
 
       isSubmitting.value = true;
-      console.log(reset);
       await axios
         .patch(
           `https://localhost:7043/Members/ResetPassword?memberid=${memberId}&confirmCode=${confirmCode}`,
@@ -56,9 +55,9 @@ export default {
         })
         .catch((err) => {
           isSubmitting.value = false;
-          console.log(err);
+          // console.log(err);
           // console.log(err.response.data.errors);
-          // errorFn(err.response.data.errors);
+          errorFn(err.response.data.errors);
         });
     };
 
@@ -86,19 +85,22 @@ export default {
       <div class="input-box">
         <p>輸入新密碼</p>
         <input
-          type="text"
+          type="password"
           placeholder="請輸入密碼"
           v-model.lazy.trim="reset.password"
         />
+        <p v-if="error_message.Password" class="error">
+          {{ error_message.Password[0] }}
+        </p>
         <p>再次輸入新密碼</p>
         <input
-          type="text"
+          type="password"
           placeholder="請輸入密碼"
           v-model.lazy.trim="reset.ConfirmPassword"
         />
-        <!-- <p v-if="error_message" class="error">
-          {{ error_message.NickName[0] }}
-        </p> -->
+        <p v-if="error_message.ConfirmPassword" class="error">
+          {{ error_message.ConfirmPassword[0] }}
+        </p>
       </div>
       <button :disabled="isSubmitting" type="submit" @click.prevent="handReset">
         送出
