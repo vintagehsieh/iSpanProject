@@ -144,7 +144,7 @@ export default {
       <div id="searchResult" v-else>
         <div class="header" id="songHeader" v-if="searchSongs != undefined && searchSongs.length != 0">歌曲</div>
         <div id="Songs">
-          <RouterLink to="/album" v-for="song in searchSongs" :key="song.id" @click="setAlbum(song.albumId)">
+          <RouterLink to="/album" v-for="song in searchSongs.slice(0, 5)" :key="song.id" @click="setAlbum(song.albumId)">
             <Song class="song">
               <template #order>
                 <font-awesome-icon class="btn" id="play" icon="fa-solid fa-play" @click="togglePlay" />

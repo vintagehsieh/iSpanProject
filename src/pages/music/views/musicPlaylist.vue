@@ -258,7 +258,10 @@ export default {
                     credentials: 'include',
                 })
                 .then(response => response.text())
-                .then(data => console.log(data))
+                .then(data => {
+                    alert("新增成功")
+                    console.log(data)
+                })
                 .catch(error => console.error(error))
 
             if (playlistId == this.playlist.id)
