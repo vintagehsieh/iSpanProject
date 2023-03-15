@@ -1,18 +1,19 @@
 <template>
   <div class="container">
     <ul class="CleanList">
+      <button @click="AllProducts()">全部</button>
       <button class="li" @click="popularProducts()">發燒音樂</button>
 
-      <button class="li" @click="getGenreName(genreName[0])">
+      <button class="li" @click="getProductsByGenreName(genreName[0])">
         華語流行音樂
       </button>
-      <button class="li" @click="getGenreName(genreName[1])">
+      <button class="li" @click="getProductsByGenreName(genreName[1])">
         西洋流行音樂
       </button>
-      <button class="li" @click="getGenreName(genreName[2])">
+      <button class="li" @click="getProductsByGenreName(genreName[2])">
         韓語流行音樂
       </button>
-      <button class="li" @click="getGenreName(genreName[3])">
+      <button class="li" @click="getProductsByGenreName(genreName[3])">
         日語流行音樂
       </button>
     </ul>
@@ -20,7 +21,7 @@
       <div id="pageHeader">
         <div id="search">
           <input type="text" id="value" />
-          <button @click="getSearch()">
+          <button @click="getSearch()" class="searchbutton">
             <font-awesome-icon
               icon="fa-solid fa-magnifying-glass"
               style="font-size: 25px; color: grey"
@@ -28,7 +29,7 @@
           </button>
         </div>
       </div>
-      <div id="pageCarousell">
+      <div id="pageCarousell" v-if="products.value">
         <swiper
           :effect="'coverflow'"
           :grabCursor="true"
@@ -45,34 +46,11 @@
           :modules="modules"
           class="mySwiper"
         >
-          <swiper-slide
-            ><router-link to="/productItem/1">
-              <img
-                src="https://localhost:44373/Uploads/Covers/a34e5d0ba87b4801a54f119f77165616.jpg" /></router-link></swiper-slide
-          ><swiper-slide
-            ><img
-              src="https://swiperjs.com/demos/images/nature-2.jpg" /></swiper-slide
-          ><swiper-slide
-            ><img
-              src="https://swiperjs.com/demos/images/nature-3.jpg" /></swiper-slide
-          ><swiper-slide
-            ><img
-              src="https://swiperjs.com/demos/images/nature-4.jpg" /></swiper-slide
-          ><swiper-slide
-            ><img
-              src="https://swiperjs.com/demos/images/nature-5.jpg" /></swiper-slide
-          ><swiper-slide
-            ><img
-              src="https://swiperjs.com/demos/images/nature-6.jpg" /></swiper-slide
-          ><swiper-slide
-            ><img
-              src="https://swiperjs.com/demos/images/nature-7.jpg" /></swiper-slide
-          ><swiper-slide
-            ><img
-              src="https://swiperjs.com/demos/images/nature-8.jpg" /></swiper-slide
-          ><swiper-slide
-            ><img src="https://swiperjs.com/demos/images/nature-9.jpg"
-          /></swiper-slide>
+          <swiper-slide v-for="swiperproduct in popular.value">
+            <router-link :to="'/productItem/' + swiperproduct.id">
+              <img :src="swiperproduct.albumInfo.albumCoverPath" />
+            </router-link>
+          </swiper-slide>
         </swiper>
         <label for="select-option" class="custom-label">搜尋方式：</label>
         <select
@@ -81,6 +59,7 @@
           class="custom-select"
           @change="showvalue"
         >
+          <option>全部</option>
           <option>歌手</option>
           <option>專輯</option>
         </select>
@@ -92,28 +71,27 @@
         <Card v-for="(item, index) in products.value" :key="index">
           <template #picture>
             <div>
-              <img :src="item.albumInfo.albumCoverPath" alt="" />
+              <router-link :to="'/productItem/' + item.id">
+                <img
+                  :src="item.albumInfo.albumCoverPath"
+                  alt=""
+                  class="picture"
+                />
+              </router-link>
             </div>
           </template>
           <template #name>
             <div>
-              <p>{{ item.productName }}</p>
+              <router-link :to="'/productItem/' + item.id">
+                <p>{{ item.albumInfo.albumName }}</p>
+              </router-link>
             </div>
           </template>
           <template #price>
             <div>
-              <p>{{ item.productPrice }}</p>
-            </div>
-          </template>
-          <template #categoryName>
-            <div>
-              <p>{{ item.categoryName }}</p>
-            </div>
-          </template>
-          <template #id>
-            <div>
-              <p>{{ item.id }}</p>
-              <router-link :to="'/productItem/' + item.id">購物車</router-link>
+              <router-link :to="'/productItem/' + item.id">
+                <p>{{ item.productPrice }}</p>
+              </router-link>
             </div>
           </template>
         </Card>
@@ -144,11 +122,11 @@ export default {
   setup() {
     const products = reactive({ value: [] });
     const popular = reactive({ value: [] });
-    const search = reactive({ value: [] });
+    const searchProducts = reactive({ value: [] });
 
     const genreName = ["華語流行", "西洋流行", "韓語流行", "日語流行"];
 
-    const getGenreName = (value) => {
+    const getProductsByGenreName = (value) => {
       fetch(`https://localhost:7043/Products/SongGenre/${value}`, {
         method: "GET",
         credentials: "include",
@@ -157,7 +135,7 @@ export default {
         .then((data) => {
           products.value = data;
 
-          console.log("this", products.value);
+          console.log(products.value);
         });
     };
 
@@ -176,7 +154,7 @@ export default {
         .then((data) => {
           products.value = data;
 
-          console.log("this", products.value);
+          console.log(products.value);
         });
     };
 
@@ -187,9 +165,9 @@ export default {
       })
         .then((res) => res.json())
         .then((data) => {
-          products.value = data;
+          popular.value = data;
 
-          console.log("this", products.value);
+          console.log(popular.value);
         });
     };
 
@@ -201,15 +179,21 @@ export default {
         .then((res) => res.json())
         .then((data) => {
           products.value = data;
-          console.log("this", products.value);
+          console.log("this", products.value[0].albumInfo.albumCoverPath);
         });
     });
+
+    function AllProducts() {
+      return products.value;
+    }
+
     return {
       genreName,
       products,
       popular,
+      AllProducts,
       getSearch,
-      getGenreName,
+      getProductsByGenreName,
       popularProducts,
       modules: [EffectCoverflow, Pagination],
     };
@@ -218,6 +202,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.picture {
+  height: 100%;
+  width: 100%;
+}
+
+.searchbutton {
+  background-color: #fff;
+}
 .li {
   width: 100%;
   height: 50px;
@@ -227,14 +219,14 @@ export default {
   display: flex;
   align-items: center;
   border-bottom: 2px dashed grey;
-  background-color: #99caf1;
+  background-color: #363534;
   a {
     text-decoration: none;
     color: rgb(37, 95, 171);
   }
 
   &:hover {
-    background-color: rgb(37, 95, 171);
+    background-color: rgb(49, 58, 71);
 
     a {
       color: white;
@@ -303,6 +295,7 @@ export default {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
+    width: 1000px;
   }
 }
 

@@ -18,7 +18,6 @@
   height: 24rem;
   margin-right: 1rem;
   margin-bottom: 1rem;
-  border: 1px solid rgb(12, 0, 0);
 
   .pic {
     margin: 1rem;
@@ -31,7 +30,6 @@
     margin-left: 1rem;
     width: 14rem;
     height: 7rem;
-    background-color: #823c3c;
   }
 }
 </style>

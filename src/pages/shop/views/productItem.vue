@@ -8,23 +8,21 @@
         </tr>
         <div class="add">
           <div class="info">
-            <tr v-if="membercart.value.albumDetail">
+            <tr v-if="membercart.value.albumDetail && products.value">
               <td>
                 <div>專輯名稱:{{ membercart.value.albumDetail.albumName }}</div>
-                <br />
                 <div>
                   類型:{{ membercart.value.albumDetail.albumGenreName }}
                 </div>
-                <br />
                 <div>
                   演出者:{{ membercart.value.albumDetail.mainArtistName }}
                 </div>
-                <br />
                 <div>
                   發表時間:{{
                     formatDate(membercart.value.albumDetail.released)
                   }}
                 </div>
+                <div>價錢:{{ membercart.value.productPrice }}</div>
               </td>
             </tr>
           </div>
@@ -83,6 +81,7 @@ import http from "@/plugins/http";
 
 export default {
   setup() {
+    const products = reactive({ value: [] });
     const membercart = reactive({ value: [] });
     var url = "";
     var lastSlashIndex = 0;
@@ -91,6 +90,7 @@ export default {
     function alertFunction() {
       alert("已成功加入購物車！");
     }
+
 
     function formatDate(dateString) {
       const date = new Date(dateString);
@@ -129,7 +129,7 @@ export default {
         .then((data) => {
           membercart.value = data;
 
-          console.log("this", membercart.value.albumDetail);
+          console.log(membercart.value.albumDetail);
         });
     });
     return {
@@ -137,21 +137,10 @@ export default {
       formatDate,
       membercart,
       number,
+      products,
       addtoCartItem,
     };
   },
-  // updated() {
-  //   fetch(`https://localhost:7043/Products/${this.number}/Detail`, {
-  //     method: "GET",
-  //     credentials: "include",
-  //   })
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       this.membercart.value = data;
-  //       console.log(this.membercart.value);
-  //       console.log("this", membercart.value.albumDetail);
-  //     });
-  // },
 };
 </script>
 

@@ -18,9 +18,9 @@ export default {};
       <span>會員登入</span>
     </div>
     <div id="cart">
-      <a href="http://localhost:8080/shop.html#/cart" class="pageLink"
-        >購物車</a
-      >
+      <a href="http://localhost:8080/shop.html#/cart" class="pageLink">
+        <font-awesome-icon icon="fa-so fa-cart-shopping" class="icon" />
+      </a>
     </div>
   </nav>
   <router-link to="/productItem">商品</router-link>
@@ -34,18 +34,23 @@ export default {};
 * {
   margin: 0;
   padding: 0;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
+  // -webkit-box-sizing: border-box;
+  // -moz-box-sizing: border-box;
+  //box-sizing: border-box;
   // 改字體
   font-family: "Microsoft JhengHei", "Heiti TC", "sans-serif";
   list-style: none;
 }
 
+#cart .icon {
+  height: 23px;
+  color: #ffffff;
+}
+
 #header {
   width: 100%;
   height: 8rem;
-  background-color: #2c7dd8;
+  background-color: #383e46;
   display: flex;
   align-items: center;
 
@@ -91,5 +96,6 @@ export default {};
 
 #page {
   padding: 2rem 8rem;
+
 }
 </style>

@@ -1,9 +1,10 @@
 <template>
-  <div class="shopping-cart">
+  <div class="shopping-cart ">
     <h1>購物車</h1>
     <table>
       <thead>
         <tr>
+          <th>picture</th>
           <th>Product</th>
           <th>Price</th>
           <th>Quantity</th>
@@ -13,6 +14,7 @@
       </thead>
       <tbody>
         <tr v-for="(item, index) in membercart.value" :key="index">
+          <img :src="item.albumCoverPath" alt="">
           <td>{{ item.productName }}</td>
           <td>{{ item.productPrice }}</td>
           <td>
@@ -23,13 +25,21 @@
               -
             </button>
             {{ item.qty }}
-            <button @click="increaseItemQuantity(item, item.productId)">
+            <button
+              class="btn"
+              @click="increaseItemQuantity(item, item.productId)"
+            >
               +
             </button>
           </td>
           <td>{{ item.productPrice * item.qty }}</td>
           <td>
-            <button @click="removeItem(index, item.id)">Remove</button>
+            <button class="removeButton" @click="removeItem(index, item.id)">
+              <font-awesome-icon
+                icon="fa-solid fa-trash"
+                style="color: black; font-size: 25px"
+              />
+            </button>
           </td>
         </tr>
       </tbody>
@@ -93,11 +103,11 @@ export default {
 
     const setCoupon = (e) => {
       // console.log("this", e.target.value-1);
-      const coupon =[options.value[e.target.value - 1].couponText,options.value[e.target.value - 1].discounts]
-      store.dispatch(
-        "setCoupon",
-        coupon
-      );
+      const coupon = [
+        options.value[e.target.value - 1].couponText,
+        options.value[e.target.value - 1].discounts,
+      ];
+      store.dispatch("setCoupon", coupon);
     };
 
     const decreaseCartItem = (id) => {
@@ -139,6 +149,7 @@ export default {
         .then((res) => res.json())
         .then((data) => {
           membercart.value = data;
+          console.log("this",membercart);
         });
       fetch("https://localhost:7043/Carts/CartCoupon", {
         method: "GET",
@@ -200,7 +211,12 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+img{
+  height: 100px;
+  width: 100px;
+}
+
 .shopping-cart {
   font-family: Arial, sans-serif;
   max-width: 2000px;
@@ -229,8 +245,8 @@ th {
 }
 
 button {
-  background-color: #4caf50;
-  color: white;
+  /* background-color: #4caf50; */
+  /* color: white; */
   border: none;
   padding: 10px;
   border-radius: 5px;
@@ -257,5 +273,18 @@ button:disabled {
   font-size: 16px;
   border: 2px solid #ccc;
   border-radius: 4px;
+  height: 30px;
+}
+
+.removeButton {
+  background-color: #fff;
+}
+
+.btn {
+  background-color: #e65f11;
+  height: 10px;
+  width: 10px;
+  line-height: 1px;
+  
 }
 </style>
