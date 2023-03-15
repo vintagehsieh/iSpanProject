@@ -54,6 +54,7 @@ export default {
   flex: 1;
   width: 100%;
   height: 100%;
+  margin-top: -2rem;
   .navbar {
     display: flex;
     flex-direction: column;

@@ -79,8 +79,8 @@ nav {
   }
 
   .block {
-    width: 20vw;
-    height: 100px;
+    min-width: min(20vw, 341px);
+    min-height: 100px;
     background-color: #38393b;
     position: absolute;
     top: 0;
@@ -93,7 +93,7 @@ nav {
     color: white;
 
     > :nth-child(1) {
-      margin-left: 2rem;
+      margin-left: 6rem;
     }
 
     > a {
