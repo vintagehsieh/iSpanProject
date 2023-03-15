@@ -213,6 +213,7 @@ a {
                 font-size: 1rem;
                 &:focus {
                     outline: none;
+                    background-color: #1f2124;
                 }
             }
             button {
