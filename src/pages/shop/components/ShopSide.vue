@@ -26,15 +26,15 @@ export default {
       </div>
       <div class="link">
         <router-link to="/">
-          <span class="icon"><i class="fa-solid fa-user"></i></span>
-          <h3>首頁</h3>
+          <span class="icon"><i class="fa-solid fa-home"></i></span>
+          <h3>商品首頁</h3>
         </router-link>
         <router-link to="/shopSearch">
-          <span class="icon"><i class="fa-solid fa-user"></i></span>
-          <h3>搜尋</h3>
+          <span class="icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+          <h3>商品搜尋</h3>
         </router-link>
         <router-link to="/cart">
-          <span class="icon"><i class="fa-solid fa-user"></i></span>
+          <span class="icon"><i class="fa-solid fa-shopping-cart"></i></span>
           <h3>購物車</h3>
         </router-link>
       </div>
@@ -56,7 +56,12 @@ export default {
     flex-direction: column;
     justify-content: start;
     align-items: center;
-    background-color: black;
+    background: linear-gradient(
+      180deg,
+      rgba(60, 61, 62, 1) 0%,
+      rgba(59, 55, 49, 1) 100%
+    );
+    opacity: 87%;
     min-width: 20vw;
     height: 100%;
     padding-top: 6rem;
@@ -64,7 +69,7 @@ export default {
     padding-inline: 2rem;
     p {
       color: white;
-      font-size: 1.5rem;
+      font-size: 1.25rem;
       margin-bottom: 1.75rem;
       letter-spacing: 4px;
       text-align: center;
@@ -92,7 +97,7 @@ export default {
         text-decoration: none;
         color: white;
         margin-bottom: 2.5rem;
-        font-size: 1.25rem;
+        font-size: 1rem;
         text-align: justify;
         &:hover {
           color: orange;

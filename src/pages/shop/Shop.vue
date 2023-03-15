@@ -43,6 +43,11 @@ html,
 body {
   width: 100%;
   height: 100%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(246, 179, 82, 1) 100%
+  );
 }
 
 #shop {
@@ -55,6 +60,7 @@ body {
   color: hsl(210, 29%, 24%);
 
   .container {
+    background-color: #1f2124;
     width: 100%;
     height: 100%;
     display: flex;
@@ -77,11 +83,11 @@ body {
     .view {
       flex: 1;
       overflow-y: scroll;
-      background-color: white;
       display: flex;
       justify-content: start;
       align-items: start;
-      margin-top: -8rem;
+      width: 100%;
+      height: auto;
       margin-left: 3rem;
     }
   }

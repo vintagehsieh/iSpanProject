@@ -106,37 +106,36 @@ export default {
       </button>
     </ul>
 
-    <div class="productContainer">
-      <div v-if="products.value != undefined">
-        <Card v-for="(item, index) in products.value" :key="index">
+    <div v-if="products.value != undefined" class="productContainer">
+      <router-link
+        :to="'/productItem/' + item.id"
+        v-for="(item, index) in products.value"
+        :key="index"
+        class="productItem"
+      >
+        <Card>
           <template #picture>
-            <div>
+            <div class="cover">
               <img :src="item.albumInfo.albumCoverPath" alt="" />
             </div>
           </template>
-          <template #name>
-            <div>
-              <p>{{ item.productName }}</p>
-            </div>
-          </template>
           <template #price>
-            <div>
-              <p>{{ item.productPrice }}</p>
+            <div class="productPrice">
+              <p>$ {{ item.productPrice }}</p>
             </div>
           </template>
           <template #categoryName>
-            <div>
+            <div class="categoryName">
               <p>{{ item.categoryName }}</p>
             </div>
           </template>
-          <template #id>
-            <div>
-              <p>{{ item.id }}</p>
-              <router-link :to="'/productItem/' + item.id">購物車</router-link>
+          <template #name>
+            <div class="productName">
+              <p>{{ item.productName }}</p>
             </div>
           </template>
-        </Card>
-      </div>
+        </Card></router-link
+      >
     </div>
 
     <!-- <div class="page">
@@ -192,22 +191,28 @@ export default {
 //   }
 // }
 
+a {
+  text-decoration: none;
+}
+
 .content {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  height: auto;
   // flex-wrap: wrap;
-  // margin-left: 3rem;
+  margin-block: 8rem;
+
   .carouselContainer {
     width: 1000px;
     height: auto;
     overflow: hidden;
-    background-color: rgba(225, 225, 225, 0.5);
-    box-shadow: rgba(0 0 0 / 30%) 0 2px 10px;
+    background-color: rgba(246, 179, 82, 60);
+    box-shadow: rgba(255 255 255 / 20%) 0 2px 10px;
     border-radius: 20px;
     padding: 1rem;
-    padding-inline: 5rem;
+    padding-inline: 3rem;
   }
   .categorySearch {
     margin-top: 3rem;
@@ -225,10 +230,54 @@ export default {
       background-color: white;
       border: 2px solid black;
       &:hover {
-        box-shadow: rgba(0 0 0 / 30%) 0 2px 10px;
+        // box-shadow: rgba(255 255 255 / 10%) 0 2px 10px;
         border: none;
         background: black;
         color: white;
+      }
+    }
+  }
+
+  .productContainer {
+    width: 1000px;
+    display: flex;
+    margin-block: 4rem;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: all 0.4 ease-in-out;
+    .productItem {
+      &:hover {
+        scale: 1.1;
+      }
+      .categoryName {
+        text-align: center;
+        margin-right: 6.6rem;
+        width: 3rem;
+        height: 1.5rem;
+        line-height: 1.5rem;
+        font-weight: 600;
+        color: white;
+        background-color: #f6b352;
+        border-radius: 3px;
+      }
+      .productName {
+        color: white;
+        font-size: 1.25rem;
+        text-align: right;
+        font-weight: 700;
+      }
+      .productPrice {
+        width: 4rem;
+        height: 2rem;
+        background-color: rgba(0 0 0 / 40%);
+        color: white;
+        line-height: 2rem;
+        position: absolute;
+        top: 30px;
+        border-radius: 0 4px 4px 0;
+        p {
+        }
       }
     }
   }

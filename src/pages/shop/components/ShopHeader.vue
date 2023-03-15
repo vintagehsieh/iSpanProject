@@ -30,6 +30,7 @@ export default {
       <div id="logo">
         <a href="index.html"><img src="@/assets/logo.png" /></a>
       </div>
+      <div class="block"></div>
       <!-- Direct -->
       <div id="pages">
         <a href="music.html" id="musicPage">音樂播放</a>
@@ -59,13 +60,15 @@ nav {
   align-items: center;
   width: 100%;
   height: 100%;
+  position: relative;
 
   > #logo {
     display: flex;
-    margin-left: 10rem;
+    margin-left: 4.5rem;
     width: 200px;
     height: 60px;
     overflow: hidden;
+    z-index: 2;
 
     > a img {
       display: flex;
@@ -73,6 +76,16 @@ nav {
       margin-top: -1rem;
       scale: 2;
     }
+  }
+
+  .block {
+    width: 20vw;
+    height: 100px;
+    background-color: #38393b;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
   }
 
   > #pages {
@@ -86,7 +99,7 @@ nav {
     > a {
       text-decoration: none;
       color: white;
-      padding-right: 6rem;
+      padding-right: 5rem;
     }
   }
 

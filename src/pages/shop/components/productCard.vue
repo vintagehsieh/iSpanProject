@@ -4,9 +4,9 @@
       <slot name="picture"></slot>
     </div>
     <div class="desc">
+      <slot name="categoryName"></slot>
       <slot name="name"></slot>
       <slot name="price"></slot>
-      <slot name="categoryName"></slot>
       <slot name="id"></slot>
     </div>
   </div>
@@ -14,24 +14,33 @@
 
 <style lang="scss" scoped>
 .card {
+  display: flex;
+  flex-direction: column;
   width: 16rem;
-  height: 24rem;
-  margin-right: 1rem;
+  height: 21rem;
+  margin-right: 3rem;
   margin-bottom: 1rem;
-  border: 1px solid rgb(12, 0, 0);
+  background-color: #1f2124;
+  box-shadow: rgba(255 255 255 / 10%) 1px 1px 6px 0;
+  border-radius: 8px;
 
   .pic {
     margin: 1rem;
     width: 14rem;
     height: 14rem;
-    background-color: #29bdc2;
+    border-radius: 8px 8px 8px 8px;
+    background-color: #f19090;
+    opacity: 70%;
   }
 
   .desc {
     margin-left: 1rem;
+    margin-top: -1rem;
+    margin-bottom: -1rem;
     width: 14rem;
-    height: 7rem;
-    background-color: #823c3c;
+    height: 6rem;
+    border-radius: 0 0 8px 8px;
+    padding-block: 1rem;
   }
 }
 </style>

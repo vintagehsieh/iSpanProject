@@ -76,8 +76,9 @@ export default {
 <style lang="scss" scoped>
 .swiper {
   width: 100%;
-  padding-top: 50px;
-  padding-bottom: 50px;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  border-radius: 8px;
 }
 
 .swiper-slide {
@@ -90,4 +91,6 @@ export default {
     width: 100%;
   }
 }
+
+
 </style>
