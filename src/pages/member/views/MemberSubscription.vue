@@ -4,7 +4,7 @@ export default {
   setup() {
     const subscribe = ref([]);
     const subscribeDes = ref([]);
-    const data = ref(null);
+    const isModal = ref(false);
 
     onMounted(() => {
       fetch("https://localhost:7043/Members/SubscriptionRecord", {
@@ -22,6 +22,7 @@ export default {
           console.error(error);
         });
     });
+
     const formatDate = (dateString) => {
       const date = new Date(dateString);
       const year = date.getFullYear();
@@ -47,17 +48,13 @@ export default {
     };
     subscribePlan();
 
-    const fetchData = async () => {
-      await axios
-        .get("/api/data")
-        .then((response) => {
-          data.value = response.data;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+    return {
+      subscribe,
+      subscribeDes,
+      formatDate,
+      subscribePlan,
+      isModal,
     };
-    return { subscribe, subscribeDes, formatDate, subscribePlan, fetchData };
   },
 };
 </script>
@@ -117,10 +114,14 @@ export default {
   </div>
   <!-- ==================================================================================================================================== -->
   <div>
-    <button @click="fetchData">Fetch Data</button>
-    <div v-if="data">
-      <h2>123</h2>
-      <p>456</p>
+    <button @click="isModal = true">Fetch Data</button>
+    <div v-if="isModal">
+      <modal>
+        <template #header>
+          <div @click="isModal = false">X</div>
+        </template>
+        <template #content>XS</template>
+      </modal>
     </div>
   </div>
   <!-- ==================================================================================================================================== -->
