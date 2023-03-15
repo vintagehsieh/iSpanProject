@@ -1,58 +1,52 @@
 <script>
 export default {
-    methods: {
-        openModal() {
-            modalMask.classList.add('active');
-        },
-        closeModal() {
-            modalMask.classList.remove('active');
-        }
-    }
+
 };
 </script>
 
 <template>
-    <div class="modal-mask">
+    <div class="modal-container">
         <div class="modal">
-            <h2>Modal Title</h2>
-            <p>Modal content goes here.</p>
-            <button class="close-modal">Close</button>
+            <div class="header">
+                <slot name="header"></slot>
+            </div>
+            <div class="content">
+                <slot name="content"></slot>
+            </div>
         </div>
     </div>
 </template>
 
-<style lang="scss"scoped>
-.modal-mask {
+<style lang="scss" scoped>
+.modal-container {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
     z-index: 9999;
+    background-color: rgba(0, 0, 0, 0.3);
+}
 
-    >.modal {
-        background-color: white;
-        padding: 20px;
-        border-radius: 5px;
-        position: relative;
+.modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border-radius: 10px;
+    transform: translate(-50%, -50%);
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
+    padding: 20px;
 
-        >h2 {
-            margin-top: 0;
-        }
-
-        >.close-modal {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-        }
+    .header {
+        width: 100%;
+        height: 3rem;
+        display: flex;
     }
 
-    &:not(.active) {
-        display: none;
+    .content {
+        width: 100%;
+        height: 16rem;
     }
 }
 </style>
