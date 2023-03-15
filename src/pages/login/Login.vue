@@ -49,7 +49,7 @@ export default {
 
     // 把登入訊息存在cookie 中
     const saveCookie = () => {
-      Cookies.set("loginInfo", loginInfo.memberAccount, { expires: 1 });
+      // Cookies.set("loginInfo", loginInfo.memberAccount, { expires: 1 });
       localStorage.setItem("isLogin", true);
     };
 

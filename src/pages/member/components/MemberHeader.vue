@@ -16,7 +16,7 @@ export default {
     const memberAccount = ref("");
 
     if (Cookies.get("loginInfo") !== undefined) {
-      memberAccount.value = Cookies.get("loginInfo");
+      memberAccount.value = Cookies.get("UserID");
     }
 
     return { props, memberAccount };
