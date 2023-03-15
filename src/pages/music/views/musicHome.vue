@@ -2,6 +2,15 @@
 import { computed } from "vue";
 import { useStore } from 'vuex';
 import { debounce } from 'lodash';
+import { Swiper, SwiperSlide } from 'swiper/vue';
+
+// Import Swiper styles
+import 'swiper/css';
+
+import 'swiper/css/pagination';
+
+// import required modules
+import { Pagination } from 'swiper';
 
 export default {
   setup() {
@@ -35,6 +44,7 @@ export default {
       popularPlaylists,
       popularArtists,
       popularCreators,
+      modules: [Pagination],
     };
   },
   data() {
@@ -43,6 +53,10 @@ export default {
       showAllName: "",
       showAll: "顯示所有內容"
     }
+  },
+  components: {
+    Swiper,
+    SwiperSlide,
   },
   methods: {
     showAllPopSongs(popItems) {
@@ -93,7 +107,15 @@ export default {
 
 <template>
   <div class="container" v-show="isMain">
-    <div class="announcement"></div>
+    <div class="announcement">
+      <swiper :slidesPerView="1" :spaceBetween="10" :pagination="{
+        clickable: true,
+      }" :modules="modules" class="mySwiper">
+        <swiper-slide v-for="album in popularAlbums.items">
+          <img :src=album.albumCoverPath>
+        </swiper-slide>
+      </swiper>
+    </div>
     <div class="trans">
       <div class="populars">
         <div class="box" id="popularSongs">
@@ -301,7 +323,6 @@ export default {
   >.announcement {
     width: 80%;
     height: 15rem;
-    background-color: #F6B352;
     margin: 0 auto 2rem auto;
     border-radius: 20px;
   }
@@ -402,5 +423,30 @@ export default {
 
 .slide-right-leave-to {
   transform: translateX(100%);
+}
+
+.swiper {
+  width: 100%;
+  height: 100%;
+}
+
+.swiper-slide {
+  text-align: center;
+  font-size: 18px;
+  background: #ffffff00;
+  border-radius: 10px;
+
+  /* Center slide text vertically */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.swiper-slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  object-fit: cover;
 }
 </style>
