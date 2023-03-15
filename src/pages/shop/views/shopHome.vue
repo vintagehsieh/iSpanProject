@@ -1,5 +1,6 @@
 <script>
 import { reactive, computed, onMounted } from "vue";
+import emitter from "@/mitt";
 import ShopCarousell from "../components/ShopCarousell";
 // import required modules
 import { EffectCoverflow, Pagination } from "swiper";
@@ -14,78 +15,86 @@ export default {
 
         const genreName = ["華語流行", "西洋流行", "韓語流行", "日語流行"];
 
-    const getProductsByGenreName = (value) => {
-      fetch(`https://localhost:7043/Products/SongGenre/${value}`, {
-        method: "GET",
-        credentials: "include",
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          products.value = data;
+        const getProductsByGenreName = (value) => {
+            fetch(`https://localhost:7043/Products/SongGenre/${value}`, {
+                method: "GET",
+                credentials: "include",
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    products.value = data;
 
-          console.log(products.value);
+                    console.log(products.value);
+                });
+        };
+
+        const getSearch = async () => {
+            const searchword = document.querySelector("#value");
+            const artist = document.querySelector("#select-option");
+
+            fetch(
+                `https://localhost:7043/Products/ProductSearch/${searchword.value}?Sort=${artist.value}`,
+                {
+                    method: "GET",
+                    credentials: "include",
+                }
+            )
+                .then((res) => res.json())
+                .then((data) => {
+                    products.value = data;
+
+                    console.log(products.value);
+                });
+        };
+
+        const popularProducts = () => {
+            fetch(`https://localhost:7043/Products/Popular`, {
+                method: "GET",
+                credentials: "include",
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    popular.value = data;
+
+                    console.log(popular.value);
+                });
+        };
+
+        const emitPopularProducts = () => {
+            emitter.emit("emitPopularProducts", popular);
+        };
+
+        onMounted(() => {
+            fetch("https://localhost:7043/Products/New", {
+                method: "GET",
+                credentials: "include",
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    products.value = data;
+                    console.log(
+                        "this",
+                        products.value[0].albumInfo.albumCoverPath
+                    );
+                });
         });
-    };
 
-    const getSearch = async () => {
-      const searchword = document.querySelector("#value");
-      const artist = document.querySelector("#select-option");
-
-      fetch(
-        `https://localhost:7043/Products/ProductSearch/${searchword.value}?Sort=${artist.value}`,
-        {
-          method: "GET",
-          credentials: "include",
+        function AllProducts() {
+            return products.value;
         }
-      )
-        .then((res) => res.json())
-        .then((data) => {
-          products.value = data;
 
-          console.log(products.value);
-        });
-    };
-
-    const popularProducts = () => {
-      fetch(`https://localhost:7043/Products/Popular`, {
-        method: "GET",
-        credentials: "include",
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          popular.value = data;
-
-          console.log(popular.value);
-        });
-    };
-
-    onMounted(() => {
-      fetch("https://localhost:7043/Products/New", {
-        method: "GET",
-        credentials: "include",
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          products.value = data;
-          console.log("this", products.value[0].albumInfo.albumCoverPath);
-        });
-    });
-
-    function AllProducts() {
-      return products.value;
-    }
-
-    return {
-      genreName,
-      products,
-      popular,
-      AllProducts,
-      getSearch,
-      getProductsByGenreName,
-      popularProducts,
-      modules: [EffectCoverflow, Pagination],
-    };
-  },
+        return {
+            genreName,
+            products,
+            popular,
+            AllProducts,
+            getSearch,
+            getProductsByGenreName,
+            popularProducts,
+            emitPopularProducts,
+            modules: [EffectCoverflow, Pagination],
+        };
+    },
 };
 </script>
 
@@ -99,7 +108,6 @@ export default {
             <button class="category" @click="popularProducts()">
                 發燒音樂
             </button>
-
             <button class="category" @click="getGenreName(genreName[0])">
                 華語流行音樂
             </button>
@@ -200,7 +208,7 @@ a {
                 border: white 1px solid;
                 border-right: none;
                 background-color: #1f2124;
-                padding: 1rem;
+                padding-left: 1rem;
                 color: white;
                 font-size: 1rem;
                 &:focus {
@@ -208,13 +216,14 @@ a {
                 }
             }
             button {
-                height: 50px;
+                height: 52px;
                 width: 60px;
                 border: none;
                 border-radius: 0 8px 8px 0;
                 background-color: #1f2124;
                 border: white 1px solid;
                 border-left: none;
+
                 span {
                     font-size: 25px;
                     color: white;
