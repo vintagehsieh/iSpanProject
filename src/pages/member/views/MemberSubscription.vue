@@ -4,6 +4,8 @@ export default {
   setup() {
     const subscribe = ref([]);
     const subscribeDes = ref([]);
+    const isModal = ref(false);
+
     onMounted(() => {
       fetch("https://localhost:7043/Members/SubscriptionRecord", {
         method: "GET",
@@ -20,6 +22,7 @@ export default {
           console.error(error);
         });
     });
+
     const formatDate = (dateString) => {
       const date = new Date(dateString);
       const year = date.getFullYear();
@@ -44,7 +47,14 @@ export default {
         });
     };
     subscribePlan();
-    return { subscribe, subscribeDes, formatDate, subscribePlan };
+
+    return {
+      subscribe,
+      subscribeDes,
+      formatDate,
+      subscribePlan,
+      isModal,
+    };
   },
 };
 </script>
@@ -88,6 +98,7 @@ export default {
           <th>價格</th>
           <th>帳戶</th>
           <th>描述</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -96,6 +107,42 @@ export default {
           <td>{{ subscribePlan.price }}</td>
           <td>{{ subscribePlan.numberOfUsers }}</td>
           <td>{{ subscribePlan.description }}</td>
+          <td><i class="fa-solid fa-store"></i></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <!-- ==================================================================================================================================== -->
+  <div>
+    <button @click="isModal = true">Fetch Data</button>
+    <div v-if="isModal">
+      <modal>
+        <template #header>
+          <div @click="isModal = false">X</div>
+        </template>
+        <template #content>XS</template>
+      </modal>
+    </div>
+  </div>
+  <!-- ==================================================================================================================================== -->
+  <div class="m-subscribePlan">
+    <table>
+      <thead>
+        <tr>
+          <th>訂閱方案</th>
+          <th>價格</th>
+          <th>帳戶</th>
+          <th>描述</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(subscribePlan, index) in subscribeDes" :key="index">
+          <td>{{ subscribePlan.planName }}</td>
+          <td>{{ subscribePlan.price }}</td>
+          <td>{{ subscribePlan.numberOfUsers }}</td>
+          <td>{{ subscribePlan.description }}</td>
+          <td><i class="fa-solid fa-store"></i></td>
         </tr>
       </tbody>
     </table>

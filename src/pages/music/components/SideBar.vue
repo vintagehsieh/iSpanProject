@@ -1,11 +1,8 @@
 <script>
-import store from "@/store";
-import { useStore } from "vuex";
 
 export default {
   methods: {
     async createNewPlaylist() {
-      const store = useStore();
 
       await fetch("https://localhost:7043/Playlists/NewList", {
         method: "POST",
@@ -20,7 +17,7 @@ export default {
         })
         .then((data) => {
           //set playlist
-          store.dispatch("setPlaylist", data);
+          this.$store.dispatch("setPlaylist", data);
         })
         .catch((error) => {
           console.error(error);
@@ -50,7 +47,7 @@ export default {
         <font-awesome-icon icon="fa-solid fa-music" />
         <h3>音樂庫</h3>
       </router-link>
-      <RouterLink to="/playlist" class="routerLink" @click="createNewPlaylist">
+      <RouterLink to="/playlist" class="routerLink" @click="createNewPlaylist()">
         <font-awesome-icon icon="fa-regular fa-square-plus" />
         <h3>新增播放清單</h3>
       </RouterLink>
@@ -74,14 +71,14 @@ aside {
     overflow: hidden;
     margin-bottom: 2rem;
 
-    > a img {
+    >a img {
       display: flex;
       width: max(10vw, 200px);
       scale: 2;
     }
   }
 
-  > #default {
+  >#default {
     width: 80%;
     margin: auto;
   }

@@ -8,6 +8,7 @@ import MemberInfo from "../pages/member/views/MemberInfo.vue";
 import MemberSubscription from "../pages/member/views/MemberSubscription.vue";
 import MemberOrder from "../pages/member/views/MemberOrder.vue";
 import MusicLibrary from "../pages/member/views/MusicLibrary.vue";
+import MemberActivate from "../pages/member/views/MemberActivate.vue"
 
 const routes = [
   {
@@ -34,6 +35,11 @@ const routes = [
     path: "/musicLibrary",
     name: "musicLibrary",
     component: MusicLibrary,
+  },
+  {
+    path: "/memberActivate/:memberId/:confirmCode",
+    name: "memberActivate",
+    component: MemberActivate,
   },
 ];
 

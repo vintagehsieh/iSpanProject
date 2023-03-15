@@ -22,7 +22,10 @@ export default {
         今天想買什麼?
       </p>
       <div class="logo">
-        <img src="@/assets/ae86bc6c9055369fd5ebd8d884a587ae.jpg" alt="" />
+        <img
+          src="@/assets/music-note-icon-song-melody-tune-flat-symbol-free-vector.webp"
+          alt=""
+        />
       </div>
       <div class="link">
         <router-link to="/">

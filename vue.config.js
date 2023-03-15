@@ -62,6 +62,13 @@ module.exports = defineConfig({
       title: "Reset",
       chunks: ["chunk-vendors", "chunk-common", "reset"],
     },
+    resetPassword: {
+      entry: "src/pages/resetPassword/resetPassword.js",
+      template: "public/resetPassword.html",
+      filename: "resetPassword.html",
+      title: "ResetPassword",
+      chunks: ["chunk-vendors", "chunk-common", "resetPassword"],
+    },
     index: {
       entry: "src/main.js",
       template: "public/index.html",

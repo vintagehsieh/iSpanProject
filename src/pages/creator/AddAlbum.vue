@@ -1,6 +1,6 @@
 
 <template>
-  {{ prop.ID + ":" + typeof (prop.ID) }}
+  <!-- {{ prop.ID + ":" + typeof (prop.ID) }} -->
   <div>
     <a-form :model="album" layout="vertical" autocomplete="off">
       <div class="row">

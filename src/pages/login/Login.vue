@@ -1,5 +1,5 @@
 <script>
-import { reactive, computed, onMounted } from "vue";
+import { reactive, computed, onMounted, ref } from "vue";
 import { useStore } from "vuex";
 import Cookies from "js-cookie";
 import { useRouter } from "vue-router";
@@ -17,6 +17,7 @@ export default {
     });
     const memberAccount = computed(() => store.getters.getMemberAccount);
     const error_message = reactive({});
+    const isSubmitting = ref(false);
 
     onMounted(() => {
       const isLoginLocalStorage = localStorage.getItem("isLogin");
@@ -31,14 +32,17 @@ export default {
     });
 
     const handLoginFn = async () => {
+      if (isSubmitting.value) return;
+      isSubmitting.value = true;
       const success = await store.dispatch("login", loginInfo);
       if (success) {
-        alert("登入成功");
+        // alert("登入成功");
         saveCookie();
         setTimeout(() => {
           redirect();
         }, 1000);
       } else {
+        isSubmitting.value = false;
         alert("登入失敗，請檢查帳密");
       }
     };
@@ -69,6 +73,7 @@ export default {
       redirect,
       saveCookie,
       error_message,
+      isSubmitting,
     };
   },
 };
@@ -103,7 +108,12 @@ export default {
         </p>
       </div>
       <a href="reset.html" class="forgetPd">忘記密碼?</a>
-      <button type="submit" class="btn" @click.prevent="handLoginFn">
+      <button
+        :disabled="isSubmitting"
+        type="submit"
+        class="btn"
+        @click.prevent="handLoginFn"
+      >
         送出
       </button>
       <div class="registerBtn">

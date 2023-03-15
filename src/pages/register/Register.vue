@@ -13,6 +13,7 @@ export default {
       confirmPassword: "",
     });
     const error_message = reactive({});
+    const isSubmitting = ref(false);
 
     const successFn = () => {
       alert("註冊成功");
@@ -28,6 +29,8 @@ export default {
     };
 
     const handRegister = async () => {
+      if (isSubmitting.value) return;
+      isSubmitting.value = true;      
       await axios
         .post("https://localhost:7043/Members/Register", register, {
           withCredentials: true,
@@ -37,7 +40,8 @@ export default {
         })
         .catch((err) => {
           // console.log(err.response.data.errors);
-          // errorFn(err.response.data.errors);
+          isSubmitting.value = false;
+          errorFn(err.response.data.errors);
         });
     };
 
@@ -47,7 +51,7 @@ export default {
       window.location.reload();
     };
 
-    return { isReg, register, error_message, handRegister };
+    return { isReg, register, error_message, handRegister, isSubmitting };
   },
 };
 </script>
@@ -120,7 +124,13 @@ export default {
           {{ error_message.Email[0] }}
         </p>
       </div>
-      <button type="submit" @click.prevent="handRegister">送出</button>
+      <button
+        :disabled="isSubmitting"
+        type="submit"
+        @click.prevent="handRegister"
+      >
+        送出
+      </button>
     </form>
   </div>
   <div v-if="isReg" class="redirection">註冊成功，請至信箱收驗證信...</div>

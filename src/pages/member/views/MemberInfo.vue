@@ -4,10 +4,15 @@ import axios from "axios";
 
 export default {
   setup() {
+    const isSubmitting = ref(false);
     const member = ref([]);
     onMounted(() => {
       getMember();
     });
+    const errorFn = (err) => {
+      Object.keys(err).forEach((key) => (error_message[key] = err[key]));
+      console.log(error_message.Email);
+    };
     const formatDate = (dateString) => {
       const date = new Date(dateString);
       const year = date.getFullYear();
@@ -75,11 +80,13 @@ export default {
         .catch((error) => {});
     };
     const sendCode = async () => {
+      if (isSubmitting.value) return;
+      isSubmitting.value = true;
       const data = {};
-
       const email = document.querySelector("#email");
       data[email.id] = email.value;
       const myConfirmForm = new FormData();
+
       myConfirmForm.append("email", email.value);
       fetch("https://localhost:7043/Members/ResendConfirmCode", {
         method: "PATCH",
@@ -100,7 +107,10 @@ export default {
           // alert("更新成功");
           // }
         })
-        .catch((error) => {});
+        .catch((error) => {
+          errorFn(err.response.data.errors);
+          isSubmitting.value = false;
+        });
     };
     const openEmailForm = async () => {
       member.value.emailEdit = true;
@@ -155,6 +165,7 @@ export default {
       openEmailForm,
       saveEmailForm,
       getMember,
+      isSubmitting,
     };
   },
 };
