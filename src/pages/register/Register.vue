@@ -30,7 +30,7 @@ export default {
 
     const handRegister = async () => {
       if (isSubmitting.value) return;
-      isSubmitting.value = true;
+      isSubmitting.value = true;      
       await axios
         .post("https://localhost:7043/Members/Register", register, {
           withCredentials: true,

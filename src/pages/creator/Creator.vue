@@ -496,13 +496,13 @@ const infoclick = () => {
 };
 const editsubmit_load = ref(false);
 
-const editinfoclick = () => {
+const editinfoclick = async() => {
   editinfovisible.value = false;
   var form = document.querySelector("#creatorform");
   // console.log(form)
   const senddata = new FormData(form);
 
-  fetch(`https://localhost:7043/Creators/CreatorPage`, {
+  await fetch(`https://localhost:7043/Creators/CreatorPage`, {
     method: "PUT",
     headers: {
       //  'Content-Type': 'multipart/form-data',
@@ -514,6 +514,7 @@ const editinfoclick = () => {
     .then((response) => response.text())
     .then((data) => console.log(data))
     .catch((error) => console.error(error));
+    getUserInfo();
 };
 
 const handleUploadCoverImage = (event) => {
