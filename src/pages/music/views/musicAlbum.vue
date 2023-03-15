@@ -19,6 +19,9 @@ export default {
         return {
             isPlaying: false,
             optionIsOpen: false,
+            searchPlaylistValue: "",
+            searchPlaylists: [],
+            songModalOpen: false,
         }
     },
     methods: {
@@ -175,6 +178,43 @@ export default {
         async setCreator(creatorId) {
             await this.$store.dispatch('setCreator', creatorId);
         },
+        showSongModal(songId, i) {
+            this.album.songs[i].optionIsOpen = false;
+            this.modalSongId = songId;
+            this.songModalOpen = true;
+        },
+        hideSongModal() {
+            this.songModalOpen = false;
+            this.searchPlaylistValue = "";
+        },
+        async searchPlaylist() {
+            if (this.searchPlaylistValue == "") return;
+            await fetch(`https://localhost:7043/Members/Playlists?RowNumber=2&IncludedLiked=false&Condition=RecentlyAdded&Value=${this.searchPlaylistValue}`,
+                { method: 'GET', headers: { 'Content-Type': 'application/json' }, credentials: 'include', })
+                .then(response => response.json())
+                .then(data => this.searchPlaylists = data)
+                .catch(error => console.error(error))
+        },
+        async addSongToPlaylistEx(playlistId) {
+            await fetch(`https://localhost:7043/Playlists/${playlistId}/Songs/${this.modalSongId}`,
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        'value': true
+                    }),
+                    credentials: 'include',
+                })
+                .then(response => response.text())
+                .then(data => {
+                    alert("新增成功")
+                    console.log(data)
+                })
+                .catch(error => console.error(error))
+
+            if (playlistId == this.playlist.id)
+                this.$store.dispatch('setPlaylist', this.playlist.id);
+        },
     }
 };
 </script>
@@ -310,9 +350,11 @@ export default {
                                         <div class="option" @click="addSongToQueue(song.id); closeSongOption(i)">加入佇列</div>
                                     </template>
                                     <template #second>
+                                        <div class="option" @click="addToQueue(); closeSongOption(i)">顯示提供者</div>
                                     </template>
                                     <template #third>
-                                        <div class="option" @click="addToQueue(); closeSongOption(i)">顯示提供者</div>
+                                        <div class="option" @click="(event) => showSongModal(song.id, i)">加入播放清單
+                                        </div>
                                     </template>
                                     <template #forth>
                                     </template>
@@ -330,6 +372,34 @@ export default {
             </div>
         </div>
     </div>
+    <Modal v-if="songModalOpen">
+        <template #header>
+            <div id="searchPlaylist"
+                style="width: 16rem; height: 35px; padding: 0 1rem; background-color: #a7a7a7; border-radius: 30px; display: flex; justify-content: center; align-items: center;">
+                <font-awesome-icon icon="fa-solid fa-magnifying-glass" style="font-size: 20px; margin-right: 8px;" />
+                <input type="text" placeholder="想聽什麼?" v-model="searchPlaylistValue" @keyup="searchPlaylist"
+                    style="font-size:large; border: none; background-color: #a7a7a7; outline: none;" />
+            </div>
+            <font-awesome-icon icon="fa-solid fa-xmark" style="font-size: 2rem; margin-left: 10rem"
+                @click="hideSongModal" />
+        </template>
+        <template #content>
+            <div id="scrollable-div" style="overflow-y;:scroll">
+                <div id="searchPlaylists">
+                    <div class="playlist" v-for="playlist in searchPlaylists"
+                        style="width: 100%; height: 3rem;display: flex; align-items: center;">
+                        <div class="playlistName">
+                            <span>{{ playlist.listName }}</span>
+                        </div>
+                        <div class="plus" @click="addSongToPlaylistEx(playlist.id)" style="color: black; margin-left: auto"
+                            onmouseover="this.style.color='#f68718'" onmouseout="this.style.color='black'">
+                            <font-awesome-icon icon="fa-solid fa-plus" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </Modal>
 </template>
 
 <style lang="scss" scoped>
