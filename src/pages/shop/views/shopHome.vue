@@ -14,72 +14,78 @@ export default {
 
         const genreName = ["華語流行", "西洋流行", "韓語流行", "日語流行"];
 
-        const getGenreName = (value) => {
-            fetch(`https://localhost:7043/Products/SongGenre/${value}`, {
-                method: "GET",
-                credentials: "include",
-            })
-                .then((res) => res.json())
-                .then((data) => {
-                    products.value = data;
+    const getProductsByGenreName = (value) => {
+      fetch(`https://localhost:7043/Products/SongGenre/${value}`, {
+        method: "GET",
+        credentials: "include",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          products.value = data;
 
-                    console.log("this", products.value);
-                });
-        };
-
-        const getSearch = async () => {
-            const searchword = document.querySelector("#value");
-            const artist = document.querySelector("#select-option");
-
-            fetch(
-                `https://localhost:7043/Products/ProductSearch/${searchword.value}?Sort=${artist.value}`,
-                {
-                    method: "GET",
-                    credentials: "include",
-                }
-            )
-                .then((res) => res.json())
-                .then((data) => {
-                    products.value = data;
-
-                    console.log("this", products.value);
-                });
-        };
-
-        const popularProducts = () => {
-            fetch(`https://localhost:7043/Products/Popular`, {
-                method: "GET",
-                credentials: "include",
-            })
-                .then((res) => res.json())
-                .then((data) => {
-                    products.value = data;
-
-                    console.log("this", products.value);
-                });
-        };
-
-        onMounted(() => {
-            fetch("https://localhost:7043/Products/New", {
-                method: "GET",
-                credentials: "include",
-            })
-                .then((res) => res.json())
-                .then((data) => {
-                    products.value = data;
-                    console.log("this", products.value);
-                });
+          console.log(products.value);
         });
-        return {
-            genreName,
-            products,
-            popular,
-            getSearch,
-            getGenreName,
-            popularProducts,
-            modules: [EffectCoverflow, Pagination],
-        };
-    },
+    };
+
+    const getSearch = async () => {
+      const searchword = document.querySelector("#value");
+      const artist = document.querySelector("#select-option");
+
+      fetch(
+        `https://localhost:7043/Products/ProductSearch/${searchword.value}?Sort=${artist.value}`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          products.value = data;
+
+          console.log(products.value);
+        });
+    };
+
+    const popularProducts = () => {
+      fetch(`https://localhost:7043/Products/Popular`, {
+        method: "GET",
+        credentials: "include",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          popular.value = data;
+
+          console.log(popular.value);
+        });
+    };
+
+    onMounted(() => {
+      fetch("https://localhost:7043/Products/New", {
+        method: "GET",
+        credentials: "include",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          products.value = data;
+          console.log("this", products.value[0].albumInfo.albumCoverPath);
+        });
+    });
+
+    function AllProducts() {
+      return products.value;
+    }
+
+    return {
+      genreName,
+      products,
+      popular,
+      AllProducts,
+      getSearch,
+      getProductsByGenreName,
+      popularProducts,
+      modules: [EffectCoverflow, Pagination],
+    };
+  },
 };
 </script>
 

@@ -9,6 +9,7 @@
             <slot name="price"></slot>
             <slot name="id"></slot>
         </div>
+  <div class="card">
     </div>
 </template>
 

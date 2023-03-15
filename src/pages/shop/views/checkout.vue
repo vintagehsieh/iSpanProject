@@ -4,6 +4,7 @@
     <table>
       <thead>
         <tr>
+          <th>Picture</th>
           <th>Product</th>
           <th>Price</th>
           <th>Quantity</th>
@@ -12,6 +13,7 @@
       </thead>
       <tbody>
         <tr v-for="(item, index) in membercart.value" :key="index">
+          <img :src="item.albumCoverPath" alt="" />
           <td>{{ item.productName }}</td>
           <td>{{ item.productPrice }}</td>
           <td>{{ item.qty }}</td>
@@ -160,6 +162,10 @@ export default {
 </script>
 
 <style scoped>
+img {
+  height: 100px;
+  width: 100px;
+}
 .shopping-cart {
   font-family: Arial, sans-serif;
   max-width: 2000px;
