@@ -1,358 +1,456 @@
 <script>
-import axios from "axios";
 import { reactive, computed, onMounted } from "vue";
 import { useStore } from "vuex";
+import emitter from "@/mitt";
 
 export default {
-  setup() {
-    const store = useStore();
-    const options = reactive([]);
+    setup() {
+        const store = useStore();
+        const options = reactive([]);
 
-    const membercart = reactive({ value: [] });
-    const addcart = reactive("");
+        const membercart = reactive({ value: [] });
 
-    const increaseCartItem = (id) => {
-      fetch(`https://localhost:7043/Carts/increaseCart/${id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Accepted: "text/plain",
-        },
+        const increaseCartItem = (id) => {
+            fetch(`https://localhost:7043/Carts/increaseCart/${id}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    Accepted: "text/plain",
+                },
 
-        credentials: "include",
-      })
-        .then((res) => res.text())
-        .then((data) => {});
-    };
+                credentials: "include",
+            })
+                .then((res) => res.text())
+                .then((data) => {});
+        };
 
-    const setCoupon = (e) => {
-      // console.log("this", e.target.value-1);
-      const coupon = [
-        options.value[e.target.value - 1].couponText,
-        options.value[e.target.value - 1].discounts,
-      ];
-      store.dispatch("setCoupon", coupon);
-    };
+        const setCoupon = (e) => {
+            // console.log("this", e.target.value-1);
+            const coupon = [
+                options.value[e.target.value - 1].couponText,
+                options.value[e.target.value - 1].discounts,
+            ];
+            store.dispatch("setCoupon", coupon);
+        };
 
-    const decreaseCartItem = (id) => {
-      fetch(`https://localhost:7043/Carts/decreaseCart/${id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Accepted: "text/plain",
-        },
+        const decreaseCartItem = (id) => {
+            fetch(`https://localhost:7043/Carts/decreaseCart/${id}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    Accepted: "text/plain",
+                },
 
-        credentials: "include",
-      })
-        .then((res) => res.text())
-        .then((data) => {
-          console.log(data);
+                credentials: "include",
+            })
+                .then((res) => res.text())
+                .then((data) => {
+                    console.log(data);
+                });
+        };
+
+        const deleteCartItem = (id) => {
+            fetch(`https://localhost:7043/Carts/DeleteCart/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                },
+                credentials: "include",
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    console.log(data);
+                });
+        };
+
+        onMounted(() => {
+            fetch("https://localhost:7043/Carts/CartItem", {
+                method: "GET",
+                credentials: "include",
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    membercart.value = data;
+                    console.log("this", membercart.value);
+                });
+            fetch("https://localhost:7043/Carts/CartCoupon", {
+                method: "GET",
+                credentials: "include",
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    options.value = data;
+                });
         });
-    };
 
-    const deleteCartItem = (id) => {
-      fetch(`https://localhost:7043/Carts/DeleteCart/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        credentials: "include",
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          console.log(data);
+        const cartTotal = computed(() => {
+            return membercart.value.reduce(
+                (total, item) => total + item.productPrice * item.qty,
+                0
+            );
         });
-    };
 
-    onMounted(() => {
-      fetch("https://localhost:7043/Carts/CartItem", {
-        method: "GET",
-        credentials: "include",
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          membercart.value = data;
-          console.log("this", membercart.value);
-        });
-      fetch("https://localhost:7043/Carts/CartCoupon", {
-        method: "GET",
-        credentials: "include",
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          options.value = data;
-        });
-    });
+        const showvalue = (e) => {
+            console.log(e.target.value);
+        };
 
-    const cartTotal = computed(() => {
-      return membercart.value.reduce(
-        (total, item) => total + item.productPrice * item.qty,
-        0
-      );
-    });
+        const decreaseItemQuantity = (item, productId) => {
+            item.qty--;
+            const id = productId;
+            decreaseCartItem(id);
+        };
 
-    const showvalue = (e) => {
-      console.log(e.target.value);
-    };
+        const increaseItemQuantity = (item, productId) => {
+            item.qty++;
+            const id = productId;
+            increaseCartItem(id);
+        };
 
-    const decreaseItemQuantity = (item, productId) => {
-      item.qty--;
-      const id = productId;
-      decreaseCartItem(id);
-    };
+        const removeItem = (index, itemid) => {
+            const id = itemid;
+            console.log(itemid);
+            membercart.value.splice(index, 1);
 
-    const increaseItemQuantity = (item, productId) => {
-      item.qty++;
-      const id = productId;
-      increaseCartItem(id);
-    };
+            deleteCartItem(id);
+        };
 
-    const removeItem = (index, itemid) => {
-      const id = itemid;
-      console.log(itemid);
-      membercart.value.splice(index, 1);
-
-      deleteCartItem(id);
-    };
-
-    return {
-      options,
-      membercart,
-      cartTotal,
-      setCoupon,
-      decreaseItemQuantity,
-      increaseItemQuantity,
-      removeItem,
-      showvalue,
-      increaseCartItem,
-      decreaseCartItem,
-      deleteCartItem,
-    };
-  },
+        return {
+            options,
+            membercart,
+            cartTotal,
+            setCoupon,
+            decreaseItemQuantity,
+            increaseItemQuantity,
+            removeItem,
+            showvalue,
+            increaseCartItem,
+            decreaseCartItem,
+            deleteCartItem,
+        };
+    },
 };
 </script>
 
 <template>
-  <div class="shopping-cart">
-    <h1>購物車</h1>
-    <table>
-      <thead>
-        <tr>
-          <th>照片</th>
-          <th>商品</th>
-          <th>價格</th>
-          <th>數量</th>
-          <th>總價</th>
-          <th>刪除</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(item, index) in membercart.value" :key="index">
-          <img :src="item.albumCoverPath" alt="" />
-          <td>{{ item.productName }}</td>
-          <td>{{ item.productPrice }}</td>
-          <td>
-            <button
-              @click="decreaseItemQuantity(item, item.productId)"
-              :disabled="item.qty <= 1"
-            >
-              -
-            </button>
-            {{ item.qty }}
-            <button
-              class="btn"
-              @click="increaseItemQuantity(item, item.productId)"
-            >
-              +
-            </button>
-          </td>
-          <td>{{ item.productPrice * item.qty }}</td>
-          <td>
-            <button class="removeButton" @click="removeItem(index, item.id)">
-              <font-awesome-icon
-                icon="fa-solid fa-trash"
-                style="color: black; font-size: 25px"
-              />
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <p class="total">Total: {{ cartTotal }}</p>
-    <hr />
-
-    <div class="couponContainer">
-      <div class="selectGroup">
-        <h3>優惠券</h3>
-        <label for="select-option" class="custom-label">請選擇一個優惠券</label>
-        <select
-          id="select-option"
-          v-model="options"
-          class="custom-select"
-          @change="setCoupon"
+    <div class="shopping-cart">
+        <h1>購物車</h1>
+        <div class="cartTitle">
+            <span class="pic">照片</span>
+            <span class="product">商品名稱</span>
+            <span class="price">價格</span>
+            <span class="qty">數量</span>
+            <span class="tPrice">總價</span>
+            <!-- <span class="dele">刪除</span> -->
+        </div>
+        <div
+            class="productsContainer"
+            v-for="(item, index) in membercart.value"
+            :key="index"
         >
-          <option value="" disabled>請選擇一個選項</option>
-          <option
-            v-for="(option, index) in options.value"
-            :key="option.id"
-            :value="option.id"
-          >
-            {{ option.couponText }}
-          </option>
-        </select>
-      </div>
-      <button class="checkout">
-        <a href="#/checkout"
-          >前往結帳<span><i class="fa-solid fa-arrow-right"></i></span
-        ></a>
-      </button>
+            <div class="topContainer">
+                <div class="proInfo">
+                    <div class="proPic">
+                        <img
+                            class="productCover"
+                            src="@/assets/music-note-icon-song-melody-tune-flat-symbol-free-vector.webp"
+                            :src="item.albumCoverPath"
+                            alt=""
+                        />
+                    </div>
+                    <div class="proName">{{ item.productName }}</div>
+                    <div class="proPrice">{{ item.productPrice }}</div>
+                    <div class="proQty">
+                        <button
+                            class="deItem"
+                            @click="decreaseItemQuantity(item, item.productId)"
+                            :disabled="item.qty <= 1"
+                        >
+                            -
+                        </button>
+                        {{ item.qty }}
+                        <button
+                            class="inItem"
+                            @click="increaseItemQuantity(item, item.productId)"
+                        >
+                            +
+                        </button>
+                    </div>
+                    <div class="tPrice">{{ item.productPrice * item.qty }}</div>
+                </div>
+            </div>
+            <div class="bottomContainer">
+                <button
+                    class="removeButton"
+                    @click="removeItem(index, item.id)"
+                >
+                    <span class="trash"><i class="fa-solid fa-trash"></i></span
+                    >刪除
+                </button>
+            </div>
+        </div>
+
+        <p class="total">NTD$ {{ cartTotal }}</p>
+        <hr />
+
+        <div class="couponContainer">
+            <div class="selectGroup">
+                <h3>優惠券</h3>
+                <label for="select-option" class="custom-label"
+                    >請選擇一個優惠券</label
+                >
+                <select
+                    id="select-option"
+                    v-model="options"
+                    class="custom-select"
+                    @change="setCoupon"
+                >
+                    <option value="" disabled>請選擇一個選項</option>
+                    <option
+                        v-for="(option, index) in options.value"
+                        :key="option.id"
+                        :value="option.id"
+                    >
+                        {{ option.couponText }}
+                    </option>
+                </select>
+            </div>
+            <button class="checkout">
+                <a href="#/checkout"
+                    >前往結帳<span><i class="fa-solid fa-arrow-right"></i></span
+                ></a>
+            </button>
+        </div>
     </div>
-  </div>
 </template>
 
 <style lang="scss" scoped>
 a {
-  text-decoration: none;
+    text-decoration: none;
 }
 .shopping-cart {
-  display: flex;
-  flex-direction: column;
-  max-width: 100%;
-  margin: 0 auto;
-  margin-top: 7rem;
-  h1 {
-    font-size: 3.5rem;
-    letter-spacing: 1rem;
-    color: white;
-  }
-  table {
-    width: 1000px;
-    border-collapse: collapse;
-    margin-top: 3rem;
-    thead {
-      tr {
-        th {
-          padding: 10px;
-          text-align: center;
-          border-bottom: 1px solid #ddd;
-          background-color: #f6b342;
-          color: black;
-          font-size: 1.2rem;
-        }
-      }
-    }
-    tbody {
-      tr {
-        img {
-          height: 100px;
-          width: 100px;
-        }
-        td {
-          padding: 10px;
-          text-align: left;
-          border-bottom: 1px solid #ddd;
-          button {
-            border: none;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 0 5px;
-            &:disabled {
-              background-color: #ccc;
-              cursor: not-allowed;
-            }
-          }
-          .removeButton {
-            background-color: #fff;
-          }
-        }
-      }
-    }
-  }
-  .total {
-    color: white;
-    font-size: 2rem;
-  }
-  hr {
-    margin-block: 3rem;
-    border: rgba(255, 255, 255, 0.8) solid 1.5px;
-  }
-  .couponContainer {
-    margin-block-start: 1rem;
-    margin-block-end: 2rem;
-    height: auto;
-    width: 100%;
-    padding-block: 2rem;
-    align-self: start;
     display: flex;
-    justify-content: space-between;
-
-    .selectGroup {
-      border: 1px white solid;
-      border-radius: 8px;
-      align-self: start;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      margin-top: 0.5rem;
-      width: 50%;
-      padding: 2rem;
-      h3 {
+    flex-direction: column;
+    width: 80%;
+    margin: 0 auto;
+    margin-block: 7rem;
+    margin-bottom: 10rem;
+    h1 {
+        font-size: 3.5rem;
+        letter-spacing: 1rem;
         color: white;
-        font-size: 2rem;
         text-align: left;
-        padding-left: 2rem;
-      }
-      .custom-label {
-        color: white;
-        font-size: 1.2rem;
-        font-weight: bold;
-        padding-block: 1rem;
-        align-self: start;
-        padding-left: 2rem;
-      }
-      .custom-select {
-        display: inline-block;
-        width: 200px;
-        height: 35px;
-        background-color: #1f2124;
-        color: white;
-        font-size: 1rem;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        align-self: start;
-        margin-left: 2rem;
-        color: white;
-        option {
-          color: white;
-        }
-      }
     }
-    .checkout {
-      width: 180px;
-      height: 60px;
-      font-size: 1.5rem;
-      background-color: #1f2124;
-      align-self: end;
-      margin-top: 1rem;
-      border: 1px solid white;
-      border-radius: 8px;
-      line-height: 60px;
-      font-weight: 700;
-      &:hover {
-        background-color: white;
-        a {
-          color: #1f2124;
-        }
-      }
-      a {
+    .cartTitle {
+        padding: 10px 15px;
+        background-color: #f68657;
+        font-size: 1.1rem;
+        display: flex;
+        margin-top: 20px;
+        font-weight: 700;
         color: white;
-        span {
-          padding-left: 1rem;
+        .pic {
+            flex: 8 1 0%;
         }
-      }
+        .product {
+            flex: 6 1 0%;
+            text-align: left;
+        }
+        .price {
+            flex: 6 1 0%;
+        }
+        .qty {
+            flex: 6 1 0%;
+        }
+        .tPrice {
+            flex: 4 1 0%;
+        }
     }
-  }
+
+    .productsContainer {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: auto;
+        margin-block: 3rem;
+        &:hover {
+            background-color: #f68657;
+            color: white;
+        }
+        .topContainer {
+            padding: 2rem;
+            font-size: 1.2rem;
+            background-color: #fff;
+            color: black;
+            height: auto;
+            padding-bottom: 2rem;
+            .proInfo {
+                display: flex;
+                align-items: center;
+                // padding-top: 1rem;
+                font-size: 1.3rem;
+                font-weight: 700;
+                .proPic {
+                    flex: 8;
+                    padding-left: 6rem;
+                    img {
+                        width: 100px;
+                        height: 100px;
+                        object-fit: contain;
+                    }
+                }
+                .proName {
+                    flex: 4;
+                    margin-left: -12rem;
+                    text-align: left;
+                }
+                .proPrice {
+                    flex: 4;
+                    margin-left: 5rem;
+                }
+                .proQty {
+                    flex: 4;
+                    margin-left: 3rem;
+
+                    .deItem {
+                        cursor: pointer;
+                        width: 25px;
+                        height: 25px;
+                        font-size: 1.2rem;
+                        margin-right: 0.5rem;
+                        line-height: 25px;
+                        border: none;
+                        background-color: #f68657;
+                        &:disabled {
+                            background-color: #959292;
+                        }
+                    }
+                    .inItem {
+                        cursor: pointer;
+                        width: 25px;
+                        height: 25px;
+                        font-size: 1.2rem;
+                        font-weight: 700;
+                        margin-left: 0.5rem;
+                        line-height: 25px;
+
+                        border: none;
+                        background-color: #f68657;
+                    }
+                }
+                .tPrice {
+                    flex: 4;
+                    margin-right: -2rem;
+                }
+            }
+        }
+        .bottomContainer {
+            background-color: white;
+            border-top: 1px solid rgba(0, 0, 0, 0.5);
+            color: #1f2124;
+            display: flex;
+            align-items: center;
+            justify-content: end;
+            padding-right: 4rem;
+            padding-block: 1rem;
+
+            .removeButton {
+                color: black;
+                font-size: 1.2rem;
+                background-color: white;
+                border: none;
+                font-weight: 700;
+                &:hover {
+                    color: #f68657;
+                }
+            }
+        }
+    }
+
+    .total {
+        color: #f68657;
+        font-size: 3rem;
+        text-align: right;
+    }
+    hr {
+        margin-block: 3rem;
+        border: rgba(255, 255, 255, 0.8) solid 1.5px;
+    }
+    .couponContainer {
+        margin-block-start: 1rem;
+        margin-block-end: 2rem;
+        height: auto;
+        width: 100%;
+        padding-block: 2rem;
+        align-self: start;
+        display: flex;
+        justify-content: space-between;
+
+        .selectGroup {
+            border: 1px white solid;
+            border-radius: 8px;
+            align-self: start;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin-top: 0.5rem;
+            width: 50%;
+            padding: 2rem;
+            h3 {
+                color: white;
+                font-size: 2rem;
+                text-align: left;
+                padding-left: 2rem;
+            }
+            .custom-label {
+                color: white;
+                font-size: 1.2rem;
+                font-weight: bold;
+                padding-block: 1rem;
+                align-self: start;
+                padding-left: 2rem;
+            }
+            .custom-select {
+                display: inline-block;
+                width: 200px;
+                height: 35px;
+                background-color: #1f2124;
+                color: white;
+                font-size: 1rem;
+                border: 1px solid #ccc;
+                border-radius: 8px;
+                align-self: start;
+                margin-left: 2rem;
+                color: white;
+                option {
+                    color: white;
+                }
+            }
+        }
+        .checkout {
+            width: 180px;
+            height: 60px;
+            font-size: 1.5rem;
+            background-color: #1f2124;
+            align-self: end;
+            margin-top: 1rem;
+            border: 1px solid white;
+            border-radius: 8px;
+            line-height: 60px;
+            font-weight: 700;
+            &:hover {
+                background-color: white;
+                a {
+                    color: #1f2124;
+                }
+            }
+            a {
+                color: white;
+                span {
+                    padding-left: 1rem;
+                }
+            }
+        }
+    }
 }
 </style>
