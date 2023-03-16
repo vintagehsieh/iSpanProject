@@ -8,7 +8,7 @@ export default {};
 
 <style lang="scss" scoped>
 h1 {
-    color: white;
+    color: black;
     position: absolute;
     top: 40%;
     left: 50%;

@@ -232,6 +232,7 @@ a {
         font-size: 3.5rem;
         letter-spacing: 1rem;
         color: white;
+        text-align: left;
     }
     table {
         width: 1000px;

@@ -300,61 +300,13 @@ export default {
                 line-height: 30px;
                 margin-block: 2rem;
                 background-color: #f6b342;
+                color: black;
+                font-weight: 700;
+                &:hover {
+                    box-shadow: rgba(255, 255, 255, 0.5) 0 2px 10px 0;
+                }
             }
         }
     }
-}
-
-img {
-    height: 100px;
-    width: 100px;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-
-th,
-td {
-    padding: 10px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-}
-
-th {
-    background-color: #f2f2f2;
-}
-
-button {
-    background-color: #4caf50;
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin: 0 5px;
-}
-
-button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-}
-
-.custom-label {
-    color: #333;
-    font-size: 16px;
-    font-weight: bold;
-    text-transform: uppercase;
-    padding: 20px;
-    margin-bottom: 50px;
-}
-
-.custom-select {
-    padding: 8px;
-    font-size: 16px;
-    border: 2px solid #ccc;
-    border-radius: 4px;
 }
 </style>
