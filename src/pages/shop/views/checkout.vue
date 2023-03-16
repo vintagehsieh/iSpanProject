@@ -185,7 +185,7 @@ export default {
     width: 100%;
     height: auto;
     justify-content: space-around;
-    align-items: center;
+    align-items: start;
     padding-inline: 2rem;
     display: flex;
     flex-direction: column;
@@ -194,6 +194,7 @@ export default {
         font-size: 3.5rem;
         letter-spacing: 0.7rem;
         text-align: left;
+        margin-left: 3.5rem;
     }
     .checkout {
         display: flex;
