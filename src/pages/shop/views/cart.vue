@@ -184,7 +184,7 @@ export default {
                 </tr>
             </tbody>
         </table>
-        <p>Total: {{ cartTotal }}</p>
+        <p class="total">Total: {{ cartTotal }}</p>
         <hr />
 
         <div class="couponContainer">
@@ -277,7 +277,9 @@ a {
             }
         }
     }
-    p {
+    .total {
+        color: white;
+        font-size: 2rem;
     }
     hr {
         margin-block: 3rem;
