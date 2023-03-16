@@ -2,48 +2,46 @@
 import { ref, onMounted } from "vue";
 import Cookies from "js-cookie";
 export default {
-    setup() {
-        const username = ref("");
+  setup() {
+    const username = ref("");
 
-        onMounted(() => {
-            username.value = Cookies.get("UserID");
-        });
+    onMounted(() => {
+      username.value = Cookies.get("UserID");
+    });
 
-        return { username };
-    },
+    return { username };
+  },
 };
 </script>
 <template>
-    <div class="content">
-        <div class="navbar">
-            <p>
-                嗨，<span style="color: orange">{{ username }}</span
-                ><br />
-                今天想買什麼?
-            </p>
-            <div class="logo">
-                <img
-                    src="@/assets/music-note-icon-song-melody-tune-flat-symbol-free-vector.webp"
-                    alt=""
-                />
-            </div>
-            <div class="link">
-                <router-link to="/">
-                    <span class="icon"><i class="fa-solid fa-home"></i></span>
-                    <h3>商品首頁</h3>
-                </router-link>
-                <router-link to="/cart">
-                    <span class="icon"
-                        ><i class="fa-solid fa-shopping-cart"></i
-                    ></span>
-                    <h3>購物車</h3>
-                </router-link>
-            </div>
-        </div>
-        <div class="view">
-            <router-view></router-view>
-        </div>
+  <div class="content">
+    <div class="navbar">
+      <p>
+        嗨，<span style="color: orange">{{ username }}</span
+        ><br />
+        今天想買什麼?
+      </p>
+      <div class="logo">
+        <img
+          src="@/assets/music-note-icon-song-melody-tune-flat-symbol-free-vector.webp"
+          alt=""
+        />
+      </div>
+      <div class="link">
+        <router-link to="/">
+          <span class="icon"><i class="fa-solid fa-home"></i></span>
+          <h3>商品首頁</h3>
+        </router-link>
+        <router-link to="/cart">
+          <span class="icon"><i class="fa-solid fa-shopping-cart"></i></span>
+          <h3>購物車</h3>
+        </router-link>
+      </div>
     </div>
+    <div class="view">
+      <router-view></router-view>
+    </div>
+  </div>
 </template>
 
 <style lang="scss" scoped>
@@ -74,6 +72,9 @@ export default {
       margin-bottom: 1.75rem;
       letter-spacing: 4px;
       text-align: center;
+      span {
+        margin-top: 1rem;
+      }
     }
     .logo {
       position: relative;

@@ -39,7 +39,7 @@ export default {
       </div>
       <!-- membership -->
       <div class="loginSection">
-        <div v-if="props.isLogin" class="avatar"></div>
+        <!-- <div v-if="props.isLogin" class="avatar"></div> -->
         <div class="member" v-if="props.isLogin">
           <a href="member.html">{{ memberAccount }}</a>
         </div>
