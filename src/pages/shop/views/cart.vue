@@ -190,7 +190,8 @@ export default {
             </div>
         </div>
 
-        <p class="total">NTD$ {{ cartTotal }}</p>
+        <p class="total" v-if="cartTotal != 0">NTD$ {{ cartTotal }}</p>
+        <p class="totalEmpty" v-else>目前購物車尚無物品</p>
         <hr />
 
         <div class="couponContainer">
@@ -371,6 +372,13 @@ a {
         color: #f68657;
         font-size: 3rem;
         text-align: right;
+        margin-block-start: 2rem;
+    }
+    .totalEmpty {
+        color: white;
+        font-size: 2rem;
+        text-align: center;
+        margin-block-start: 3rem;
     }
     hr {
         margin-block: 3rem;
