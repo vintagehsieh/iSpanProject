@@ -1,8 +1,10 @@
 <script>
 import { reactive, onMounted } from "vue";
+import { useStore } from "vuex";
 
 export default {
   setup() {
+    const store = useStore()
     const products = reactive({ value: [] });
     const membercart = reactive({ value: [] });
     var url = "";
@@ -35,6 +37,7 @@ export default {
         .then((data) => {
           console.log(data);
         });
+        await store.dispatch("setMembercart")
     };
 
     onMounted(() => {

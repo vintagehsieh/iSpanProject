@@ -8,8 +8,9 @@ export default {
     const store = useStore();
     const options = reactive([]);
 
-    const membercart = reactive({ value: [] });
-    const addcart = reactive("");
+    const membercart = computed(() => {
+      return store.getters.getMembercart;
+    });
 
     const increaseCartItem = (id) => {
       fetch(`https://localhost:7043/Carts/increaseCart/${id}`, {
@@ -66,15 +67,6 @@ export default {
     };
 
     onMounted(() => {
-      fetch("https://localhost:7043/Carts/CartItem", {
-        method: "GET",
-        credentials: "include",
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          membercart.value = data;
-          console.log("this", membercart.value);
-        });
       fetch("https://localhost:7043/Carts/CartCoupon", {
         method: "GET",
         credentials: "include",
@@ -85,12 +77,12 @@ export default {
         });
     });
 
-    const cartTotal = computed(() => {
+    function cartTotal() {
       return membercart.value.reduce(
         (total, item) => total + item.productPrice * item.qty,
         0
       );
-    });
+    }
 
     const showvalue = (e) => {
       console.log(e.target.value);
@@ -110,7 +102,6 @@ export default {
 
     const removeItem = (index, itemid) => {
       const id = itemid;
-      console.log(itemid);
       membercart.value.splice(index, 1);
 
       deleteCartItem(id);
@@ -148,7 +139,7 @@ export default {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(item, index) in membercart.value" :key="index">
+        <tr v-for="(item, index) in membercart" :key="index">
           <img :src="item.albumCoverPath" alt="" />
           <td>{{ item.productName }}</td>
           <td>{{ item.productPrice }}</td>
@@ -179,7 +170,7 @@ export default {
         </tr>
       </tbody>
     </table>
-    <p class="total">Total: {{ cartTotal }}</p>
+    <p class="total">Total: {{ cartTotal() }}</p>
     <hr />
 
     <div class="couponContainer">
