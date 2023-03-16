@@ -246,12 +246,12 @@ export default {
 <style lang="scss" scoped>
 .container {
     width: 100%;
+    background: linear-gradient(#c0bfbf 0%, #202020 20%, #202020 100%);
 
     .contentSpacing {
         width: 100%;
         height: 20rem;
         padding: 0 2rem;
-        background-color: rgb(83, 83, 83);
         display: flex;
 
         >.picture {
@@ -264,6 +264,7 @@ export default {
             >img {
                 width: 100%;
                 height: 100%;
+                border-radius: 50%;
             }
         }
 

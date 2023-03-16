@@ -110,6 +110,9 @@ export default {
 
             await this.$store.dispatch("fetchQueueDataAsync");
         },
+        async setAlbum(albumId) {
+            await this.$store.dispatch('setAlbum', albumId)
+        }
     }
 };
 </script>
@@ -183,14 +186,17 @@ export default {
                     <span>專輯作品</span>
                 </div>
                 <div class="items" id="albums">
-                    <Card v-for="album in creator.popularAlbums" :key="album.id">
-                        <template #picture>
-                            <img :src=album.albumCoverPath alt="">
-                        </template>
-                        <template #name>
-                            <h3>{{ album.albumName }}</h3>
-                        </template>
-                    </Card>
+                    <RouterLink class="link" to="/album" v-for="album in creator.popularAlbums" :key="album.id"
+                        @click="setAlbum(album.id)">
+                        <Card>
+                            <template #picture>
+                                <img :src=album.albumCoverPath alt="">
+                            </template>
+                            <template #name>
+                                <h3>{{ album.albumName }}</h3>
+                            </template>
+                        </Card>
+                    </RouterLink>
                 </div>
             </div>
             <div id="popPlaylists" v-if="creator.includedPlaylists.length > 0">
@@ -233,12 +239,12 @@ export default {
 <style lang="scss" scoped>
 .container {
     width: 100%;
+    background: linear-gradient(#c0bfbf 0%, #202020 20%, #202020 100%);
 
     .contentSpacing {
         width: 100%;
         height: 20rem;
         padding: 0 2rem;
-        background-color: rgb(83, 83, 83);
         display: flex;
 
         >.picture {
@@ -251,6 +257,8 @@ export default {
             >img {
                 width: 100%;
                 height: 100%;
+                border-radius: 50%;
+
             }
         }
 
