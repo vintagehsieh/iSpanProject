@@ -56,7 +56,7 @@ export default {
             會員中心
           </div>
         </a>
-        <a href="shop.html/cart">
+        <a href="shop.html#/cart">
           <div id="memberCart" class="option">
             購物車
           </div>
