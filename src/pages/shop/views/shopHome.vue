@@ -11,6 +11,8 @@ export default {
   setup() {
     const products = reactive({ value: [] });
     const popular = reactive({ value: [] });
+    const returnP = reactive({ value: [] });
+
 
     const genreName = ["華語流行", "西洋流行", "韓語流行", "日語流行"];
 
@@ -26,6 +28,9 @@ export default {
           console.log(products.value);
         });
     };
+
+
+    
 
     const getSearch = async () => {
       const searchword = document.querySelector("#value");
@@ -45,6 +50,20 @@ export default {
           console.log(products.value);
         });
     };
+    const returnpProducts = () => {
+      fetch(`https://localhost:7043/Products/NEW`, {
+        method: "GET",
+        credentials: "include",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          products.value = data;
+
+          console.log("this", products.value);
+        });
+    };
+
+
 
     const popularProducts = () => {
       fetch(`https://localhost:7043/Products/Popular`, {
@@ -84,9 +103,11 @@ export default {
     }
 
     return {
+      returnP,
       genreName,
       products,
       popular,
+      returnpProducts,
       AllProducts,
       getSearch,
       getProductsByGenreName,
@@ -105,17 +126,17 @@ export default {
     </div>
 
     <ul class="categorySearch">
-      <button class="category" @click="popularProducts()">發燒音樂</button>
-      <button class="category" @click="getGenreName(genreName[0])">
+      <button class="category" @click="returnpProducts()">發燒音樂</button>
+      <button class="category" @click="getProductsByGenreName(genreName[0])">
         華語流行音樂
       </button>
-      <button class="category" @click="getGenreName(genreName[1])">
+      <button class="category" @click="getProductsByGenreName(genreName[1])">
         西洋流行音樂
       </button>
-      <button class="category" @click="getGenreName(genreName[2])">
+      <button class="category" @click="getProductsByGenreName(genreName[2])">
         韓語流行音樂
       </button>
-      <button class="category" @click="getGenreName(genreName[3])">
+      <button class="category" @click="getProductsByGenreName(genreName[3])">
         日語流行音樂
       </button>
     </ul>
@@ -150,7 +171,7 @@ export default {
         <Card>
           <template #picture>
             <div class="cover">
-              <img :src="item.albumInfo.albumCoverPath" alt="" />
+              <img :src="item.albumInfo ? item.albumInfo.albumCoverPath : ''" alt="" />
             </div>
           </template>
           <template #price>
