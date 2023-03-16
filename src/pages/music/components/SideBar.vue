@@ -61,7 +61,7 @@ aside {
   height: 100%;
   margin: 0;
   padding: 0 2rem;
-  background-color: #383a3f;
+  background-color: #272727;
   color: white;
 
   #logo {

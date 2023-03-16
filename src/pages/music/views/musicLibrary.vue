@@ -197,7 +197,7 @@ export default {
     width: 100%;
     min-height: 42rem;
     height: auto;
-    padding: 3rem 3rem 4rem 3rem;
+    padding: 4rem 3rem 4rem 3rem;
     background-color: #1F2124;
 
     >#librarySort {

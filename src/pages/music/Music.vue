@@ -4,15 +4,34 @@ import PlayerFooter from '@/pages/music/components/MusicPlayer.vue'
 import { useStore } from 'vuex';
 
 export default {
-  setup() {
-  },
+  setup() { },
   components: {
     SideBar,
     PlayerFooter
   },
+  data() {
+    return {
+      memberOptionOpen: false,
+    }
+  },
   methods: {
     setAlbumId(id) {
       this.$store.dispatch('setAlbumId', id);
+    },
+    changeOpacity(e) {
+      const parent = document.querySelector('.Root_top-container'); // select the parent element
+      const firstChild = parent.firstElementChild;
+
+      const scrollPosition = e.target.scrollTop;
+      if (scrollPosition > 0) {
+        const opacityValue = (scrollPosition / 300); // Calculate the opacity value based on the scroll position
+        firstChild.style.opacity = opacityValue.toFixed(2); // Round the opacity value to two decimal places and set it as the opacity of the div
+      } else {
+        firstChild.style.opacity = '0'; // Reset the opacity when at top of page
+      }
+    },
+    toggleMemberOption() {
+      this.memberOptionOpen = !this.memberOptionOpen;
     }
   }
 };
@@ -21,9 +40,36 @@ export default {
   <div class="Root_top-container">
     <div class="Root_top-bar">
     </div>
+    <div id="member" @click="toggleMemberOption">
+      <div class="picture">
+        <img src="" alt="">
+      </div>
+      <div id="memberName">
+        MyName
+      </div>
+      <div id="caret"><font-awesome-icon icon="fa-solid fa-caret-down" v-if="memberOptionOpen == false" />
+        <font-awesome-icon icon="fa-solid fa-caret-up" v-else />
+      </div>
+      <div id="memberOption" v-if="memberOptionOpen">
+        <a href="member.html">
+          <div id="memberCenter" class="option">
+            會員中心
+          </div>
+        </a>
+        <a href="shop.html/cart">
+          <div id="memberCart" class="option">
+            購物車
+          </div>
+        </a>
+        <a></a>
+        <div id="memberCalendar" class="option">
+          行事曆
+        </div>
+      </div>
+    </div>
     <SideBar class="Root_nav-bar" />
     <PlayerFooter class="Root_now-playing-bar" />
-    <div class="Root_main-view">
+    <div class="Root_main-view" @scroll="changeOpacity">
       <router-view class="routerView" />
     </div>
   </div>
@@ -48,8 +94,77 @@ export default {
     top: 0;
     left: 18rem;
     width: 82rem;
-    height: 3rem;
-    background-color: rgba(0, 0, 0, 0.0);
+    height: 4rem;
+    background-color: #212121;
+    opacity: 0;
+    transition: opacity 0.1s;
+
+    /* Add a transition for a smooth effect */
+  }
+
+  #member {
+    width: 9rem;
+    height: 35px;
+    position: absolute;
+    background-color: #2c2c2c;
+    border-radius: 50px;
+    right: 3rem;
+    top: 1rem;
+    z-index: 11;
+    padding: 3px 5px;
+    display: flex;
+    cursor: context-menu;
+
+    &:hover {
+      background-color: #616161;
+    }
+
+    .picture {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background-color: #fff;
+    }
+
+    #memberName {
+      width: 85px;
+      height: 100%;
+      margin-left: 5px;
+      color: white;
+      vertical-align: text-bottom;
+      overflow-x: hidden;
+    }
+
+    #caret {
+      color: white;
+      display: flex;
+      align-items: center;
+    }
+
+    #memberOption {
+      position: absolute;
+      top: 40px;
+      left: -20px;
+      width: 180px;
+      height: 120px;
+      background-color: #212121;
+      border-radius: 10px;
+      overflow: hidden;
+
+      .option {
+        width: 100%;
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+
+        &:hover {
+          background-color: #fff;
+          color: #f6973f;
+        }
+      }
+    }
   }
 
   >.Root_nav-bar {
@@ -70,12 +185,32 @@ export default {
   }
 
   >.Root_main-view {
+    height: 100vh;
+    overflow-y: scroll;
+    -ms-overflow-style: none;
+    /* for Internet Explorer, Edge */
+    scrollbar-width: none;
+
+    /* for Firefox */
+    &::-webkit-scrollbar {
+      display: none;
+      /* for Chrome, Safari, and Opera */
+    }
+
     margin-left: 18rem;
-    background-color: #1F2124;
 
     >.routerView {
       margin-bottom: 5rem;
     }
+  }
+}
+
+.link {
+  text-decoration: none;
+  color: white;
+
+  &:hover {
+    text-decoration: underline;
   }
 }
 

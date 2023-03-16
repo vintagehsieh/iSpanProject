@@ -20,6 +20,11 @@ export default {
             items: {}
         }
     },
+    methods: {
+        async setAlbum(albumId) {
+            await this.$store.dispatch('setAlbum', albumId);
+        }
+    }
 }
 </script>
 
@@ -29,24 +34,26 @@ export default {
             <span id="categoryName">{{ category.genreName }}</span>
         </div>
         <div class="body">
-            <Card v-for="album in albums" :key="album.id">
-                <template #picture>
-                    <img :src=album.albumCoverPath alt="">
-                </template>
-                <template #name>
-                    <h3>{{ album.albumName }}</h3>
-                </template>
-                <template #desc>
-                    <span>{{ album.mainArtistName }}</span>
-                </template>
-            </Card>
+            <RouterLink to="/album" v-for="album in albums" :key="album.id" @click="setAlbum(album.id)">
+                <Card>
+                    <template #picture>
+                        <img :src=album.albumCoverPath alt="">
+                    </template>
+                    <template #name>
+                        <h3>{{ album.albumName }}</h3>
+                    </template>
+                    <template #desc>
+                        <span>{{ album.mainArtistName }}</span>
+                    </template>
+                </Card>
+            </RouterLink>
         </div>
     </div>
 </template>
 
 <style lang="scss" scoped>
 .container {
-    background-color: #222222;
+    background: linear-gradient(#eb0000 0%, #202020 20%, #202020 100%);
 
     .header {
         width: 100%;

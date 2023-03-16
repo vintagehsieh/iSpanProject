@@ -507,11 +507,11 @@ export default {
                             </div>
                             <div class="desc">
                                 <div class="songName">{{ song.songName }}</div>
-                                <RouterLink to="/artist" class="artistName" v-for="artist in song.artistlist"
+                                <RouterLink to="/artist" class="artistName link" v-for="artist in song.artistlist"
                                     @click="setArtist(artist.artistId)">
                                     {{ artist.artistName }}
                                 </RouterLink>
-                                <RouterLink to="/creator" class="creatorName" v-for="creator in song.creatorlist"
+                                <RouterLink to="/creator" class="creatorName link" v-for="creator in song.creatorlist"
                                     @click="setCreator(creator.creatorId)">{{
                                         creator.creatorName
                                     }}</RouterLink>
@@ -591,12 +591,13 @@ export default {
 .container {
     width: 100%;
     padding-bottom: 3rem;
+    background: linear-gradient(#e4971c 0%, #202020 30%, #202020 100%);
+
 
     .contentSpacing {
         width: 100%;
         height: 20rem;
         padding: 0 2rem;
-        background-color: rgb(83, 83, 83);
         display: flex;
 
         >.playlistPicture {
@@ -775,7 +776,8 @@ export default {
                             margin-bottom: 6px;
                         }
 
-                        >.artistName {
+                        >.artistName,
+                        .creatorName {
                             color: white;
                             text-decoration: none;
 
@@ -876,10 +878,6 @@ export default {
     }
 }
 
-.link {
-    text-decoration: none;
-    cursor: context-menu;
-}
 
 .header {
     &:hover {

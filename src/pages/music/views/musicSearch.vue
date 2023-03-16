@@ -21,6 +21,7 @@ export default {
       searchAlbums: [],
       searchArtists: [],
       searchCreators: [],
+      sortType: "all",
     }
   },
   methods: {
@@ -40,6 +41,7 @@ export default {
         div.classList.remove('active');
       });
       event.target.classList.add('active');
+      this.sortType = event.target.id;
     },
     checkSearchValue() {
       return this.searchValue.trim().length != 0
@@ -108,7 +110,13 @@ export default {
     async setGenre(category) {
       await this.$store.dispatch('setGenre', category);
       await this.$store.dispatch('loadGenreSongData');
-    }
+    },
+    sliceSearch(type, items) {
+      if (this.sortType == type)
+        return items.slice(0, 10);
+
+      return items.slice(0, 5);
+    },
   }
 };
 </script>
@@ -142,12 +150,14 @@ export default {
         </RouterLink>
       </div>
       <div id="searchResult" v-else>
-        <div class="header" id="songHeader" v-if="searchSongs != undefined && searchSongs.length != 0">歌曲</div>
-        <div id="Songs">
-          <RouterLink to="/album" v-for="song in searchSongs.slice(0, 5)" :key="song.id" @click="setAlbum(song.albumId)">
+        <div class="header" id="songHeader"
+          v-if="searchSongs != undefined && searchSongs.length != 0 && (sortType == 'song' || sortType == 'all')">歌曲</div>
+        <div id="Songs" v-if="sortType == 'song' || sortType == 'all'">
+          <RouterLink class="song" to="/album" v-for="(song, i) in sliceSearch('song', searchSongs)" :key="song.id"
+            @click="setAlbum(song.albumId)">
             <Song class="song">
               <template #order>
-                <font-awesome-icon class="btn" id="play" icon="fa-solid fa-play" @click="togglePlay" />
+                {{ i + 1 }}
               </template>
               <template #name>
                 <div class="songInfo">
@@ -170,9 +180,13 @@ export default {
             </Song>
           </RouterLink>
         </div>
-        <div id="artistHeader" class="header" v-if="searchArtists != undefined && searchArtists.length != 0">藝人</div>
-        <div id="Artists">
-          <RouterLink to="/artist" v-for="artist in searchArtists" :keys="artist.id" @click="setArtist(artist.id)">
+        <div id="artistHeader" class="header"
+          v-if="searchArtists != undefined && searchArtists.length != 0 && (sortType == 'artistAndCreator' || sortType == 'all')">
+          藝人
+        </div>
+        <div class="items" id="Artists" v-if="sortType == 'artistAndCreator' || sortType == 'all'">
+          <RouterLink to="/artist" v-for="artist in sliceSearch('artist', searchArtists)" :keys="artist.id"
+            @click="setArtist(artist.id)">
             <Card>
               <template #picture>
                 <img :src=artist.artistPicPath alt="">
@@ -183,9 +197,12 @@ export default {
             </Card>
           </RouterLink>
         </div>
-        <div id="creatorHeader" class="header" v-if="searchCreators != undefined && searchCreators.length != 0">創作者</div>
-        <div id="Creators">
-          <RouterLink to="/creator" v-for="creator in searchCreators" :keys="creator.id" @click="setCreator(creator.id)">
+        <div id="creatorHeader" class="header"
+          v-if="searchCreators != undefined && searchCreators.length != 0 && (sortType == 'artistAndCreator' || sortType == 'all')">
+          創作者</div>
+        <div class="items" id="Creators" v-if="sortType == 'artistAndCreator' || sortType == 'all'">
+          <RouterLink to="/creator" v-for="creator in sliceSearch('creator', searchCreators)" :keys="creator.id"
+            @click="setCreator(creator.id)">
             <Card>
               <template #picture>
                 <img :src=creator.creatorPicPath alt="">
@@ -196,9 +213,12 @@ export default {
             </Card>
           </RouterLink>
         </div>
-        <div id="albumHeader" class="header" v-if="searchAlbums != undefined && searchAlbums.length != 0">專輯</div>
-        <div id="Albums">
-          <RouterLink to="/album" v-for="album in searchAlbums" :keys="album.id" @click="setAlbum(album.id)">
+        <div id="albumHeader" class="header"
+          v-if="searchAlbums != undefined && searchAlbums.length != 0 && (sortType == 'album' || sortType == 'all')">專輯
+        </div>
+        <div class="items" id="Albums" v-if="sortType == 'album' || sortType == 'all'">
+          <RouterLink to="/album" v-for="album in sliceSearch('album', searchAlbums)" :keys="album.id"
+            @click="setAlbum(album.id)">
             <Card>
               <template #picture>
                 <img :src=album.albumCoverPath alt="">
@@ -213,10 +233,12 @@ export default {
             </Card>
           </RouterLink>
         </div>
-        <div id="playlistHeader" class="header" v-if="searchPlaylists != undefined && searchPlaylists.length != 0">播放清單
+        <div id="playlistHeader" class="header"
+          v-if="searchPlaylists != undefined && searchPlaylists.length != 0 && (sortType == 'playlist' || sortType == 'all')">
+          播放清單
         </div>
-        <div id="Playlists">
-          <RouterLink to="/playlist" v-for="playlist in searchPlaylists" :keys="playlist.id"
+        <div class="items" id="Playlists" v-if="sortType == 'playlist' || sortType == 'all'">
+          <RouterLink to="/playlist" v-for="playlist in sliceSearch('playlist', searchPlaylists)" :keys="playlist.id"
             @click="setPlaylist(playlist.id)">
             <Card>
               <template #picture>
@@ -238,7 +260,7 @@ export default {
   min-height: 100vh;
   height: auto;
   padding: 6rem 3rem;
-  background-color: #1F2124;
+  background: linear-gradient(#0b20ff 0%, #202020 20%, #202020 100%);
 
   >#searchGroup {
     >#search {
@@ -319,6 +341,11 @@ export default {
       background-color: #505050;
     }
   }
+}
+
+.items {
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .songInfo {

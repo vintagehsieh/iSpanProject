@@ -67,4 +67,11 @@ router.beforeEach((to, from, next) => {
   next();
 });
 
+router.afterEach((to, from) => {
+  const routerView = document.querySelector(".Root_main-view");
+  if (routerView) {
+    routerView.scrollIntoView({ behavior: "smooth" });
+  }
+});
+
 export default router;

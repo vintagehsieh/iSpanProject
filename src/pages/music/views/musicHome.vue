@@ -86,18 +86,17 @@ export default {
       this.$store.dispatch('setPopAlbumRowNumber', 2);
       this.$store.dispatch('fetchAlbumDataAsync');
     },
-    handleScroll: async function () {
+    handleScroll: debounce(async function () {
       const myDiv = document.getElementById('allPopular');
       const scrollPosition = myDiv.scrollTop;
       const divHeight = myDiv.clientHeight;
       const contentHeight = myDiv.scrollHeight;
       const distanceToBottom = contentHeight - (scrollPosition + divHeight);
-      console.log(this.popularSongs.items.length);
-      if (distanceToBottom < 70 && this.popularSongs.items.length < 20) {
+      if (distanceToBottom < 800 && this.popularSongs.items.length < 50) {
         await this.$store.dispatch('increasePopSongRowNumber');
         await this.$store.dispatch('fetchSongDataAsync');
       }
-    },
+    }, 100),
     slicePopulars(populars) {
       return Object.entries(populars.items).slice(0, 5).map(entry => entry[1]);
     }
@@ -125,7 +124,7 @@ export default {
             }}</span>
           </div>
           <div class="content">
-            <RouterLink v-for="song in slicePopulars(popularSongs)" :key="song.id" to="/album"
+            <RouterLink class="link" v-for="song in slicePopulars(popularSongs)" :key="song.id" to="/album"
               @click="setAlbum(song.albumId)">
               <Card>
                 <template #picture>
@@ -150,7 +149,7 @@ export default {
               showAll }}</span>
           </div>
           <div class="content">
-            <RouterLink v-for="album in slicePopulars(popularAlbums)" :key="album.id" to="/album"
+            <RouterLink class="link" v-for="album in slicePopulars(popularAlbums)" :key="album.id" to="/album"
               @click="setAlbum(album.id)">
               <Card>
                 <template #picture>
@@ -161,6 +160,7 @@ export default {
                 </template>
                 <template #desc>
                   <p>{{ album.mainArtistName }}</p>
+                  <p>{{ album.mainCreatorName }}</p>
                 </template>
               </Card>
             </RouterLink>
@@ -174,7 +174,7 @@ export default {
             <span class="showAll" @click="showAllPopSongs(popularPlaylists)">{{ showAll }}</span>
           </div>
           <div class="content">
-            <RouterLink v-for="playlist in slicePopulars(popularPlaylists)" :key="playlist.id" to="/playlist"
+            <RouterLink class="link" v-for="playlist in slicePopulars(popularPlaylists)" :key="playlist.id" to="/playlist"
               @click="setPlaylist(playlist.id)">
               <Card>
                 <template #picture>
@@ -198,7 +198,7 @@ export default {
             <span class="showAll" @click="showAllPopSongs(popularArtists)">{{ showAll }}</span>
           </div>
           <div class="content">
-            <RouterLink v-for="artist in slicePopulars(popularArtists)" :key="artist.id" to="/artist"
+            <RouterLink class="link" v-for="artist in slicePopulars(popularArtists)" :key="artist.id" to="/artist"
               @click="setArtist(artist.id)">
               <Card>
                 <template #picture>
@@ -219,7 +219,7 @@ export default {
             <span class="showAll" @click="showAllPopSongs(popularCreators)">{{ showAll }}</span>
           </div>
           <div class="content">
-            <RouterLink v-for="creator in slicePopulars(popularCreators)" :key="creator.id" to="/creator"
+            <RouterLink class="link" v-for="creator in slicePopulars(popularCreators)" :key="creator.id" to="/creator"
               @click="setCreator(creator.id)">
               <Card>
                 <template #picture>
@@ -246,8 +246,8 @@ export default {
       </div>
     </div>
     <div class="contentAll">
-      <RouterLink v-show="showAllName == popularSongs.headerName" v-for="song in popularSongs.items" :key="song.id"
-        to="/album" @click="setAlbum(song.albumId)">
+      <RouterLink class="link" v-show="showAllName == popularSongs.headerName" v-for="song in popularSongs.items"
+        :key="song.id" to="/album" @click="setAlbum(song.albumId)">
         <Card>
           <template #picture>
             <img :src=song.songCoverPath alt="">
@@ -260,8 +260,8 @@ export default {
           </template>
         </Card>
       </RouterLink>
-      <RouterLink v-show="showAllName == popularAlbums.headerName" v-for="album in popularAlbums.items" :key="album.id"
-        to="/album" @click="setAlbum(album.id)">
+      <RouterLink class="link" v-show="showAllName == popularAlbums.headerName" v-for="album in popularAlbums.items"
+        :key="album.id" to="/album" @click="setAlbum(album.id)">
         <Card>
           <template #picture>
             <img :src=album.albumCoverPath alt="">
@@ -274,8 +274,8 @@ export default {
           </template>
         </Card>
       </RouterLink>
-      <RouterLink v-show="showAllName == popularPlaylists.headerName" v-for="playlist in popularPlaylists.items"
-        :key="playlist.id" to="/playlist" @click="setPlaylist(playlist.id)">
+      <RouterLink class="link" v-show="showAllName == popularPlaylists.headerName"
+        v-for="playlist in popularPlaylists.items" :key="playlist.id" to="/playlist" @click="setPlaylist(playlist.id)">
         <Card>
           <template #picture>
             <img :src=playlist.playlistCoverPath alt="">
@@ -288,7 +288,7 @@ export default {
           </template>
         </Card>
       </RouterLink>
-      <RouterLink v-show="showAllName == popularArtists.headerName" v-for="artist in popularArtists.items"
+      <RouterLink class="link" v-show="showAllName == popularArtists.headerName" v-for="artist in popularArtists.items"
         :key="artist.id" to="/artist" @click="setArtist(artist.id)">
         <Card>
           <template #picture>
@@ -299,7 +299,7 @@ export default {
           </template>
         </Card>
       </RouterLink>
-      <RouterLink v-show="showAllName == popularCreators.headerName" v-for="creator in popularCreators.items"
+      <RouterLink class="link" v-show="showAllName == popularCreators.headerName" v-for="creator in popularCreators.items"
         :key="creator.id" to="/creator" @click="setCreator(creator.id)">
         <Card>
           <template #picture>
@@ -319,6 +319,7 @@ export default {
   padding: 5rem 3rem 10rem 3rem;
   min-height: 100vh;
   color: white;
+  background: linear-gradient(#ffa03a 0%, #202020 20%, #202020 100%);
 
   >.announcement {
     width: 80%;
