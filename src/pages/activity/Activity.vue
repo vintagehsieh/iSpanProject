@@ -2,6 +2,7 @@
 import { ref, watch, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import emitter from "@/mitt";
+import Cookies from "js-cookie";
 
 export default {
     setup() {
@@ -12,6 +13,7 @@ export default {
         // 側欄開關var
         const isOpen = ref(false);
         const isLogin = ref(false);
+        const username = ref("");
 
         onMounted(() => {
             const isLoginLocalStorage = localStorage.getItem("isLogin");
@@ -20,6 +22,8 @@ export default {
             } else {
                 isLogin.value = false;
             }
+
+            username.value = Cookies.get("UserID");
         });
         //轉倒頁面fn
         watch(
@@ -43,7 +47,7 @@ export default {
             isOpenMitt();
         };
 
-        return { idx, isOpen, isOpenMitt, handToggleSideBar };
+        return { idx, isOpen, username, isOpenMitt, handToggleSideBar };
     },
 };
 </script>
@@ -56,6 +60,20 @@ export default {
             <a class="logo">
                 <img src="@/assets/logo.png" alt="" />
             </a>
+        </div>
+        <p>
+            嗨，<span
+                ><a href="member.html" style="color: #f6b352">{{
+                    username
+                }}</a></span
+            ><br />
+            想要來點活動?
+        </p>
+        <div class="logo">
+            <img
+                src="@/assets/music-note-icon-song-melody-tune-flat-symbol-free-vector.webp"
+                alt=""
+            />
         </div>
         <div class="link">
             <router-link to="/" :class="{ active: idx === 0 }"
@@ -115,6 +133,7 @@ html,
 body {
     width: 100%;
     height: 100%;
+    background-color: #1f2124;
 }
 a {
     text-decoration: none;
@@ -145,6 +164,32 @@ a {
         &.open {
             margin-left: -500px; //-20vw;
         }
+        // 招呼
+        p {
+            color: white;
+            font-size: 1.25rem;
+            margin-bottom: 1.75rem;
+            letter-spacing: 2px;
+            text-align: center;
+            margin-top: -4rem;
+            span {
+                margin-top: 1rem;
+            }
+        }
+        // 圖像
+        .logo {
+            width: 175px;
+            height: 175px;
+            overflow: hidden;
+            border-radius: 50%;
+            img {
+                width: 100%;
+                height: 100%;
+                scale: 1.2;
+                object-fit: cover;
+            }
+        }
+        // 導覽
         > .side-navLogo {
             display: flex;
             position: absolute;
@@ -165,12 +210,11 @@ a {
                 color: white;
                 z-index: 2;
                 margin-top: 1.5rem;
-                margin-left: 4rem;
+                margin-left: 5.5rem;
             }
             > .logo {
                 display: flex;
-                margin-right: -1rem;
-                width: 200px;
+                width: 300px;
                 height: 100px;
                 overflow: hidden;
                 z-index: 1;
@@ -181,10 +225,10 @@ a {
                     left: 0;
                     width: 100%;
                     height: 100%;
-                    scale: 1.5;
+                    scale: 1.2;
                     object-fit: cover;
                     padding-top: 8px;
-                    padding-left: 5rem;
+                    margin-left: 4rem;
                 }
             }
         }
@@ -321,7 +365,8 @@ a {
             align-items: start;
             overflow-y: scroll;
             width: 100vw;
-            background-color: #000;
+            height: auto;
+            background-color: #1f2124;
             height: auto;
             padding-left: 5.75rem;
         }
