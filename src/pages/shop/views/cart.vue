@@ -1,7 +1,7 @@
 <script>
-import axios from "axios";
 import { reactive, computed, onMounted } from "vue";
 import { useStore } from "vuex";
+import emitter from "@/mitt";
 
 export default {
     setup() {
@@ -9,7 +9,6 @@ export default {
         const options = reactive([]);
 
         const membercart = reactive({ value: [] });
-        const addcart = reactive("");
 
         const increaseCartItem = (id) => {
             fetch(`https://localhost:7043/Carts/increaseCart/${id}`, {
@@ -73,7 +72,7 @@ export default {
                 .then((res) => res.json())
                 .then((data) => {
                     membercart.value = data;
-                    console.log("this", membercart);
+                    console.log("this", membercart.value);
                 });
             fetch("https://localhost:7043/Carts/CartCoupon", {
                 method: "GET",
@@ -82,8 +81,6 @@ export default {
                 .then((res) => res.json())
                 .then((data) => {
                     options.value = data;
-
-                    console.log(options);
                 });
         });
 
@@ -112,7 +109,7 @@ export default {
 
         const removeItem = (index, itemid) => {
             const id = itemid;
-
+            console.log(itemid);
             membercart.value.splice(index, 1);
 
             deleteCartItem(id);
@@ -138,24 +135,34 @@ export default {
 <template>
     <div class="shopping-cart">
         <h1>購物車</h1>
-        <table>
-            <thead>
-                <tr>
-                    <th>照片</th>
-                    <th>商品</th>
-                    <th>價格</th>
-                    <th>數量</th>
-                    <th>總價</th>
-                    <th>刪除</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(item, index) in membercart.value" :key="index">
-                    <img :src="item.albumCoverPath" alt="" />
-                    <td>{{ item.productName }}</td>
-                    <td>{{ item.productPrice }}</td>
-                    <td>
+        <div class="cartTitle">
+            <span class="pic">照片</span>
+            <span class="product">商品名稱</span>
+            <span class="price">價格</span>
+            <span class="qty">數量</span>
+            <span class="tPrice">總價</span>
+            <!-- <span class="dele">刪除</span> -->
+        </div>
+        <div
+            class="productsContainer"
+            v-for="(item, index) in membercart.value"
+            :key="index"
+        >
+            <div class="topContainer">
+                <div class="proInfo">
+                    <div class="proPic">
+                        <img
+                            class="productCover"
+                            src="@/assets/music-note-icon-song-melody-tune-flat-symbol-free-vector.webp"
+                            :src="item.albumCoverPath"
+                            alt=""
+                        />
+                    </div>
+                    <div class="proName">{{ item.productName }}</div>
+                    <div class="proPrice">{{ item.productPrice }}</div>
+                    <div class="proQty">
                         <button
+                            class="deItem"
                             @click="decreaseItemQuantity(item, item.productId)"
                             :disabled="item.qty <= 1"
                         >
@@ -163,28 +170,28 @@ export default {
                         </button>
                         {{ item.qty }}
                         <button
-                            class="btn"
+                            class="inItem"
                             @click="increaseItemQuantity(item, item.productId)"
                         >
                             +
                         </button>
-                    </td>
-                    <td>{{ item.productPrice * item.qty }}</td>
-                    <td>
-                        <button
-                            class="removeButton"
-                            @click="removeItem(index, item.id)"
-                        >
-                            <font-awesome-icon
-                                icon="fa-solid fa-trash"
-                                style="color: black; font-size: 25px"
-                            />
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <p>Total: {{ cartTotal }}</p>
+                    </div>
+                    <div class="tPrice">{{ item.productPrice * item.qty }}</div>
+                </div>
+            </div>
+            <div class="bottomContainer">
+                <button
+                    class="removeButton"
+                    @click="removeItem(index, item.id)"
+                >
+                    <span class="trash"><i class="fa-solid fa-trash"></i></span
+                    >刪除
+                </button>
+            </div>
+        </div>
+
+        <p class="total" v-if="cartTotal != 0">NTD$ {{ cartTotal }}</p>
+        <p class="totalEmpty" v-else>目前購物車尚無物品</p>
         <hr />
 
         <div class="couponContainer">
@@ -225,59 +232,153 @@ a {
 .shopping-cart {
     display: flex;
     flex-direction: column;
-    max-width: 100%;
+    width: 80%;
     margin: 0 auto;
-    margin-top: 7rem;
+    margin-block: 7rem;
+    margin-bottom: 10rem;
     h1 {
         font-size: 3.5rem;
         letter-spacing: 1rem;
         color: white;
+        text-align: left;
     }
-    table {
-        width: 1000px;
-        border-collapse: collapse;
-        margin-top: 3rem;
-        thead {
-            tr {
-                th {
-                    padding: 10px;
-                    text-align: center;
-                    border-bottom: 1px solid #ddd;
-                    background-color: #f6b342;
-                    color: black;
-                    font-size: 1.2rem;
-                }
-            }
+    .cartTitle {
+        padding: 10px 15px;
+        background-color: #f68657;
+        font-size: 1.1rem;
+        display: flex;
+        margin-top: 20px;
+        font-weight: 700;
+        color: white;
+        .pic {
+            flex: 8 1 0%;
         }
-        tbody {
-            tr {
-                img {
-                    height: 100px;
-                    width: 100px;
+        .product {
+            flex: 6 1 0%;
+            text-align: left;
+        }
+        .price {
+            flex: 6 1 0%;
+        }
+        .qty {
+            flex: 6 1 0%;
+        }
+        .tPrice {
+            flex: 4 1 0%;
+        }
+    }
+
+    .productsContainer {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: auto;
+        margin-block: 3rem;
+        &:hover {
+            background-color: #f68657;
+            color: white;
+        }
+        .topContainer {
+            padding: 2rem;
+            font-size: 1.2rem;
+            background-color: #fff;
+            color: black;
+            height: auto;
+            padding-bottom: 2rem;
+            .proInfo {
+                display: flex;
+                align-items: center;
+                // padding-top: 1rem;
+                font-size: 1.3rem;
+                font-weight: 700;
+                .proPic {
+                    flex: 8;
+                    padding-left: 6rem;
+                    img {
+                        width: 100px;
+                        height: 100px;
+                        object-fit: contain;
+                    }
                 }
-                td {
-                    padding: 10px;
+                .proName {
+                    flex: 4;
+                    margin-left: -12rem;
                     text-align: left;
-                    border-bottom: 1px solid #ddd;
-                    button {
-                        border: none;
-                        padding: 10px;
-                        border-radius: 5px;
+                }
+                .proPrice {
+                    flex: 4;
+                    margin-left: 5rem;
+                }
+                .proQty {
+                    flex: 4;
+                    margin-left: 3rem;
+
+                    .deItem {
                         cursor: pointer;
-                        margin: 0 5px;
+                        width: 25px;
+                        height: 25px;
+                        font-size: 1.2rem;
+                        margin-right: 0.5rem;
+                        line-height: 25px;
+                        border: none;
+                        background-color: #f68657;
                         &:disabled {
-                            background-color: #ccc;
-                            cursor: not-allowed;
+                            background-color: #959292;
                         }
                     }
-                    .removeButton {
-                        background-color: #fff;
+                    .inItem {
+                        cursor: pointer;
+                        width: 25px;
+                        height: 25px;
+                        font-size: 1.2rem;
+                        font-weight: 700;
+                        margin-left: 0.5rem;
+                        line-height: 25px;
+
+                        border: none;
+                        background-color: #f68657;
                     }
+                }
+                .tPrice {
+                    flex: 4;
+                    margin-right: -2rem;
+                }
+            }
+        }
+        .bottomContainer {
+            background-color: white;
+            border-top: 1px solid rgba(0, 0, 0, 0.5);
+            color: #1f2124;
+            display: flex;
+            align-items: center;
+            justify-content: end;
+            padding-right: 4rem;
+            padding-block: 1rem;
+
+            .removeButton {
+                color: black;
+                font-size: 1.2rem;
+                background-color: white;
+                border: none;
+                font-weight: 700;
+                &:hover {
+                    color: #f68657;
                 }
             }
         }
     }
-    p {
+
+    .total {
+        color: #f68657;
+        font-size: 3rem;
+        text-align: right;
+        margin-block-start: 2rem;
+    }
+    .totalEmpty {
+        color: white;
+        font-size: 2rem;
+        text-align: center;
+        margin-block-start: 3rem;
     }
     hr {
         margin-block: 3rem;
