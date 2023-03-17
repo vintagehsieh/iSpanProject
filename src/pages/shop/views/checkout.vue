@@ -217,7 +217,16 @@ export default {
                 }
                 tbody {
                     tr {
+                        color: color;
+                        height: 9rem;
+                        background-color: white;
+                        font-weight: 700;
+                        font-size: 1.2rem;
+                        text-align: center;
                         img {
+                            margin: 0.7rem auto;
+                            width: 120px;
+                            height: 120px;
                         }
                         td {
                         }
@@ -226,10 +235,6 @@ export default {
             }
         }
 
-        // hr {
-        //     margin-block: 3rem;
-        //     border: rgba(255, 255, 255, 0.8) solid 1.5px;
-        // }
         .right {
             margin-left: -2rem;
             margin-top: 1rem;
@@ -297,61 +302,62 @@ export default {
                 line-height: 30px;
                 margin-block: 2rem;
                 background-color: #f6b342;
+                cursor: pointer;
             }
         }
     }
 }
 
-img {
-    height: 100px;
-    width: 100px;
-}
+// img {
+//     height: 100px;
+//     width: 100px;
+// }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
+// table {
+//     width: 100%;
+//     border-collapse: collapse;
+//     margin-top: 20px;
+// }
 
-th,
-td {
-    padding: 10px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-}
+// th,
+// td {
+//     padding: 10px;
+//     text-align: left;
+//     border-bottom: 1px solid #ddd;
+// }
 
-th {
-    background-color: #f2f2f2;
-}
+// th {
+//     background-color: #f2f2f2;
+// }
 
-button {
-    background-color: #4caf50;
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin: 0 5px;
-}
+// button {
+//     background-color: #4caf50;
+//     color: white;
+//     border: none;
+//     padding: 10px;
+//     border-radius: 5px;
+//     cursor: pointer;
+//     margin: 0 5px;
+// }
 
-button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-}
+// button:disabled {
+//     background-color: #ccc;
+//     cursor: not-allowed;
+// }
 
-.custom-label {
-    color: #333;
-    font-size: 16px;
-    font-weight: bold;
-    text-transform: uppercase;
-    padding: 20px;
-    margin-bottom: 50px;
-}
+// .custom-label {
+//     color: #333;
+//     font-size: 16px;
+//     font-weight: bold;
+//     text-transform: uppercase;
+//     padding: 20px;
+//     margin-bottom: 50px;
+// }
 
-.custom-select {
-    padding: 8px;
-    font-size: 16px;
-    border: 2px solid #ccc;
-    border-radius: 4px;
-}
+// .custom-select {
+//     padding: 8px;
+//     font-size: 16px;
+//     border: 2px solid #ccc;
+//     border-radius: 4px;
+// }
 </style>
