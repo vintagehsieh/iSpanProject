@@ -182,14 +182,18 @@ export default {
             this.album.songs[i].optionIsOpen = false;
             this.modalSongId = songId;
             this.songModalOpen = true;
+            this.searchPlaylist();
         },
         hideSongModal() {
             this.songModalOpen = false;
             this.searchPlaylistValue = "";
         },
         async searchPlaylist() {
-            if (this.searchPlaylistValue == "") return;
-            await fetch(`https://localhost:7043/Members/Playlists?RowNumber=2&IncludedLiked=false&Condition=RecentlyAdded&Value=${this.searchPlaylistValue}`,
+            var url = 'https://localhost:7043/Members/Playlists?RowNumber=2&IncludedLiked=false&Condition=RecentlyAdded';
+            if (this.searchPlaylistValue != '') {
+                url += `&Value=${this.searchPlaylistValue}`
+            }
+            await fetch(url,
                 { method: 'GET', headers: { 'Content-Type': 'application/json' }, credentials: 'include', })
                 .then(response => response.json())
                 .then(data => this.searchPlaylists = data)
@@ -377,7 +381,7 @@ export default {
             <div id="searchPlaylist"
                 style="width: 16rem; height: 35px; padding: 0 1rem; background-color: #a7a7a7; border-radius: 30px; display: flex; justify-content: center; align-items: center;">
                 <font-awesome-icon icon="fa-solid fa-magnifying-glass" style="font-size: 20px; margin-right: 8px;" />
-                <input type="text" placeholder="想聽什麼?" v-model="searchPlaylistValue" @keyup="searchPlaylist"
+                <input type="text" placeholder="輸入清單名稱" v-model="searchPlaylistValue" @keyup="searchPlaylist()"
                     style="font-size:large; border: none; background-color: #a7a7a7; outline: none;" />
             </div>
             <font-awesome-icon icon="fa-solid fa-xmark" style="font-size: 2rem; margin-left: 10rem"

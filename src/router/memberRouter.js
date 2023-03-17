@@ -3,7 +3,7 @@ import {
   createWebHistory,
   createWebHashHistory,
 } from "vue-router";
-import MemberHome from "../pages/member/views/MemberHome.vue";
+import MemberHome from "../pages/member/views/memberHome.vue";
 import MemberInfo from "../pages/member/views/MemberInfo.vue";
 import MemberSubscription from "../pages/member/views/MemberSubscription.vue";
 import MemberOrder from "../pages/member/views/MemberOrder.vue";

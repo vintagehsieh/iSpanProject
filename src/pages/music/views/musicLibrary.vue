@@ -136,8 +136,8 @@ export default {
                         <template #name>
                             <span>{{ playlist.listName }}</span>
                         </template>
-                        <template #desc>
-                            <div>擁有者:{{ playlist.owner }}</div>
+                        <template #desc v-if='playlist.ownerName != ""'>
+                            <div>擁有者:{{ playlist.ownerName }}</div>
                         </template>
                     </Card>
                 </RouterLink>

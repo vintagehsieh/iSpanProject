@@ -242,7 +242,9 @@ export default {
             @click="setPlaylist(playlist.id)">
             <Card>
               <template #picture>
-                <img :src=playlist.playlistCoverPath alt="">
+                <img src="@/assets/music-note-icon-song-melody-tune-flat-symbol-free-vector.webp" alt=""
+                  v-if='playlist.playlistCoverPath.length == 0'>
+                <img :src=playlist.playlistCoverPath alt="" v-else>
               </template>
               <template #name>
                 <span>{{ playlist.listName }}</span>
