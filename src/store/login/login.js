@@ -7,6 +7,7 @@ const state = {
         memberAccount: "",
         memberPassword: "",
     },
+    UserID: "",
 };
 
 const getters = {
@@ -18,6 +19,9 @@ const getters = {
     },
     getMemberAccount(state) {
         return state.memberAccount;
+    },
+    getUserID(state) {
+        return state.UserID;
     },
 };
 
@@ -41,6 +45,15 @@ const actions = {
             return false;
         }
     },
+    async updateUserID({ commit }) {
+        let User = "";
+        await axios
+            .get("https://localhost:7043/Members", { withCredentials: true })
+            .then((res) => {
+                User = res.data.memberNickName;
+            });
+        commit("setUserID", User);
+    },
 };
 
 const mutations = {
@@ -52,6 +65,9 @@ const mutations = {
     },
     setMemberAccount(state, memberAccount) {
         state.memberAccount = memberAccount;
+    },
+    setUserID(state, payload) {
+        state.UserID = payload;
     },
 };
 

@@ -1,6 +1,7 @@
 <script>
 import { onMounted, ref } from "vue";
 import axios from "axios";
+import store from "@/store";
 
 export default {
     setup() {
@@ -57,7 +58,7 @@ export default {
                 myForm.append(property, data[property]);
             }
 
-            fetch("https://localhost:7043/Members", {
+            await fetch("https://localhost:7043/Members", {
                 method: "PUT",
                 body: myForm,
                 credentials: "include",
@@ -75,9 +76,11 @@ export default {
                     // if (data === "更新成功") {
                     //   alert("更新成功");
                     // }
-                    window.location.reload();
                 })
                 .catch((error) => {});
+
+            store.dispatch("updateUserID");
+            getMember();
         };
         const sendCode = async () => {
             if (isSubmitting.value) return;

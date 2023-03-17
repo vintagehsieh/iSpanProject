@@ -1,7 +1,6 @@
 <script>
 import { reactive, computed, onMounted } from "vue";
 import { useStore } from "vuex";
-import emitter from "@/mitt";
 
 export default {
     setup() {
@@ -213,7 +212,6 @@ export default {
                     <div class="proPic">
                         <img
                             class="productCover"
-                            src="@/assets/music-note-icon-song-melody-tune-flat-symbol-free-vector.webp"
                             :src="item.albumCoverPath"
                             alt=""
                         />
