@@ -7,7 +7,9 @@ export default {
         const store = useStore();
         const options = reactive([]);
 
-        const membercart = reactive({ value: [] });
+        const membercart = computed(() => {
+            return store.getters.getMembercart;
+        })
 
         const increaseCartItem = (id) => {
             fetch(`https://localhost:7043/Carts/increaseCart/${id}`, {
@@ -20,14 +22,13 @@ export default {
                 credentials: "include",
             })
                 .then((res) => res.text())
-                .then((data) => {});
+                .then((data) => { });
         };
 
         const setCoupon = (e) => {
-            // console.log("this", e.target.value-1);
             const coupon = [
-                options.value[e.target.value - 1].couponText,
-                options.value[e.target.value - 1].discounts,
+                options.value[e.target.value].couponText,
+                options.value[e.target.value].discounts,
             ];
             store.dispatch("setCoupon", coupon);
         };
@@ -64,15 +65,8 @@ export default {
         };
 
         onMounted(() => {
-            fetch("https://localhost:7043/Carts/CartItem", {
-                method: "GET",
-                credentials: "include",
-            })
-                .then((res) => res.json())
-                .then((data) => {
-                    membercart.value = data;
-                    console.log("this", membercart.value);
-                });
+            store.dispatch('setMembercart')
+            console.log(membercart);
             fetch("https://localhost:7043/Carts/CartCoupon", {
                 method: "GET",
                 credentials: "include",
@@ -83,12 +77,15 @@ export default {
                 });
         });
 
-        const cartTotal = computed(() => {
-            return membercart.value.reduce(
-                (total, item) => total + item.productPrice * item.qty,
-                0
-            );
-        });
+        function cartTotal() {
+            if (typeof membercart.value === 'object' && Array.isArray(membercart.value)) {
+                const total = membercart.value.reduce((acc, item) => acc + item.productPrice * item.qty, 0);
+                console.log(total);
+                return total;
+            } else {
+                console.error('membercart.value is not an array');
+            }
+        };
 
         const showvalue = (e) => {
             console.log(e.target.value);
@@ -108,7 +105,6 @@ export default {
 
         const removeItem = (index, itemid) => {
             const id = itemid;
-            console.log(itemid);
             membercart.value.splice(index, 1);
 
             deleteCartItem(id);
@@ -142,35 +138,21 @@ export default {
             <span class="tPrice">總價</span>
             <!-- <span class="dele">刪除</span> -->
         </div>
-        <div
-            class="productsContainer"
-            v-for="(item, index) in membercart.value"
-            :key="index"
-        >
+        <div class="productsContainer" v-for="(item, index) in membercart" :key="index">
             <div class="topContainer">
                 <div class="proInfo">
                     <div class="proPic">
-                        <img
-                            class="productCover"
-                            :src="item.albumCoverPath"
-                            alt=""
-                        />
+                        <img class="productCover" :src="item.albumCoverPath" alt="" />
                     </div>
                     <div class="proName">{{ item.productName }}</div>
                     <div class="proPrice">{{ item.productPrice }}</div>
                     <div class="proQty">
-                        <button
-                            class="deItem"
-                            @click="decreaseItemQuantity(item, item.productId)"
-                            :disabled="item.qty <= 1"
-                        >
+                        <button class="deItem" @click="decreaseItemQuantity(item, item.productId)"
+                            :disabled="item.qty <= 1">
                             -
                         </button>
                         {{ item.qty }}
-                        <button
-                            class="inItem"
-                            @click="increaseItemQuantity(item, item.productId)"
-                        >
+                        <button class="inItem" @click="increaseItemQuantity(item, item.productId)">
                             +
                         </button>
                     </div>
@@ -178,46 +160,29 @@ export default {
                 </div>
             </div>
             <div class="bottomContainer">
-                <button
-                    class="removeButton"
-                    @click="removeItem(index, item.id)"
-                >
-                    <span class="trash"><i class="fa-solid fa-trash"></i></span
-                    >刪除
+                <button class="removeButton" @click="removeItem(index, item.id)">
+                    <span class="trash"><i class="fa-solid fa-trash"></i></span>刪除
                 </button>
             </div>
         </div>
 
-        <p class="total" v-if="cartTotal != 0">NTD$ {{ cartTotal }}</p>
+        <p class="total" v-if="cartTotal != 0">NTD$ {{ cartTotal() }}</p>
         <p class="totalEmpty" v-else>目前購物車尚無物品</p>
         <hr />
 
         <div class="couponContainer">
             <div class="selectGroup">
                 <h3>優惠券</h3>
-                <label for="select-option" class="custom-label"
-                    >請選擇一個優惠券</label
-                >
-                <select
-                    id="select-option"
-                    v-model="options"
-                    class="custom-select"
-                    @change="setCoupon"
-                >
+                <label for="select-option" class="custom-label">請選擇一個優惠券</label>
+                <select id="select-option" v-model="options" class="custom-select" @change="setCoupon">
                     <option value="" disabled>請選擇一個選項</option>
-                    <option
-                        v-for="(option, index) in options.value"
-                        :key="option.id"
-                        :value="option.id"
-                    >
+                    <option v-for="(option, index) in options.value" :key="option.id" :value="index">
                         {{ option.couponText }}
                     </option>
                 </select>
             </div>
             <button class="checkout">
-                <a href="#/checkout"
-                    >前往結帳<span><i class="fa-solid fa-arrow-right"></i></span
-                ></a>
+                <a href="#/checkout">前往結帳<span><i class="fa-solid fa-arrow-right"></i></span></a>
             </button>
         </div>
     </div>
@@ -227,6 +192,7 @@ export default {
 a {
     text-decoration: none;
 }
+
 .shopping-cart {
     display: flex;
     flex-direction: column;
@@ -234,12 +200,14 @@ a {
     margin: 0 auto;
     margin-block: 7rem;
     margin-bottom: 10rem;
+
     h1 {
         font-size: 3.5rem;
         letter-spacing: 1rem;
         color: white;
         text-align: left;
     }
+
     .cartTitle {
         padding: 10px 15px;
         background-color: #f68657;
@@ -248,19 +216,24 @@ a {
         margin-top: 20px;
         font-weight: 700;
         color: white;
+
         .pic {
             flex: 8 1 0%;
         }
+
         .product {
             flex: 6 1 0%;
             text-align: left;
         }
+
         .price {
             flex: 6 1 0%;
         }
+
         .qty {
             flex: 6 1 0%;
         }
+
         .tPrice {
             flex: 4 1 0%;
         }
@@ -272,10 +245,12 @@ a {
         width: 100%;
         height: auto;
         margin-block: 3rem;
+
         &:hover {
             background-color: #f68657;
             color: white;
         }
+
         .topContainer {
             padding: 2rem;
             font-size: 1.2rem;
@@ -283,30 +258,36 @@ a {
             color: black;
             height: auto;
             padding-bottom: 2rem;
+
             .proInfo {
                 display: flex;
                 align-items: center;
                 // padding-top: 1rem;
                 font-size: 1.3rem;
                 font-weight: 700;
+
                 .proPic {
                     flex: 8;
                     padding-left: 6rem;
+
                     img {
                         width: 100px;
                         height: 100px;
                         object-fit: contain;
                     }
                 }
+
                 .proName {
                     flex: 4;
                     margin-left: -12rem;
                     text-align: left;
                 }
+
                 .proPrice {
                     flex: 4;
                     margin-left: 5rem;
                 }
+
                 .proQty {
                     flex: 4;
                     margin-left: 3rem;
@@ -320,10 +301,12 @@ a {
                         line-height: 25px;
                         border: none;
                         background-color: #f68657;
+
                         &:disabled {
                             background-color: #959292;
                         }
                     }
+
                     .inItem {
                         cursor: pointer;
                         width: 25px;
@@ -337,12 +320,14 @@ a {
                         background-color: #f68657;
                     }
                 }
+
                 .tPrice {
                     flex: 4;
                     margin-right: -2rem;
                 }
             }
         }
+
         .bottomContainer {
             background-color: white;
             border-top: 1px solid rgba(0, 0, 0, 0.5);
@@ -359,6 +344,7 @@ a {
                 background-color: white;
                 border: none;
                 font-weight: 700;
+
                 &:hover {
                     color: #f68657;
                 }
@@ -372,16 +358,19 @@ a {
         text-align: right;
         margin-block-start: 2rem;
     }
+
     .totalEmpty {
         color: white;
         font-size: 2rem;
         text-align: center;
         margin-block-start: 3rem;
     }
+
     hr {
         margin-block: 3rem;
         border: rgba(255, 255, 255, 0.8) solid 1.5px;
     }
+
     .couponContainer {
         margin-block-start: 1rem;
         margin-block-end: 2rem;
@@ -402,12 +391,14 @@ a {
             margin-top: 0.5rem;
             width: 50%;
             padding: 2rem;
+
             h3 {
                 color: white;
                 font-size: 2rem;
                 text-align: left;
                 padding-left: 2rem;
             }
+
             .custom-label {
                 color: white;
                 font-size: 1.2rem;
@@ -416,6 +407,7 @@ a {
                 align-self: start;
                 padding-left: 2rem;
             }
+
             .custom-select {
                 display: inline-block;
                 width: 200px;
@@ -428,11 +420,13 @@ a {
                 align-self: start;
                 margin-left: 2rem;
                 color: white;
+
                 option {
                     color: white;
                 }
             }
         }
+
         .checkout {
             width: 180px;
             height: 60px;
@@ -444,14 +438,18 @@ a {
             border-radius: 8px;
             line-height: 60px;
             font-weight: 700;
+
             &:hover {
                 background-color: white;
+
                 a {
                     color: #1f2124;
                 }
             }
+
             a {
                 color: white;
+
                 span {
                     padding-left: 1rem;
                 }
