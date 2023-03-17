@@ -13,13 +13,7 @@ export default {
         },
     },
     setup(props) {
-        const memberNickname = ref("");
-
-        if (Cookies.get("loginInfo") !== undefined) {
-          memberNickname.value = Cookies.get("UserID");
-        }
-
-        return { props, memberNickname };
+        return { props };
     },
 };
 </script>

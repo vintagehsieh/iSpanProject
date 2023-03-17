@@ -1,12 +1,17 @@
 <script>
-import { ref, onMounted } from "vue";
-import Cookies from "js-cookie";
+import { onMounted, computed } from "vue";
+import { useStore } from "vuex";
+
 export default {
     setup() {
-        const username = ref("");
+        const store = useStore();
+
+        const username = computed(() => {
+            return store.getters.getUserID;
+        });
 
         onMounted(() => {
-            username.value = Cookies.get("UserID");
+            store.dispatch("updateUserID");
         });
 
         return { username };
