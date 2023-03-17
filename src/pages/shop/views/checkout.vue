@@ -9,7 +9,6 @@ export default {
     let productName = [];
     let Total = [];
     const coupon = computed(() => {
-      console.log(store.getters.getCoupon);
       return store.getters.getCoupon;
     });
 

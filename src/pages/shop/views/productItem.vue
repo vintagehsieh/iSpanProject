@@ -1,12 +1,14 @@
 <script>
 import { reactive, onMounted } from "vue";
 import emitter from "@/mitt";
+import { useStore } from "vuex"
 
 export default {
     setup() {
         const products = reactive({ value: [] });
         const membercart = reactive({ value: [] });
         const cart = reactive({ value: "" });
+        const store = useStore();
         var url = "";
         var lastSlashIndex = 0;
         var number = "";
@@ -40,6 +42,8 @@ export default {
                 .then((data) => {
                     cart.value = data;
                 });
+
+            store.dispatch('setMembercart')
         };
 
         onMounted(() => {
@@ -54,8 +58,6 @@ export default {
                 .then((res) => res.json())
                 .then((data) => {
                     membercart.value = data;
-
-                    console.log("this", membercart.value);
                 });
         });
         return {
@@ -71,17 +73,11 @@ export default {
 </script>
 
 <template>
-    <div
-        class="itemContainer"
-        v-if="membercart.value.albumDetail && products.value"
-    >
+    <div class="itemContainer" v-if="membercart.value.albumDetail && products.value">
         <div class="albumInfo">
             <div class="left">
                 <div class="albumCover">
-                    <img
-                        :src="membercart.value.albumDetail.albumCoverPath"
-                        alt=""
-                    />
+                    <img :src="membercart.value.albumDetail.albumCoverPath" alt="" />
                 </div>
             </div>
             <div class="right">
@@ -101,25 +97,17 @@ export default {
                     </div>
                     <div class="btn">
                         <input type="number" v-model="qty" min="1" step="1" />
-                        <button
-                            type="button"
-                            @click="
-                                addtoCartItem(membercart.value.id, qty),
-                                    alertFunction()
-                            "
-                            class="addCartBtn"
-                        >
+                        <button type="button" @click="
+                            addtoCartItem(membercart.value.id, qty),
+                            alertFunction()
+                        " class="addCartBtn">
                             加入購物車
                         </button>
 
-                        <router-link
-                            to="/cart"
-                            @click="addtoCartItem(membercart.value.id, qty)"
-                        >
+                        <router-link to="/cart" @click="addtoCartItem(membercart.value.id, qty)">
                             <button type="button" class="buyButton">
                                 直接購買
-                            </button></router-link
-                        >
+                            </button></router-link>
                     </div>
                 </div>
             </div>
@@ -135,10 +123,7 @@ export default {
         <div class="songs">
             <div class="songTitle">專輯歌曲</div>
             <div class="songName">
-                <ul
-                    v-for="(song, index) in membercart.value.albumDetail.songs"
-                    :key="index"
-                >
+                <ul v-for="(song, index) in membercart.value.albumDetail.songs" :key="index">
                     <li>{{ index + 1 }}.&nbsp;&nbsp;{{ song.songName }}</li>
                 </ul>
             </div>
@@ -154,6 +139,7 @@ a {
     text-decoration: none;
     color: white;
 }
+
 .itemContainer {
     width: 100%;
     height: auto;
@@ -163,12 +149,15 @@ a {
     margin-bottom: 10rem;
     display: flex;
     flex-direction: column;
+
     .albumInfo {
         display: flex;
         padding: 1rem;
+
         .left {
             .albumCover {
                 border: 1px solid transparent;
+
                 img {
                     width: 500px;
                     height: 500px;
@@ -177,6 +166,7 @@ a {
                 }
             }
         }
+
         .right {
             display: flex;
             flex-direction: column;
@@ -184,6 +174,7 @@ a {
             width: 100%;
             margin-top: 2rem;
             margin-left: 4rem;
+
             .albumGenre {
                 background-color: #f6b352;
                 opacity: 0.8;
@@ -195,10 +186,12 @@ a {
                 font-weight: 600;
                 margin-left: 5px;
             }
+
             .albumName {
                 font-size: 3.5rem;
                 text-align: left;
             }
+
             .artist-released {
                 display: flex;
                 justify-content: space-between;
@@ -208,8 +201,10 @@ a {
                 padding-left: 2px;
             }
         }
+
         .buySection {
             margin-top: 3rem;
+
             .albumPrice {
                 font-size: 3rem;
                 color: #f6b352;
@@ -217,10 +212,12 @@ a {
                 display: block;
                 text-align: left;
             }
+
             .btn {
                 margin-top: 3rem;
                 margin-left: 7rem;
                 text-align: right;
+
                 input {
                     width: 100px;
                     height: 25px;
@@ -231,11 +228,13 @@ a {
                     border-radius: 8px;
                     color: white;
                     padding: 1rem;
+
                     &:focus {
                         border: none;
                         font-size: 1.5rem;
                     }
                 }
+
                 .addCartBtn {
                     width: 130px;
                     font-size: 1.2rem;
@@ -247,12 +246,14 @@ a {
                     border-radius: 8px;
                     border: 1px solid white;
                     padding: 1rem;
+
                     &:hover {
                         color: #1f2124;
                         background-color: white;
                         font-weight: 700;
                     }
                 }
+
                 .buyButton {
                     width: 130px;
                     font-size: 1.2rem;
@@ -263,6 +264,7 @@ a {
                     border-radius: 8px;
                     border: 1px solid white;
                     padding: 1rem;
+
                     &:hover {
                         color: #1f2124;
                         background-color: white;
@@ -282,6 +284,7 @@ a {
         flex-direction: column;
         justify-content: center;
         align-items: center;
+
         .introTitle {
             font-size: 3rem;
             margin-bottom: 3rem;
@@ -291,6 +294,7 @@ a {
             height: 80px;
             line-height: 80px;
         }
+
         .albumDescription {
             font-size: 1.3rem;
             text-align: justify;
@@ -304,6 +308,7 @@ a {
         flex-direction: column;
         justify-content: center;
         align-items: center;
+
         .songTitle {
             font-size: 3rem;
             margin-bottom: 3rem;
@@ -313,7 +318,9 @@ a {
             height: 80px;
             line-height: 80px;
         }
+
         .songName {
+
             // display: flex;
             // align-items: start;
             // justify-content: start;

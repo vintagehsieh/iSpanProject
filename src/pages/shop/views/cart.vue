@@ -7,7 +7,9 @@ export default {
         const store = useStore();
         const options = reactive([]);
 
-        const membercart = reactive({ value: [] });
+        const membercart = computed(() => {
+            return store.getters.getMembercart;
+        })
 
         const increaseCartItem = (id) => {
             fetch(`https://localhost:7043/Carts/increaseCart/${id}`, {
@@ -24,7 +26,6 @@ export default {
         };
 
         const setCoupon = (e) => {
-            // console.log("this", e.target.value-1);
             const coupon = [
                 options.value[e.target.value].couponText,
                 options.value[e.target.value].discounts,
@@ -64,15 +65,8 @@ export default {
         };
 
         onMounted(() => {
-            fetch("https://localhost:7043/Carts/CartItem", {
-                method: "GET",
-                credentials: "include",
-            })
-                .then((res) => res.json())
-                .then((data) => {
-                    membercart.value = data;
-                    console.log("this", membercart.value);
-                });
+            store.dispatch('setMembercart')
+            console.log(membercart);
             fetch("https://localhost:7043/Carts/CartCoupon", {
                 method: "GET",
                 credentials: "include",
@@ -83,12 +77,15 @@ export default {
                 });
         });
 
-        const cartTotal = computed(() => {
-            return membercart.value.reduce(
-                (total, item) => total + item.productPrice * item.qty,
-                0
-            );
-        });
+        function cartTotal() {
+            if (typeof membercart.value === 'object' && Array.isArray(membercart.value)) {
+                const total = membercart.value.reduce((acc, item) => acc + item.productPrice * item.qty, 0);
+                console.log(total);
+                return total;
+            } else {
+                console.error('membercart.value is not an array');
+            }
+        };
 
         const showvalue = (e) => {
             console.log(e.target.value);
@@ -108,7 +105,6 @@ export default {
 
         const removeItem = (index, itemid) => {
             const id = itemid;
-            console.log(itemid);
             membercart.value.splice(index, 1);
 
             deleteCartItem(id);
@@ -142,7 +138,7 @@ export default {
             <span class="tPrice">總價</span>
             <!-- <span class="dele">刪除</span> -->
         </div>
-        <div class="productsContainer" v-for="(item, index) in membercart.value" :key="index">
+        <div class="productsContainer" v-for="(item, index) in membercart" :key="index">
             <div class="topContainer">
                 <div class="proInfo">
                     <div class="proPic">
@@ -170,7 +166,7 @@ export default {
             </div>
         </div>
 
-        <p class="total" v-if="cartTotal != 0">NTD$ {{ cartTotal }}</p>
+        <p class="total" v-if="cartTotal != 0">NTD$ {{ cartTotal() }}</p>
         <p class="totalEmpty" v-else>目前購物車尚無物品</p>
         <hr />
 

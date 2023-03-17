@@ -13,7 +13,7 @@ const state = {
 // getters 也可以整理到這邊直接返回 count 內容
 const getters = {
     getCoupon: state => state.coupon,
-    getMembercart: state => state.membercart.value
+    getMembercart: state => state.membercart.value,
 }
 
 // actions 也是以 Object 形式建構。
