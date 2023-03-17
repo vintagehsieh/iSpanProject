@@ -1,8 +1,8 @@
 <script>
-import { ref, watch, onMounted } from "vue";
+import { ref, watch, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
+import { useStore } from "vuex";
 import emitter from "@/mitt";
-import Cookies from "js-cookie";
 
 export default {
     setup() {
@@ -13,7 +13,11 @@ export default {
         // 側欄開關var
         const isOpen = ref(false);
         const isLogin = ref(false);
-        const username = ref("");
+        const store = useStore();
+
+        const username = computed(() => {
+            return store.getters.getUserID;
+        });
 
         onMounted(() => {
             const isLoginLocalStorage = localStorage.getItem("isLogin");
@@ -23,7 +27,7 @@ export default {
                 isLogin.value = false;
             }
 
-            username.value = Cookies.get("UserID");
+            store.dispatch("updateUserID");
         });
         //轉倒頁面fn
         watch(

@@ -1,14 +1,17 @@
 <script>
-import { ref, onMounted } from "vue";
-import Cookies from "js-cookie";
+import { ref, onMounted, computed } from "vue";
+import { useStore } from "vuex";
 export default {
     setup() {
-        const username = ref("");
+        const store = useStore();
 
-        onMounted(() => {
-            username.value = Cookies.get("UserID");
+        const username = computed(() => {
+            return store.getters.getUserID;
         });
 
+        onMounted(() => {
+            store.dispatch("updateUserID");
+        });
         return { username };
     },
 };
@@ -17,7 +20,7 @@ export default {
     <div class="content">
         <div class="navbar">
             <p>
-                歡迎！<span style="color: orange">{{ username }}</span>
+                歡迎！<span style="color: orange"> {{ username }}</span>
             </p>
             <div class="logo">
                 <img src="@/assets/3884851.png" alt="" />
