@@ -8,7 +8,9 @@ export default {
         const store = useStore();
         const options = reactive([]);
 
-        const membercart = reactive({ value: [] });
+    const membercart = computed(() => {
+      return store.getters.getMembercart;
+    });
 
         const increaseCartItem = (id) => {
             fetch(`https://localhost:7043/Carts/increaseCart/${id}`, {
@@ -91,15 +93,23 @@ export default {
             );
         });
 
-        const showvalue = (e) => {
-            console.log(e.target.value);
-        };
+    onMounted(() => {
+      fetch("https://localhost:7043/Carts/CartCoupon", {
+        method: "GET",
+        credentials: "include",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          options.value = data;
+        });
+    });
 
-        const decreaseItemQuantity = (item, productId) => {
-            item.qty--;
-            const id = productId;
-            decreaseCartItem(id);
-        };
+    function cartTotal() {
+      return membercart.value.reduce(
+        (total, item) => total + item.productPrice * item.qty,
+        0
+      );
+    }
 
         const increaseItemQuantity = (item, productId) => {
             item.qty++;
@@ -115,38 +125,88 @@ export default {
             deleteCartItem(id);
         };
 
-        return {
-            options,
-            membercart,
-            cartTotal,
-            setCoupon,
-            decreaseItemQuantity,
-            increaseItemQuantity,
-            removeItem,
-            showvalue,
-            increaseCartItem,
-            decreaseCartItem,
-            deleteCartItem,
-        };
-    },
+    const removeItem = (index, itemid) => {
+      const id = itemid;
+      membercart.value.splice(index, 1);
+
+      deleteCartItem(id);
+    };
+
+    return {
+      options,
+      membercart,
+      cartTotal,
+      setCoupon,
+      decreaseItemQuantity,
+      increaseItemQuantity,
+      removeItem,
+      showvalue,
+      increaseCartItem,
+      decreaseCartItem,
+      deleteCartItem,
+    };
+  },
 };
 </script>
 
 <template>
-    <div class="shopping-cart">
-        <h1>購物車</h1>
-        <div class="cartTitle">
-            <span class="pic">照片</span>
-            <span class="product">商品名稱</span>
-            <span class="price">價格</span>
-            <span class="qty">數量</span>
-            <span class="tPrice">總價</span>
-            <!-- <span class="dele">刪除</span> -->
-        </div>
-        <div
-            class="productsContainer"
-            v-for="(item, index) in membercart.value"
-            :key="index"
+  <div class="shopping-cart">
+    <h1>購物車</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>照片</th>
+          <th>商品</th>
+          <th>價格</th>
+          <th>數量</th>
+          <th>總價</th>
+          <th>刪除</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(item, index) in membercart" :key="index">
+          <img :src="item.albumCoverPath" alt="" />
+          <td>{{ item.productName }}</td>
+          <td>{{ item.productPrice }}</td>
+          <td>
+            <button
+              @click="decreaseItemQuantity(item, item.productId)"
+              :disabled="item.qty <= 1"
+            >
+              -
+            </button>
+            {{ item.qty }}
+            <button
+              class="btn"
+              @click="increaseItemQuantity(item, item.productId)"
+            >
+              +
+            </button>
+          </td>
+          <td>{{ item.productPrice * item.qty }}</td>
+          <td>
+            <button class="removeButton" @click="removeItem(index, item.id)">
+              <font-awesome-icon
+                icon="fa-solid fa-trash"
+                style="color: black; font-size: 25px"
+              />
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="total">Total: {{ cartTotal() }}</p>
+    <hr />
+
+    <div class="couponContainer">
+      <div class="selectGroup">
+        <h3>優惠券</h3>
+        <label for="select-option" class="custom-label">請選擇一個優惠券</label>
+        <select
+          id="select-option"
+          v-model="options"
+          class="custom-select"
+          @change="setCoupon"
         >
             <div class="topContainer">
                 <div class="proInfo">
