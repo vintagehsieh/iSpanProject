@@ -23,7 +23,7 @@ export default {
             (total, item) => total + item.productPrice * item.qty,
             0
           ) * discountNumber;
-        return totalPriceWithDiscount;
+        return Math.round(totalPriceWithDiscount);
       } else if (store.getters.getCoupon.discount[0] == "-") {
         const discountNumber = parseFloat(
           store.getters.getCoupon.discount.substring(1)
@@ -33,15 +33,14 @@ export default {
             (total, item) => total + item.productPrice * item.qty,
             0
           ) - discountNumber;
-        return totalPriceWithDiscount;
+        return Math.round(totalPriceWithDiscount);
       } else {
-        return membercart.value.reduce(
+        return Math.round(membercart.value.reduce(
           (total, item) => total + item.productPrice * item.qty,
           0
-        );
+        ));
       }
     };
-
 
     const discountprice = () => {
       if (store.getters.getCoupon.discount[0] == "*") {
@@ -49,10 +48,10 @@ export default {
           store.getters.getCoupon.discount.substring(1)
         );
         const totalPriceWithDiscount =
-        Math.round(membercart.value.reduce(
+          Math.round(membercart.value.reduce(
             (total, item) => total + item.productPrice * item.qty,
             0
-          ) * (1-discountNumber));
+          ) * (1 - discountNumber));
         return totalPriceWithDiscount;
       } else if (store.getters.getCoupon.discount[0] == "-") {
         const discountNumber = parseFloat(
@@ -60,12 +59,10 @@ export default {
         );
         return discountNumber;
       } else {
-        return  0;
+        return 0;
         ;
       }
     };
-
-
 
     const deleteAllCartItem = () => {
       fetch(`https://localhost:7043/Carts/DeleteAllCart`, {
@@ -82,7 +79,6 @@ export default {
         });
     };
 
-    console.log(membercart.value);
     const chekout = async () => {
       productName = membercart.value.map((x) => x.productName);
       Total = totalprice();
@@ -132,7 +128,7 @@ export default {
     });
 
     return {
-        discountprice,
+      discountprice,
       chekout,
       totalprice,
       deleteAllCartItem,
@@ -200,6 +196,7 @@ export default {
   padding-inline: 2rem;
   display: flex;
   flex-direction: column;
+
   .title {
     color: white;
     font-size: 3.5rem;
@@ -207,17 +204,21 @@ export default {
     text-align: left;
     margin-left: 3.5rem;
   }
+
   .checkout {
     display: flex;
     justify-content: space-around;
     width: 100%;
     margin-top: 2rem;
+
     .left {
       table {
         border-collapse: collapse;
         width: 850px;
+
         thead {
           border: none;
+
           tr {
             th {
               padding: 10px;
@@ -229,6 +230,7 @@ export default {
             }
           }
         }
+
         tbody {
           tr {
             color: color;
@@ -237,13 +239,14 @@ export default {
             font-weight: 700;
             font-size: 1.2rem;
             text-align: center;
+
             img {
               margin: 0.7rem auto;
               width: 120px;
               height: 120px;
             }
-            td {
-            }
+
+            td {}
           }
         }
       }
@@ -257,6 +260,7 @@ export default {
       width: 25rem;
       border-radius: 8px;
       box-shadow: rgba(255, 255, 255, 0.3) 0 3px 6px 0;
+
       h4 {
         color: white;
         font-size: 1.4rem;
@@ -264,9 +268,11 @@ export default {
         padding-block: 1.5rem;
         padding-inline: 1rem;
       }
+
       hr {
         margin-inline: 1rem;
       }
+
       .total {
         display: flex;
         justify-content: space-between;
@@ -277,11 +283,12 @@ export default {
         padding-block: 1.5rem;
         color: rgba(255, 255, 255, 0.7);
         font-weight: normal;
-        .totalLabel {
-        }
-        .totalPrice {
-        }
+
+        .totalLabel {}
+
+        .totalPrice {}
       }
+
       .couponContainer {
         height: auto;
         display: flex;
@@ -293,15 +300,18 @@ export default {
         color: rgba(255, 255, 255, 0.7);
         margin-top: -1rem;
         font-weight: normal;
+
         .couponTitle {
           font-size: 1.5rem;
           text-align: left;
         }
+
         .couponText {
           font-size: 1.5rem;
           margin-top: 0.75rem;
         }
       }
+
       .finalPrice {
         color: #f6b342;
         text-align: right;
@@ -309,6 +319,7 @@ export default {
         margin-block: 1.5rem;
         font-size: 2.5rem;
       }
+
       .checkoutBtn {
         width: 360px;
         height: 50px;

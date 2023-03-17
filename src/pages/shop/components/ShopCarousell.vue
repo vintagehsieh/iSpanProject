@@ -46,13 +46,22 @@ export default {
 };
 </script>
 <template>
-    <swiper :effect="'coverflow'" :grabCursor="true" :centeredSlides="true" :slidesPerView="'auto'" :coverflowEffect="{
-        rotate: 50,
-        stretch: 0,
-        depth: 100,
-        modifier: 1,
-        slideShadows: true,
-    }" :pagination="true" :modules="modules" class="mySwiper">
+    <swiper
+        :effect="'coverflow'"
+        :grabCursor="true"
+        :centeredSlides="true"
+        :slidesPerView="'auto'"
+        :coverflowEffect="{
+            rotate: 50,
+            stretch: 0,
+            depth: 100,
+            modifier: 1,
+            slideShadows: true,
+        }"
+        :pagination="true"
+        :modules="modules"
+        class="mySwiper"
+    >
         <swiper-slide v-for="swiperproduct in props.popular.value">
             <router-link :to="'/productItem/' + swiperproduct.id">
                 <img :src="swiperproduct.albumInfo.albumCoverPath" />
@@ -66,7 +75,6 @@ a {
     color: white;
     text-align: center;
 }
-
 .swiper {
     width: 100%;
     padding-top: 40px;
@@ -79,7 +87,6 @@ a {
     background-size: cover;
     width: 300px;
     height: 300px;
-
     img {
         display: block;
         width: 100%;

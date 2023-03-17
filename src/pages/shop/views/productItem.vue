@@ -1,15 +1,15 @@
 <script>
 import { reactive, onMounted } from "vue";
-import { useStore } from "vuex";
+import emitter from "@/mitt";
 
 export default {
-  setup() {
-    const store = useStore()
-    const products = reactive({ value: [] });
-    const membercart = reactive({ value: [] });
-    var url = "";
-    var lastSlashIndex = 0;
-    var number = "";
+    setup() {
+        const products = reactive({ value: [] });
+        const membercart = reactive({ value: [] });
+        const cart = reactive({ value: "" });
+        var url = "";
+        var lastSlashIndex = 0;
+        var number = "";
 
         function alertFunction() {
             alert("已成功加入購物車！");
@@ -58,34 +58,15 @@ export default {
                     console.log("this", membercart.value);
                 });
         });
-        await store.dispatch("setMembercart")
-    };
-
-    onMounted(() => {
-      url = window.location.href;
-      lastSlashIndex = url.lastIndexOf("/");
-      number = url.substring(lastSlashIndex + 1);
-
-      fetch(`https://localhost:7043/Products/${number}/Detail`, {
-        method: "GET",
-        credentials: "include",
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          membercart.value = data;
-
-          console.log("this", membercart.value);
-        });
-    });
-    return {
-      alertFunction,
-      formatDate,
-      membercart,
-      number,
-      products,
-      addtoCartItem,
-    };
-  },
+        return {
+            alertFunction,
+            formatDate,
+            membercart,
+            number,
+            products,
+            addtoCartItem,
+        };
+    },
 };
 </script>
 

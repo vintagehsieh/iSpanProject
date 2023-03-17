@@ -1,5 +1,6 @@
 
 <template>
+  <Header />
   <a-layout class="px-5 py-3">
     <a-layout-content>
       <div>
@@ -202,6 +203,7 @@ import AddSong from "./AddSong.vue";
 import SongDetail from "./SongDetail.vue";
 import AddAlbum from "./AddAlbum.vue";
 import AlbumDetail from "./AlbumDetail.vue";
+import Header from "../../pages/member/components/MemberHeader.vue"
 
 //const store = useStore();
 const creator = ref({
