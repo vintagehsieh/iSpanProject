@@ -1,7 +1,6 @@
 <script>
 import { reactive, computed, onMounted } from "vue";
 import { useStore } from "vuex";
-import emitter from "@/mitt";
 
 export default {
     setup() {
