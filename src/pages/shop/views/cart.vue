@@ -152,7 +152,6 @@ export default {
                     <div class="proPic">
                         <img
                             class="productCover"
-                            src="@/assets/music-note-icon-song-melody-tune-flat-symbol-free-vector.webp"
                             :src="item.albumCoverPath"
                             alt=""
                         />
