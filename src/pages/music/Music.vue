@@ -5,14 +5,22 @@ import { ref } from 'vue'
 import Cookies from "js-cookie";
 
 export default {
-  setup() {
+  props: {
+    handLogout: {
+      type: Function,
+      default: () => {
+
+      },
+    },
+  },
+  setup(props) {
     const memberNickname = ref("");
 
     if (Cookies.get("UserID") !== undefined) {
       memberNickname.value = Cookies.get("UserID");
     }
 
-    return { memberNickname };
+    return { props, memberNickname };
   },
   components: {
     SideBar,
@@ -74,6 +82,12 @@ export default {
         <div id="memberCalendar" class="option">
           行事曆
         </div>
+        <a href="index.html#">
+          <div id="memberLogOut" class="option" @click="props.handLogout">
+
+            登出
+          </div>
+        </a>
       </div>
     </div>
     <SideBar class="Root_nav-bar" />
@@ -155,7 +169,7 @@ export default {
       top: 40px;
       left: -20px;
       width: 180px;
-      height: 120px;
+      height: 160px;
       background-color: #212121;
       border-radius: 10px;
       overflow: hidden;
@@ -199,6 +213,7 @@ export default {
     -ms-overflow-style: none;
     /* for Internet Explorer, Edge */
     scrollbar-width: none;
+    background-color: #202020;
 
     /* for Firefox */
     &::-webkit-scrollbar {

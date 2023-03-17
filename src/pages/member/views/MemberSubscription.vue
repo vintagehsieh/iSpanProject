@@ -81,10 +81,7 @@ export default {
           <td>{{ formatDate(plan.subscribedTime) }}</td>
           <td>{{ formatDate(plan.subscribedExpireTime) }}</td>
           <td>
-            <i
-              class="fa-solid fa-clipboard-list list"
-              @click="subscribeDetail()"
-            ></i>
+            <i class="fa-solid fa-clipboard-list list" @click="subscribeDetail()"></i>
           </td>
         </tr>
       </tbody>
@@ -106,7 +103,7 @@ export default {
           <td>{{ subscribePlan.planName }}</td>
           <td>{{ subscribePlan.price }}</td>
           <td>{{ subscribePlan.numberOfUsers }}</td>
-          <td>{{ subscribePlan.description }}</td>
+          <td style="white-space: pre-line;">{{ subscribePlan.description }}</td>
           <td><i class="fa-solid fa-store"></i></td>
         </tr>
       </tbody>
@@ -155,24 +152,30 @@ export default {
   table {
     width: 1000px;
     border-collapse: collapse;
+
     thead {
       background-color: #707070;
+
       tr {
         font-size: 1.25rem;
+
         &:nth-child(odd) {
           background-color: #f7f7f7;
         }
+
         th {
           width: 20px;
           height: 50px;
         }
       }
     }
+
     tbody {
       tr {
         &:hover {
           background-color: #ebebeb;
         }
+
         td {
           border: 1px solid #ddd;
           padding: 0.5rem;
@@ -181,5 +184,4 @@ export default {
       }
     }
   }
-}
-</style>
+}</style>
