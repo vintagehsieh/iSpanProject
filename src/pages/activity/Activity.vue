@@ -1,5 +1,5 @@
 <script>
-import { ref, watch, onMounted, computed } from "vue";
+import { ref, watch, onMounted, computed, reactive } from "vue";
 import { useRoute } from "vue-router";
 import { useStore } from "vuex";
 import emitter from "@/mitt";
@@ -9,23 +9,24 @@ export default {
     setup() {
         // 轉導頁面var
         const route = useRoute();
-        const routeArr = ["活動首頁", "行事曆", "申請活動"];
+        const routeArr = ["", "calender", "applyCalender"];
         const idx = ref(0);
         // 側欄開關var
         const isOpen = ref(false);
         const isLogin = ref(false);
         const store = useStore();
         const searchWord = ref("");
-        const activity = reactive({ value: "" });
+        const searchResults = ref("");
 
-        const search = async () => {
-            await axios
-                .get("", {
+        const saerchActivities = async () => {
+            try{
+                await axios.get(`https://localhost:7043/Activities/${searchWord}?sort=${}&typeId=${}`, {
                     withCredentials: true,
-                })
-                .then((res) => {
-                    activity.value = res.data;
                 });
+                searchResults.value = response.data;
+            } catch(error){
+                console.log(error);
+            }
         };
 
         const username = computed(() => {
@@ -71,6 +72,7 @@ export default {
             searchWord,
             isOpenMitt,
             handToggleSideBar,
+            saerchActivities
         };
     },
 };
@@ -132,7 +134,7 @@ export default {
                     type="text"
                     class="searchInput"
                     placeholder="請輸入活動名稱、時間、地點"
-                    @click="search"
+                    @click="searchActivities"
                     v-model="searchWord"
                 />
             </div>
