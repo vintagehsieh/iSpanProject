@@ -8,7 +8,7 @@ export default {
     setup() {
         // 轉導頁面var
         const route = useRoute();
-        const routeArr = ["activities", "calender"];
+        const routeArr = ["活動首頁", "行事曆", "申請活動"];
         const idx = ref(0);
         // 側欄開關var
         const isOpen = ref(false);
@@ -84,9 +84,13 @@ export default {
                 ><span><i class="fa-solid fa-bolt"></i></span
                 >活動首頁</router-link
             >
-            <router-link to="/activities" :class="{ active: idx === 2 }"
+            <router-link to="/activities" :class="{ active: idx === 1 }"
                 ><span><i class="fa-solid fa-calendar"></i></span
                 >行事曆</router-link
+            >
+            <router-link to="/applyActivity" :class="{ active: idx === 2 }"
+                ><span><i class="fa-solid fa-plus"></i></span
+                >申請活動</router-link
             >
         </div>
     </div>

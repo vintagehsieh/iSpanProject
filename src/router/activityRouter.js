@@ -10,9 +10,8 @@ const routes = [
         name: "Activity",
         component: Activities,
     },
-
     {
-        path: "/activities/:id",
+        path: "/Activities/single/:id",
         name: "Activities_id",
         component: () => import("@/pages/activity/views/Activities/_id.vue"),
     },
