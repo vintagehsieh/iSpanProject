@@ -407,13 +407,15 @@ export default {
     width: 100%;
     min-height: 60rem;
     padding-bottom: 3rem;
-    background: linear-gradient(#7b7b7b 0%, #202020 30%, #202020 100%);
+    background-color: #202020;
 
     .contentSpacing {
         width: 100%;
         height: 20rem;
         padding: 0 2rem;
         display: flex;
+        background: linear-gradient(#7b7b7b 0%, #202020 70%, #202020 100%);
+
 
         >.picture {
             width: 15rem;

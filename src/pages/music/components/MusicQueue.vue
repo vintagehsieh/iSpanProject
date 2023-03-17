@@ -54,7 +54,8 @@ export default {
             </div>
         </div>
         <div class="scrollable-content" v-if="QueueMode == true">
-            <div class="song" v-for="song in queue.songInfos" :keys="song.id">
+            <div class="song" v-for="(song, i) in queue.songInfos" :keys="song.id">
+                <div class="number">{{ i + 1 }}</div>
                 <div class="pic">
                     <img :src=song.songCoverPath alt="">
                 </div>
@@ -144,6 +145,10 @@ export default {
         padding: 10px;
         display: flex;
         align-items: center;
+
+        .number {
+            margin-right: 1rem
+        }
 
         .pic {
             width: 60px;

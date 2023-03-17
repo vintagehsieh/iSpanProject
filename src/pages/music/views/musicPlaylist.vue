@@ -591,7 +591,7 @@ export default {
 .container {
     width: 100%;
     padding-bottom: 3rem;
-    background: linear-gradient(#e4971c 0%, #202020 30%, #202020 100%);
+    background-color: #202020;
 
 
     .contentSpacing {
@@ -599,6 +599,8 @@ export default {
         height: 20rem;
         padding: 0 2rem;
         display: flex;
+        background: linear-gradient(#e4971c 0%, #202020 70%, #202020 100%);
+
 
         >.playlistPicture {
             width: 15rem;

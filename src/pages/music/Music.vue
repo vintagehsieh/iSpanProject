@@ -1,10 +1,19 @@
 <script>
 import SideBar from '@/pages/music/components/SideBar.vue';
 import PlayerFooter from '@/pages/music/components/MusicPlayer.vue'
-import { useStore } from 'vuex';
+import { ref } from 'vue'
+import Cookies from "js-cookie";
 
 export default {
-  setup() { },
+  setup() {
+    const memberNickname = ref("");
+
+    if (Cookies.get("UserID") !== undefined) {
+      memberNickname.value = Cookies.get("UserID");
+    }
+
+    return { memberNickname };
+  },
   components: {
     SideBar,
     PlayerFooter
@@ -45,7 +54,7 @@ export default {
         <img src="" alt="">
       </div>
       <div id="memberName">
-        MyName
+        {{ memberNickname }}
       </div>
       <div id="caret"><font-awesome-icon icon="fa-solid fa-caret-down" v-if="memberOptionOpen == false" />
         <font-awesome-icon icon="fa-solid fa-caret-up" v-else />
@@ -56,7 +65,7 @@ export default {
             會員中心
           </div>
         </a>
-        <a href="shop.html/cart">
+        <a href="shop.html#/cart">
           <div id="memberCart" class="option">
             購物車
           </div>

@@ -246,13 +246,15 @@ export default {
 <style lang="scss" scoped>
 .container {
     width: 100%;
-    background: linear-gradient(#c0bfbf 0%, #202020 20%, #202020 100%);
+    background-color: #202020;
 
     .contentSpacing {
         width: 100%;
         height: 20rem;
         padding: 0 2rem;
         display: flex;
+        background: linear-gradient(#c0bfbf 0%, #202020 60%, #202020 100%);
+
 
         >.picture {
             width: 15rem;
