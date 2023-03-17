@@ -199,6 +199,7 @@ export default {
     -ms-overflow-style: none;
     /* for Internet Explorer, Edge */
     scrollbar-width: none;
+    background-color: #202020;
 
     /* for Firefox */
     &::-webkit-scrollbar {

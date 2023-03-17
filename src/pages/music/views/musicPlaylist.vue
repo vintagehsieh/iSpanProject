@@ -224,8 +224,11 @@ export default {
                 .catch(error => console.error(error))
         },
         async searchPlaylist() {
-            if (this.searchPlaylistValue == "") return;
-            await fetch(`https://localhost:7043/Members/Playlists?RowNumber=2&IncludedLiked=false&Condition=RecentlyAdded&Value=${this.searchPlaylistValue}`,
+            var url = 'https://localhost:7043/Members/Playlists?RowNumber=2&IncludedLiked=false&Condition=RecentlyAdded';
+            if (this.searchPlaylistValue != '') {
+                url += `&Value=${this.searchPlaylistValue}`
+            }
+            await fetch(url,
                 { method: 'GET', headers: { 'Content-Type': 'application/json' }, credentials: 'include', })
                 .then(response => response.json())
                 .then(data => this.searchPlaylists = data)
@@ -292,6 +295,7 @@ export default {
             this.playlist.metadata[i].optionIsOpen = false;
             this.modalSongId = songId;
             this.songModalOpen = true;
+            this.searchPlaylist();
         },
         hideSongModal() {
             this.songModalOpen = false;
@@ -384,8 +388,8 @@ export default {
                             <div class="option" v-else @click="changePrivacySetting">設為私人</div>
                         </template>
                         <template #fifth v-if="playlist.isOwner == false">
-                            <div class="option" v-if="playlist.isPublic" @click="togglePlalistLiked">加入音樂庫</div>
-                            <div class="option" v-else @click="togglePlalistLiked">從音樂庫移除</div>
+                            <div class="option" v-if="playlist.isLiked" @click="togglePlalistLiked">從音樂庫移除</div>
+                            <div class="option" v-else @click="togglePlalistLiked">加入音樂庫</div>
                         </template>
                         <template #sixth>
                         </template>
@@ -490,7 +494,7 @@ export default {
                 </Song>
             </div>
         </div>
-        <div class="content">
+        <div class="content" v-if="playlist.isOwne">
             <div id="searchHeader">
                 <span>為你的播放清單新增內容</span>
             </div>
