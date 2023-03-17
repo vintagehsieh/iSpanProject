@@ -29,7 +29,6 @@ export default {
                 )
                 .then((res) => {
                     actDetail.data = res.data;
-                    console.log("this", actDetail.data);
                 })
                 .catch((error) => {
                     isError.value = true;
@@ -100,10 +99,11 @@ export default {
             border: 1px solid black;
             width: 950px;
             height: 300px;
+            margin-block: 0.5rem;
         }
         .desc {
             padding-inline: 2rem;
-            margin-top: 1rem;
+            margin-top: 1.3rem;
             font-size: 1.2rem;
             line-height: 2rem;
             text-align: justify;

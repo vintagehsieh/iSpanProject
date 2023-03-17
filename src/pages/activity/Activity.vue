@@ -3,6 +3,7 @@ import { ref, watch, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
 import { useStore } from "vuex";
 import emitter from "@/mitt";
+import axios from "axios";
 
 export default {
     setup() {
@@ -14,6 +15,18 @@ export default {
         const isOpen = ref(false);
         const isLogin = ref(false);
         const store = useStore();
+        const searchWord = ref("");
+        const activity = reactive({ value: "" });
+
+        const search = async () => {
+            await axios
+                .get("", {
+                    withCredentials: true,
+                })
+                .then((res) => {
+                    activity.value = res.data;
+                });
+        };
 
         const username = computed(() => {
             return store.getters.getUserID;
@@ -51,7 +64,14 @@ export default {
             isOpenMitt();
         };
 
-        return { idx, isOpen, username, isOpenMitt, handToggleSideBar };
+        return {
+            idx,
+            isOpen,
+            username,
+            searchWord,
+            isOpenMitt,
+            handToggleSideBar,
+        };
     },
 };
 </script>
@@ -112,6 +132,8 @@ export default {
                     type="text"
                     class="searchInput"
                     placeholder="請輸入活動名稱、時間、地點"
+                    @click="search"
+                    v-model="searchWord"
                 />
             </div>
             <div id="pages">
