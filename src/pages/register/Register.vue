@@ -30,7 +30,7 @@ export default {
 
     const handRegister = async () => {
       if (isSubmitting.value) return;
-      isSubmitting.value = true;      
+      isSubmitting.value = true;
       await axios
         .post("https://localhost:7043/Members/Register", register, {
           withCredentials: true,
@@ -53,35 +53,34 @@ export default {
 
     return { isReg, register, error_message, handRegister, isSubmitting };
   },
+  methods: {
+    setRegister() {
+      this.register.nickname = 'test01';
+      this.register.account = 'test01';
+      this.register.password = 'test01';
+      this.register.confirmPassword = 'test01';
+      this.register.email = 'FUEN25iSMusic@gmail.com'
+    }
+  }
 };
 </script>
 <template>
   <div v-if="!isReg">
     <div class="logo">
-      <img src="@/assets/logo.png" alt="" />
+      <img src="@/assets/logo.png" alt="" @click="setRegister" />
     </div>
     <hr />
     <form>
       <div class="input-box">
         <p>暱稱</p>
-        <input
-          type="text"
-          placeholder="請輸入暱稱"
-          v-model.lazy.trim="register.nickname"
-          autocomplete="off"
-        />
+        <input type="text" placeholder="請輸入暱稱" v-model.lazy.trim="register.nickname" autocomplete="off" id="nickname" />
         <p v-if="error_message.NickName" class="error">
           {{ error_message.NickName[0] }}
         </p>
       </div>
       <div class="input-box">
         <p>帳號</p>
-        <input
-          type="text"
-          placeholder="請輸入帳號"
-          v-model.lazy.trim="register.account"
-          autocomplete="off"
-        />
+        <input type="text" placeholder="請輸入帳號" v-model.lazy.trim="register.account" autocomplete="off" id="account" />
         <p v-if="error_message.Account" class="error">
           {{ error_message.Account[0] }}
         </p>
@@ -89,12 +88,8 @@ export default {
       <div class="input-box">
         <p>密碼</p>
         <!-- 至少要有英文加數字，最少八碼，不可以有特殊符號 -->
-        <input
-          type="password"
-          placeholder="請輸入密碼"
-          v-model.lazy.trim="register.password"
-          autocomplete="off"
-        />
+        <input type="password" placeholder="請輸入密碼" v-model.lazy.trim="register.password" autocomplete="off"
+          id="password" />
         <p v-if="error_message.Password" class="error">
           {{ error_message.Password[0] }}
         </p>
@@ -102,33 +97,20 @@ export default {
       <div class="input-box">
         <p>密碼驗證</p>
         <!-- 這邊要Regex match -->
-        <input
-          type="password"
-          placeholder="請再次輸入密碼"
-          v-model.lazy.trim="register.confirmPassword"
-          autocomplete="off"
-        />
+        <input type="password" placeholder="請再次輸入密碼" v-model.lazy.trim="register.confirmPassword" autocomplete="off"
+          id="confirmPassword" />
         <p v-if="error_message.ConfirmPassword" class="error">
           {{ error_message.ConfirmPassword[0] }}
         </p>
       </div>
       <div class="input-box">
         <p>信箱</p>
-        <input
-          type="email"
-          placeholder="請輸入信箱"
-          v-model="register.email"
-          autocomplete="off"
-        />
+        <input type="email" placeholder="請輸入信箱" v-model="register.email" autocomplete="off" id="email" />
         <p v-if="error_message.Email" class="error">
           {{ error_message.Email[0] }}
         </p>
       </div>
-      <button
-        :disabled="isSubmitting"
-        type="submit"
-        @click.prevent="handRegister"
-      >
+      <button :disabled="isSubmitting" type="submit" @click.prevent="handRegister">
         送出
       </button>
     </form>
@@ -154,6 +136,7 @@ body {
   height: 100px;
   margin: 2rem auto;
   overflow: hidden;
+
   img {
     width: 100%;
     object-fit: cover;
@@ -167,28 +150,33 @@ form {
   align-items: center;
   justify-content: center;
   margin-top: 2rem;
+
   .input-box {
     display: flex;
     flex-direction: column;
-    > p {
+
+    >p {
       margin-top: 1.5rem;
       font-size: 1.25rem;
       padding-left: 5px;
       color: white;
     }
-    > input {
+
+    >input {
       width: 300px;
       height: 30px;
       border-radius: 20px;
       padding-left: 1rem;
     }
+
     .error {
       color: orange;
       font-size: 12px;
       margin-top: 0.25rem;
     }
   }
-  > button {
+
+  >button {
     margin-top: 1.5rem;
     margin-left: auto;
     margin-right: auto;
@@ -202,6 +190,7 @@ form {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   }
 }
+
 .redirection {
   position: fixed;
   top: 50%;

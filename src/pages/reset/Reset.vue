@@ -59,12 +59,17 @@ export default {
 
     return { isReset, reset, error_message, handReset, isSubmitting, redirect };
   },
+  methods: {
+    setResetPassword() {
+      this.reset.email = 'FUEN25iSMusic@gmail.com';
+    }
+  }
 };
 </script>
 <template>
   <div v-if="!isReset">
     <div class="logo">
-      <img src="@/assets/logo.png" alt="" />
+      <img src="@/assets/logo.png" alt="" @click="setResetPassword()" />
     </div>
     <hr />
     <div class="title">
@@ -77,14 +82,10 @@ export default {
     <form>
       <div class="input-box">
         <p>電子信箱</p>
-        <input
-          type="email"
-          placeholder="請輸入電子信箱"
-          v-model.lazy.trim="reset.email"
-        />
+        <input type="email" placeholder="請輸入電子信箱" v-model.lazy.trim="reset.email" />
         <!-- <p v-if="error_message" class="error">
-          {{ error_message.NickName[0] }}
-        </p> -->
+              {{ error_message.NickName[0] }}
+            </p> -->
       </div>
       <button :disabled="isSubmitting" type="submit" @click.prevent="handReset">
         送出
@@ -114,6 +115,7 @@ body {
   height: 100px;
   margin: 2rem auto;
   overflow: hidden;
+
   img {
     width: 100%;
     object-fit: cover;
@@ -125,10 +127,12 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+
   h2 {
     color: white;
     margin-block: 3rem;
   }
+
   p {
     color: white;
     width: 25rem;
@@ -145,25 +149,29 @@ form {
   .input-box {
     display: flex;
     flex-direction: column;
-    > p {
+
+    >p {
       margin-top: 1.5rem;
       font-size: 1.25rem;
       padding-left: 5px;
       color: white;
     }
-    > input {
+
+    >input {
       width: 300px;
       height: 30px;
       border-radius: 20px;
       padding-left: 1rem;
     }
+
     .error {
       color: orange;
       font-size: 12px;
       margin-top: 0.25rem;
     }
   }
-  > button {
+
+  >button {
     margin-top: 1.5rem;
     margin-left: auto;
     margin-right: auto;
@@ -177,6 +185,7 @@ form {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   }
 }
+
 .redirection {
   position: fixed;
   top: 50%;
