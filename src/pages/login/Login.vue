@@ -72,44 +72,39 @@ export default {
             isSubmitting,
         };
     },
+    methods: {
+        setLogin() {
+            var account = document.querySelector('#account');
+            var password = document.querySelector('#password')
+            account.value = 'test';
+            password.value = 'test';
+        }
+    }
 };
 </script>
 <template>
     <div v-if="!isLogin">
         <div class="logo">
-            <img src="@/assets/logo.png" alt="" />
+            <img src="@/assets/logo.png" alt="" @click="setLogin()" />
         </div>
         <hr />
         <form>
             <div class="input-box">
                 <p>帳號</p>
-                <input
-                    type="text"
-                    placeholder="帳號"
-                    v-model="loginInfo.memberAccount"
-                />
+                <input type="text" placeholder="帳號" v-model="loginInfo.memberAccount" id="account" />
                 <p v-if="error_message.username" class="error">
                     {{ error_message.username }}
                 </p>
             </div>
             <div class="input-box">
                 <p>密碼</p>
-                <input
-                    type="password"
-                    placeholder="輸入密碼"
-                    v-model="loginInfo.memberPassword"
-                />
+                <input type="password" placeholder="輸入密碼" v-model="loginInfo.memberPassword" id="password" />
                 <p v-if="error_message.password" class="error">
                     {{ error_message.password }}
                 </p>
             </div>
             <a href="reset.html" class="forgetPd">忘記密碼?</a>
-            <button
-                :disabled="isSubmitting"
-                type="submit"
-                class="btn"
-                @click.prevent="handLoginFn"
-            >
+            <button :disabled="isSubmitting" type="submit" class="btn" @click.prevent="handLoginFn">
                 送出
             </button>
             <div class="registerBtn">
@@ -139,6 +134,7 @@ body {
     height: 100px;
     margin: 2rem auto;
     overflow: hidden;
+
     img {
         width: 100%;
         object-fit: cover;
@@ -152,15 +148,18 @@ form {
     align-items: center;
     justify-content: center;
     margin-top: 2rem;
+
     .input-box {
         display: flex;
         flex-direction: column;
+
         p {
             margin-top: 1.5rem;
             font-size: 1.25rem;
             padding-left: 5px;
             color: white;
         }
+
         input {
             width: 300px;
             height: 30px;
@@ -168,10 +167,12 @@ form {
             padding-left: 1rem;
         }
     }
+
     .forgetPd {
         color: lightblue;
         margin: 2rem 0 1.5rem 0;
     }
+
     .btn {
         margin: 1rem auto;
         cursor: pointer;
@@ -188,6 +189,7 @@ form {
                 0 6px 20px 0 rgba(255, 255, 255, 0.19);
         }
     }
+
     .registerBtn {
         margin-top: 1rem;
         margin-left: auto;
@@ -201,16 +203,19 @@ form {
         color: black;
         font-size: 20px;
         text-align: center;
+
         &:hover {
             box-shadow: 0 4px 8px 0 rgba(255, 255, 255, 0.2),
                 0 6px 20px 0 rgba(255, 255, 255, 0.19);
         }
+
         a {
             text-decoration: none;
             color: black;
         }
     }
 }
+
 .redirection {
     position: fixed;
     top: 50%;

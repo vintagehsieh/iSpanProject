@@ -18,19 +18,42 @@ export default {
     const searchWord = ref("");
     const searchResults = reactive({ value: [] });
 
-    const searchActivities = async () => {
-      try {
-        const response = await axios.get(
-          "https://localhost:7043/Activities/search",
-          {
-            params: {
-              ActivityName: searchWord.value.ActivityName,
-              ActivityLocation: searchWord.value.ActivityLocation,
-              ActivityTime: searchWord.value.ActivityTime,
-              ActivityTypeName: searchWord.value.ActivityTypeName,
-            },
-            withCredentials: true,
-          }
+        const saerchActivities = async () => {
+            try {
+                await axios.get(`https://localhost:7043/Activities/${searchWord}?sort=${''}&typeId=${''}`, {
+                    withCredentials: true,
+                });
+                searchResults.value = response.data;
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        const username = computed(() => {
+            return store.getters.getUserID;
+        });
+
+        onMounted(() => {
+            const isLoginLocalStorage = localStorage.getItem("isLogin");
+            if (isLoginLocalStorage) {
+                isLogin.value = true;
+            } else {
+                isLogin.value = false;
+            }
+
+            store.dispatch("updateUserID");
+        });
+        //轉倒頁面fn
+        watch(
+            () => route.path,
+            () => {
+                routeArr.forEach((item, index) => {
+                    const rp = route.path.substr(1).split("/")[0];
+                    if (rp === item) {
+                        idx.value = index;
+                    }
+                });
+            }
         );
         searchResults.value = response.data;
       } catch (error) {
@@ -172,15 +195,18 @@ export default {
   box-sizing: border-box;
   font-family: "微軟正黑體";
 }
+
 html,
 body {
   width: 100%;
   height: 100%;
   background-color: #1f2124;
 }
+
 a {
   text-decoration: none;
 }
+
 #activity {
   width: 100%;
   height: 100%;

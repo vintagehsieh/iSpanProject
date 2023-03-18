@@ -325,6 +325,10 @@ export default {
             const objectURL = URL.createObjectURL(file);
             const preview = document.querySelector('#preview');
             preview.setAttribute('src', objectURL);
+        },
+        setSearchBar() {
+            var searchBar = document.querySelector('#searchBar');
+            searchBar.value = '2023/3/24';
         }
     }
 };
@@ -494,7 +498,7 @@ export default {
                 </Song>
             </div>
         </div>
-        <div class="content" v-if="playlist.isOwne">
+        <div class="content" v-if="playlist.isOwner">
             <div id="searchHeader">
                 <span>為你的播放清單新增內容</span>
             </div>
@@ -533,7 +537,7 @@ export default {
     </div>
     <Modal v-if="modalOpen">
         <template #header>
-            <span style="font-size: 2rem; font-weight:bold">編輯播放清單</span>
+            <span style="font-size: 2rem; font-weight:bold" @click="setSearchBar()">編輯播放清單</span>
             <font-awesome-icon icon="fa-solid fa-xmark" style="font-size: 2rem; margin-left: 24rem" @click="hideModal" />
         </template>
         <template #content>
@@ -549,7 +553,7 @@ export default {
                 </div>
                 <div class="name">
                     <div>
-                        <input type="text" :value="playlist.listName" name="ListName">
+                        <input type="text" :value="playlist.listName" name="ListName" id="searchBar">
                     </div>
                     <div id="about">
                         <textarea rows="7" cols="40" placeholder="關於" name="Description" />
@@ -566,7 +570,7 @@ export default {
             <div id="searchPlaylist"
                 style="width: 16rem; height: 35px; padding: 0 1rem; background-color: #a7a7a7; border-radius: 30px; display: flex; justify-content: center; align-items: center;">
                 <font-awesome-icon icon="fa-solid fa-magnifying-glass" style="font-size: 20px; margin-right: 8px;" />
-                <input type="text" placeholder="想聽什麼?" v-model="searchPlaylistValue" @keyup="searchPlaylist"
+                <input type="text" placeholder="搜尋" v-model="searchPlaylistValue" @keyup="searchPlaylist"
                     style="font-size:large; border: none; background-color: #a7a7a7; outline: none;" />
             </div>
             <font-awesome-icon icon="fa-solid fa-xmark" style="font-size: 2rem; margin-left: 10rem"
