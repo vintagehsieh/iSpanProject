@@ -19,12 +19,12 @@ export default {
         const searchResults = ref("");
 
         const saerchActivities = async () => {
-            try{
-                await axios.get(`https://localhost:7043/Activities/${searchWord}?sort=${}&typeId=${}`, {
+            try {
+                await axios.get(`https://localhost:7043/Activities/${searchWord}?sort=${''}&typeId=${''}`, {
                     withCredentials: true,
                 });
                 searchResults.value = response.data;
-            } catch(error){
+            } catch (error) {
                 console.log(error);
             }
         };
@@ -88,32 +88,21 @@ export default {
             </a>
         </div>
         <p>
-            嗨，<span
-                ><a href="member.html" style="color: #f6b352">{{
-                    username
-                }}</a></span
-            ><br />
+            嗨，<span><a href="member.html" style="color: #f6b352">{{
+                username
+            }}</a></span><br />
             想要來點活動?
         </p>
         <div class="logo">
-            <img
-                src="@/assets/music-note-icon-song-melody-tune-flat-symbol-free-vector.webp"
-                alt=""
-            />
+            <img src="@/assets/music-note-icon-song-melody-tune-flat-symbol-free-vector.webp" alt="" />
         </div>
         <div class="link">
-            <router-link to="/" :class="{ active: idx === 0 }"
-                ><span><i class="fa-solid fa-bolt"></i></span
-                >活動首頁</router-link
-            >
-            <router-link to="/activities" :class="{ active: idx === 1 }"
-                ><span><i class="fa-solid fa-calendar"></i></span
-                >行事曆</router-link
-            >
-            <router-link to="/applyActivity" :class="{ active: idx === 2 }"
-                ><span><i class="fa-solid fa-plus"></i></span
-                >申請活動</router-link
-            >
+            <router-link to="/" :class="{ active: idx === 0 }"><span><i
+                        class="fa-solid fa-bolt"></i></span>活動首頁</router-link>
+            <router-link to="/activities" :class="{ active: idx === 1 }"><span><i
+                        class="fa-solid fa-calendar"></i></span>行事曆</router-link>
+            <router-link to="/applyActivity" :class="{ active: idx === 2 }"><span><i
+                        class="fa-solid fa-plus"></i></span>申請活動</router-link>
         </div>
     </div>
     <div class="content">
@@ -130,13 +119,8 @@ export default {
                 <span class="searchIcon">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </span>
-                <input
-                    type="text"
-                    class="searchInput"
-                    placeholder="請輸入活動名稱、時間、地點"
-                    @click="searchActivities"
-                    v-model="searchWord"
-                />
+                <input type="text" class="searchInput" placeholder="請輸入活動名稱、時間、地點" @click="searchActivities"
+                    v-model="searchWord" />
             </div>
             <div id="pages">
                 <a href="music.html" v-if="!isLogin" id="musicPage">音樂播放</a>
@@ -161,15 +145,18 @@ export default {
     box-sizing: border-box;
     font-family: "微軟正黑體";
 }
+
 html,
 body {
     width: 100%;
     height: 100%;
     background-color: #1f2124;
 }
+
 a {
     text-decoration: none;
 }
+
 #activity {
     width: 100%;
     height: 100%;
@@ -179,23 +166,24 @@ a {
     text-align: center;
     color: hsl(210, 29%, 24%);
     display: flex;
+
     .navbar {
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        background: linear-gradient(
-            180deg,
-            rgba(60, 61, 62, 1) 0%,
-            rgba(59, 55, 49, 1) 100%
-        );
+        background: linear-gradient(180deg,
+                rgba(60, 61, 62, 1) 0%,
+                rgba(59, 55, 49, 1) 100%);
         color: white;
         width: 500px; //20vw;
         height: 100%;
         transition: all 0.3s ease-in-out;
+
         &.open {
             margin-left: -500px; //-20vw;
         }
+
         // 招呼
         p {
             color: white;
@@ -204,16 +192,19 @@ a {
             letter-spacing: 2px;
             text-align: center;
             margin-top: -4rem;
+
             span {
                 margin-top: 1rem;
             }
         }
+
         // 圖像
         .logo {
             width: 175px;
             height: 175px;
             overflow: hidden;
             border-radius: 50%;
+
             img {
                 width: 100%;
                 height: 100%;
@@ -221,8 +212,9 @@ a {
                 object-fit: cover;
             }
         }
+
         // 導覽
-        > .side-navLogo {
+        >.side-navLogo {
             display: flex;
             position: absolute;
             top: -0.5rem;
@@ -232,10 +224,12 @@ a {
             width: 18vw;
             overflow: hidden;
             transition: all 0.3s ease-in-out;
+
             &.open {
                 margin-left: -20vw;
             }
-            > .closeBtn {
+
+            >.closeBtn {
                 cursor: pointer;
                 font-size: 2rem;
                 text-align: center;
@@ -244,14 +238,15 @@ a {
                 margin-top: 1.5rem;
                 margin-left: 5.5rem;
             }
-            > .logo {
+
+            >.logo {
                 display: flex;
                 width: 300px;
                 height: 100px;
                 overflow: hidden;
                 z-index: 1;
 
-                > img {
+                >img {
                     position: absolute;
                     top: 1rem;
                     left: 0;
@@ -264,6 +259,7 @@ a {
                 }
             }
         }
+
         .link {
             margin-top: 4rem;
             margin-left: -10px;
@@ -276,9 +272,11 @@ a {
                 margin-bottom: 2.5rem;
                 font-size: 1.2rem;
                 text-align: justify;
+
                 &:hover {
                     color: #f6b352;
                 }
+
                 span {
                     padding-right: 1rem;
                     font-size: 1.3rem;
@@ -286,8 +284,10 @@ a {
             }
         }
     }
+
     .content {
         overflow-x: hidden;
+
         .head {
             width: 100%;
             height: 100px;
@@ -298,6 +298,7 @@ a {
             justify-content: space-around;
             align-items: center;
             z-index: 1;
+
             .navLogo {
                 display: flex;
                 position: absolute;
@@ -307,13 +308,15 @@ a {
                 width: 30vw;
                 height: 50%;
                 overflow: hidden;
-                > .menuBtn {
+
+                >.menuBtn {
                     color: white;
                     cursor: pointer;
                     font-size: min(2vw, 10px);
                     z-index: 1;
                 }
-                > .logo {
+
+                >.logo {
                     display: flex;
                     margin-left: 1rem;
                     width: 200px;
@@ -322,7 +325,7 @@ a {
                     z-index: 2;
                     margin-top: 2.5rem;
 
-                    > img {
+                    >img {
                         display: flex;
                         width: max(10vw, 200px);
                         margin-top: -1rem;
@@ -330,21 +333,25 @@ a {
                     }
                 }
             }
+
             .search {
                 border: 1px solid white;
                 border-radius: 35px;
                 margin-left: 2rem;
                 transition: all 0.2s ease-in-out;
+
                 &.open {
                     margin-left: 20vw;
                 }
-                > .searchIcon {
+
+                >.searchIcon {
                     margin-left: 1rem;
                     margin-top: 1rem;
                     font-size: 1rem;
                     color: white;
                 }
-                > .searchInput {
+
+                >.searchInput {
                     background-color: transparent;
                     border: transparent;
                     height: 45px;
@@ -353,12 +360,14 @@ a {
                     color: white;
                     font-size: 1rem;
                     color: white;
+
                     &:focus {
                         outline: none;
                         color: white;
                     }
                 }
             }
+
             #pages {
                 display: flex;
                 color: white;
@@ -367,23 +376,26 @@ a {
                     margin-left: 1rem;
                 }
 
-                > a {
+                >a {
                     text-decoration: none;
                     color: white;
                     padding-right: 3rem;
                 }
             }
+
             .loginSection {
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 padding-right: 5.5rem;
-                > .logout {
+
+                >.logout {
                     width: 60px;
                     height: 35px;
                     border-radius: 8px;
                     font-weight: bold;
                     cursor: pointer;
+
                     &:hover {
                         box-shadow: 0 4px 8px 0 rgba(255, 255, 255, 0.2),
                             0 6px 20px 0 rgba(255, 255, 255, 0.19);
@@ -391,6 +403,7 @@ a {
                 }
             }
         }
+
         .view {
             display: flex;
             flex-direction: column;
@@ -403,5 +416,4 @@ a {
             padding-left: 5.75rem;
         }
     }
-}
-</style>
+}</style>

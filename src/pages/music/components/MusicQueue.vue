@@ -54,7 +54,8 @@ export default {
             </div>
         </div>
         <div class="scrollable-content" v-if="QueueMode == true">
-            <div class="song" v-for="(song, i) in queue.songInfos" :keys="song.id">
+            <div :class="{ 'song': true, 'notFromList': !song.fromList }" v-for="(song, i) in queue.songInfos"
+                :keys="song.id">
                 <div class="number">{{ i + 1 }}</div>
                 <div class="pic">
                     <img :src=song.songCoverPath alt="">
@@ -127,6 +128,10 @@ export default {
             }
         }
     }
+}
+
+.notFromList {
+    background-color: #ff8800;
 }
 
 .scrollable-content {

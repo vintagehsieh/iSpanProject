@@ -116,7 +116,7 @@ export default {
     z-index: 10;
     top: 0;
     left: 18rem;
-    width: 82rem;
+    width: 100%;
     height: 4rem;
     background-color: #212121;
     opacity: 0;
