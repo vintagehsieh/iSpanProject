@@ -109,41 +109,6 @@ export default {
       </tbody>
     </table>
   </div>
-  <!-- ==================================================================================================================================== -->
-  <div>
-    <button @click="isModal = true">Fetch Data</button>
-    <div v-if="isModal">
-      <modal>
-        <template #header>
-          <div @click="isModal = false">X</div>
-        </template>
-        <template #content>XS</template>
-      </modal>
-    </div>
-  </div>
-  <!-- ==================================================================================================================================== -->
-  <div class="m-subscribePlan">
-    <table>
-      <thead>
-        <tr>
-          <th>訂閱方案</th>
-          <th>價格</th>
-          <th>帳戶</th>
-          <th>描述</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(subscribePlan, index) in subscribeDes" :key="index">
-          <td>{{ subscribePlan.planName }}</td>
-          <td>{{ subscribePlan.price }}</td>
-          <td>{{ subscribePlan.numberOfUsers }}</td>
-          <td>{{ subscribePlan.description }}</td>
-          <td><i class="fa-solid fa-store"></i></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
 </template>
 <style lang="scss" scoped>
 .m-subscribePlan {
@@ -184,4 +149,5 @@ export default {
       }
     }
   }
-}</style>
+}
+</style>
