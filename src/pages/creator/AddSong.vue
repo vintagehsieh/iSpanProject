@@ -23,7 +23,7 @@
             <a-input
               id="CoverImage"
               type="file"
-              accept="image/png, image/jpeg"
+              accept="image/png, image/jpeg, image/jpg"
               @change="handleUploadCoverImage($event)"
             />
           </a-form-item>

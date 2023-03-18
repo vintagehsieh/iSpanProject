@@ -9,7 +9,7 @@
             <a-input v-model:value="album.AlbumName" />
           </a-form-item>
           <a-form-item label="上傳專輯封面" name="上傳專輯封面">
-            <a-input id="CoverImage" type="file" accept="image/png, image/jpeg"
+            <a-input id="CoverImage" type="file" accept="image/png, image/jpeg, image/jpg"
               @change="handleUploadCoverImage($event)" />
           </a-form-item>
           <a-form-item label="專輯種類" name="專輯種類">
