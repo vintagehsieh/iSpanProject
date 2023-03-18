@@ -1,19 +1,53 @@
 <script>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import Cookies from "js-cookie";
+import axios from "axios";
 
 export default {
-    props: {
-        isLogin: {
-            type: Boolean,
-        },
-        handLogout: {
-            type: Function,
-            default: () => { },
-        },
-    },
-    setup(props) {
-        return { props };
+    setup() {
+        const isLogin = ref(false);
+        onMounted(() => {
+            const isLoginLocalStorage = localStorage.getItem("isLogin");
+            if (isLoginLocalStorage) {
+                isLogin.value = true;
+            } else {
+                isLogin.value = false;
+            }
+        });
+        const handLogout = () => {
+            // 把isLogin改回false
+            isLogin.value = false;
+
+            // 清除cookie和localstorage
+            Cookies.remove("UserID");
+            localStorage.clear();
+
+            deleteCookie();
+            setTimeout(() => {
+                redirect();
+            }, 1000);
+        };
+
+        const redirect = () => {
+            window.history.pushState({}, "", "/");
+            window.location.reload();
+        };
+
+        const deleteCookie = () => {
+            axios
+                .post(
+                    "https://localhost:7043/Members/MemberLogOut",
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                    },
+                    { withCredentials: true }
+                )
+                .then((res) => { })
+                .catch((err) => { });
+        };
+        return { isLogin, handLogout };
     },
 };
 </script>
@@ -36,9 +70,9 @@ export default {
             <div class="loginSection">
                 <!-- <div v-if="props.isLogin" class="avatar"></div> -->
                 <!-- <div class="member" v-if="props.isLogin">
-                                <a href="member.html">{{ memberAccount }}</a>
-                            </div> -->
-                <button @click="props.handLogout" class="logout">
+                                                <a href="member.html">{{ memberAccount }}</a>
+                                            </div> -->
+                <button @click="handLogout" class="logout">
                     登出
                 </button>
                 <!-- 引入font-awesome -->

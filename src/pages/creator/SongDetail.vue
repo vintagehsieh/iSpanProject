@@ -13,7 +13,7 @@
           <a-form-item label="風格" name="風格">
             <a-select v-model:value="song.GenreId" :options="genreList"></a-select>
           </a-form-item>
-            <a-form-item label="是否為純音樂" name="是否為純音樂">
+          <a-form-item label="是否為純音樂" name="是否為純音樂">
             <a-radio-group v-model:value="song.IsInstrumental">
               <a-radio :value="true">是</a-radio>
               <a-radio :value="false">否</a-radio>
@@ -54,7 +54,7 @@
   </div>
 </template>
 <script setup>
-import {  ref, onMounted, defineProps, defineEmits } from 'vue';
+import { ref, onMounted, defineProps, defineEmits } from 'vue';
 import 'ant-design-vue/dist/antd.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import dayjs from 'dayjs';
@@ -78,6 +78,7 @@ const emit = defineEmits(['close']);
 
 onMounted(() => {
   song.value = prop.Song;
+  console.log(song)
   song.value.Released = dayjs(song.value.Released);
 })
 
@@ -154,7 +155,7 @@ const editsong = () => {
     Status: song.value.Status,
     AlbumId: song.value.AlbumId
   }
-   axios.put(`https://localhost:7043/Creators/${prop.CreateID}/songs/${song.value.Id}`, senddata, {
+  axios.put(`https://localhost:7043/Creators/${prop.CreateID}/songs/${song.value.Id}`, senddata, {
     withCredentials: true,
   })
     .then((res) => {
