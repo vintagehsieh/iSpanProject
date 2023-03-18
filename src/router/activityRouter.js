@@ -1,29 +1,36 @@
 import {
-    createRouter,
-    createWebHistory,
-    createWebHashHistory,
+  createRouter,
+  createWebHistory,
+  createWebHashHistory,
 } from "vue-router";
 import Activities from "../pages/activity/views/Activities/index.vue";
+import ActivitiesCalendar from "../pages/activity/views/activityCalendar.vue";
+
 const routes = [
-    {
-        path: "/",
-        name: "Activity",
-        component: Activities,
-    },
-    {
-        path: "/Activities/single/:id",
-        name: "Activities_id",
-        component: () => import("@/pages/activity/views/Activities/_id.vue"),
-    },
-    {
-        path: "/:pathMatch(.*)",
-    },
+  {
+    path: "/",
+    name: "Activity",
+    component: Activities,
+  },
+  {
+    path: "/Activities/single/:id",
+    name: "Activities_id",
+    component: () => import("@/pages/activity/views/Activities/_id.vue"),
+  },
+  {
+    path: "/activityCalendar",
+    name: "Calendar",
+    component: ActivitiesCalendar,
+  },
+  {
+    path: "/:pathMatch(.*)",
+  },
 ];
 
 const router = createRouter({
-    history: createWebHashHistory(),
-    // history: createWebHistory(process.env.BASE_URL),
-    routes,
+  history: createWebHashHistory(),
+  // history: createWebHistory(process.env.BASE_URL),
+  routes,
 });
 
 export default router;
