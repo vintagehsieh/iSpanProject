@@ -3,6 +3,8 @@ import { ref, watch, onMounted, computed, watchEffect } from "vue";
 import { useRoute } from "vue-router";
 import { useStore } from "vuex";
 import emitter from "@/mitt";
+import Cookies from "js-cookie";
+import axios from "axios";
 
 export default {
   setup() {
@@ -38,6 +40,40 @@ export default {
 
       store.dispatch("updateUserID");
     });
+
+    const handLogout = () => {
+      // 把isLogin改回false
+      isLogin.value = false;
+
+      // 清除cookie和localstorage
+      Cookies.remove("UserID");
+      localStorage.clear();
+
+      deleteCookie();
+      setTimeout(() => {
+        redirect();
+      }, 1000);
+    };
+
+    const redirect = () => {
+      window.history.pushState({}, "", "/");
+      window.location.reload();
+    };
+
+    const deleteCookie = () => {
+      axios
+        .post(
+          "https://localhost:7043/Members/MemberLogOut",
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          },
+          { withCredentials: true }
+        )
+        .then((res) => {})
+        .catch((err) => {});
+    };
 
     watchEffect(() => {
       emitter.emit("searchInputChange", searchWord.value);
@@ -76,6 +112,7 @@ export default {
       store,
       isOpenMitt,
       handToggleSideBar,
+      handLogout,
     };
   },
 };
@@ -138,13 +175,13 @@ export default {
         />
       </div>
       <div id="pages">
-        <a href="music.html" v-if="!isLogin" id="musicPage">音樂播放</a>
-        <a href="shop.html" v-if="!isLogin" id="shopPage">音樂商城</a>
-        <a href="member.html" v-if="!isLogin" id="actPage">會員</a>
-        <a href="creator.html" v-if="!isLogin" id="actPage">創作者</a>
+        <a href="music.html" v-if="isLogin" id="musicPage">音樂播放</a>
+        <a href="shop.html" v-if="isLogin" id="shopPage">音樂商城</a>
+        <a href="member.html" v-if="isLogin" id="actPage">會員</a>
+        <a href="creator.html" v-if="isLogin" id="actPage">創作者</a>
       </div>
       <div class="loginSection">
-        <button @click="props.handLogout" class="logout">登出</button>
+        <button @click="handLogout" class="logout">登出</button>
       </div>
     </div>
     <div class="view">

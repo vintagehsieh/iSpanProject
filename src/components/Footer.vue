@@ -27,16 +27,28 @@ export default {
     </div>
     <hr />
     <div id="footer_time">ⓒ 2022 - {{ year }} isMusic</div>
+    <div class="blur"></div>
   </footer>
 </template>
 
 <style lang="scss" scoped>
+.blur {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  backdrop-filter: blur(12vmax);
+}
 footer {
   width: 100%;
   height: 450px;
   margin-top: 50px;
   background-color: #1f2124;
   color: white;
+  position: relative;
+  z-index: 4;
   > #footer_nav {
     display: flex;
     > #intro {
