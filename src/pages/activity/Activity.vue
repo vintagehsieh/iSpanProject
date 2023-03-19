@@ -147,9 +147,9 @@ export default {
       <router-link to="/activityCalendar" :class="{ active: idx === 1 }"
         ><span><i class="fa-solid fa-calendar"></i></span>行事曆</router-link
       >
-      <router-link to="/applyActivity" :class="{ active: idx === 2 }"
+      <!-- <router-link to="/applyActivity" :class="{ active: idx === 2 }"
         ><span><i class="fa-solid fa-plus"></i></span>申請活動</router-link
-      >
+      > -->
     </div>
   </div>
   <div class="content">
@@ -212,7 +212,7 @@ a {
 #activity {
   width: 100%;
   height: 100%;
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: "微軟正黑體", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

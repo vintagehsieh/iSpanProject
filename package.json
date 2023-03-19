@@ -23,6 +23,7 @@
     "@popperjs/core": "^2.11.6",
     "ant-design-vue": "^3.2.15",
     "axios": "^1.3.3",
+    "barba": "^1.0.0",
     "bootstrap": "^5.2.3",
     "bootstrap-icons": "^1.10.3",
     "concurrently": "^7.6.0",
@@ -32,8 +33,6 @@
     "json-server": "^0.17.2",
     "mitt": "^3.0.0",
     "swiper": "^9.1.0",
-    "vanilla-tilt": "^1.8.0",
-    "vanilla-tilt-vue": "^0.1.3",
     "vue": "^3.2.13",
     "vue-router": "^4.0.3",
     "vuex": "^4.0.0"

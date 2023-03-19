@@ -34,7 +34,7 @@ export default defineComponent({
       },
       locale: zhTwLocale,
       initialView: "dayGridMonth",
-      initialEvents: events.value,
+      initialEvents: INITIAL_EVENTS,
       editable: true,
       selectable: true,
       selectMirror: true,
@@ -68,7 +68,7 @@ export default defineComponent({
     }
 
     function handleDateSelect(selectInfo) {
-      let title = prompt("Please enter a new title for your event");
+      let title = prompt("請輸入新的活動名稱");
       let calendarApi = selectInfo.view.calendar;
       calendarApi.unselect();
       if (title) {
@@ -83,11 +83,7 @@ export default defineComponent({
     }
 
     function handleEventClick(clickInfo) {
-      if (
-        confirm(
-          `Are you sure you want to delete the event '${clickInfo.event.title}'`
-        )
-      ) {
+      if (confirm(`您確定是否要刪除? '${clickInfo.event.title}'`)) {
         clickInfo.event.remove();
       }
     }
@@ -118,7 +114,7 @@ export default defineComponent({
         </template>
       </FullCalendar>
     </div>
-    <div class="demo-app-sidebar">
+    <!-- <div class="demo-app-sidebar">
       <div class="demo-app-sidebar-section">
         <h2>Instructions</h2>
         <ul>
@@ -146,7 +142,7 @@ export default defineComponent({
           </li>
         </ul>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -158,16 +154,16 @@ export default defineComponent({
 }
 .demo-app {
   display: flex;
-  width: 80%;
-  min-height: 100%;
+  width: 60%;
+  min-height: 80%;
   font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
   font-size: 14px;
   color: white;
+  margin-top: 2rem;
 
   .demo-app-main {
     flex-grow: 1;
     padding: 3em;
-    border: 1px solid white;
     .demo-app-calendar {
       .fc-header-toolbar {
         .fc-toolbar-chunck {

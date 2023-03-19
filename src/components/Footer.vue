@@ -48,9 +48,11 @@ footer {
   background-color: #1f2124;
   color: white;
   position: relative;
-  z-index: 4;
+  z-index: 3;
   > #footer_nav {
     display: flex;
+    position: relative;
+    z-index: 4;
     > #intro {
       margin-left: 12rem;
       margin-top: 3rem;

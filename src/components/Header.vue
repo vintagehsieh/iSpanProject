@@ -96,7 +96,7 @@ nav {
       width: max(10vw, 200px);
       margin-top: -1rem;
       scale: 2;
-      z-index: 3;
+      z-index: 4;
       position: relative;
     }
   }
@@ -104,7 +104,7 @@ nav {
   > #pages {
     display: flex;
     color: white;
-    z-index: 3;
+    z-index: 4;
     position: relative;
 
     > :nth-child(1) {

@@ -43,6 +43,7 @@ export default {
     });
 
     async function addCalender() {
+      alert("已經成功加入行事曆");
       const startDate = actDetail.data.activityStartTime;
       const attendDate = new Date(startDate).toISOString();
       const follow = reactive({
@@ -101,6 +102,17 @@ export default {
     background-color: #fff;
     border-radius: 8px;
     box-shadow: rgba(255, 255, 255, 0.5) 0 2px 10px 0;
+    position: relative;
+    button {
+      border: none;
+      color: #f6b352;
+      background-color: transparent;
+      font-size: 3rem;
+      position: absolute;
+      left: -6rem;
+      top: 2rem;
+      cursor: pointer;
+    }
     .name {
       color: black;
       font-size: 3rem;

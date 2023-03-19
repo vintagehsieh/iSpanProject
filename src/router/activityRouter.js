@@ -5,7 +5,7 @@ import {
 } from "vue-router";
 import Activities from "../pages/activity/views/Activities/index.vue";
 import ActivitiesCalendar from "../pages/activity/views/activityCalendar.vue";
-
+import ActivityApply from "@/pages/activity/views/activityApply.vue";
 const routes = [
   {
     path: "/",
@@ -21,6 +21,11 @@ const routes = [
     path: "/activityCalendar",
     name: "Calendar",
     component: ActivitiesCalendar,
+  },
+  {
+    path: "/activityApply",
+    name: "Apply",
+    component: ActivityApply,
   },
   {
     path: "/:pathMatch(.*)",

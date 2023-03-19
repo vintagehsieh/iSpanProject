@@ -5,7 +5,6 @@ import { onMounted, ref, onUnmounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import Cookies from "js-cookie";
 import axios from "axios";
-import VanillaTilt from "vanilla-tilt";
 
 export default {
   components: {
@@ -16,9 +15,9 @@ export default {
     const isLogin = ref(false);
     const router = useRouter();
     const route = useRoute();
-    const card = ref(null);
 
     onMounted(() => {
+
       const isLoginLocalStorage = localStorage.getItem("isLogin");
       if (isLoginLocalStorage) {
         isLogin.value = true;
@@ -28,13 +27,6 @@ export default {
 
       window.addEventListener("pointermove", updatePosition);
       requestAnimationFrame(animate);
-
-      VanillaTilt.init(card.value, {
-        max: 25,
-        speed: 400,
-        glare: true,
-        "max-glare": 0.5,
-      });
     });
 
     const handLogout = () => {
@@ -117,7 +109,7 @@ export default {
       window.removeEventListener("pointermove", updatePosition);
     });
 
-    return { isLogin, handLogout, rotateWord, blobX, blobY, card };
+    return { isLogin, handLogout, rotateWord, blobX, blobY };
   },
 };
 </script>
@@ -129,15 +121,19 @@ export default {
   <div class="landing-page">
     <div class="section1">
       <div class="wrap">
-        <VanillaTilt v-bind:ref="card" class="card"></VanillaTilt>
+        <div class="card"></div>
         <div class="title">
           <div class="line1">WELCOME</div>
           <div class="line2">MUSIC PLATFORM</div>
           <div class="line3">WITH DIVERSITY</div>
         </div>
       </div>
+      <a href="#section2"
+        ><div class="tosec2">
+          <span class="arrow"><i class="fa-solid fa-arrow-down"></i></span></div
+      ></a>
     </div>
-    <div class="section2">
+    <div class="section2" id="section2">
       <h1
         class="music"
         ref="music"
@@ -228,6 +224,8 @@ export default {
     width: 100%;
     height: 100%;
     background-color: #1f2124;
+    scroll-behavior: smooth;
+    scroll-padding-top: 10rem;
   }
 }
 
@@ -249,15 +247,19 @@ export default {
       align-items: center;
 
       .card {
-        width: 380px;
-        height: 380px;
+        width: 580px;
+        height: 580px;
         position: absolute;
-        top: calc(50% - 115px);
+        top: calc(50% - 190px);
         z-index: 4;
         background-color: orange;
         border-radius: 28px;
+        background-image: url("@/assets/e4634da841c0ed906e77cab9b6b733ef.gif");
+        background-size: cover;
+        background-position: center;
       }
       .title {
+        width: 100%;
         font-family: "Space Mono", monospace;
         color: white;
         position: absolute;
@@ -265,28 +267,55 @@ export default {
         z-index: 4;
         display: flex;
         flex-direction: column;
-        margin-block: 3rem;
-        padding-top: 10.5rem;
+        margin-block: 2rem;
+        margin-top: 15rem;
         .line1 {
           font-weight: 500;
-          font-size: 4rem;
-          padding-left: 3rem;
+          font-size: 5.5rem;
+          padding-left: 10rem;
         }
         .line2 {
-          font-size: 5rem;
+          font-size: 7.5rem;
           font-weight: 700;
-          margin-left: 6rem;
+          margin-left: 5rem;
+          margin-block: 1.5rem;
         }
         .line3 {
-          font-size: 3rem;
+          font-size: 5rem;
           font-weight: 500;
           text-align: right;
-          padding-right: 2rem;
+          padding-right: 6rem;
         }
+      }
+    }
+    .tosec2 {
+      background-color: transparent;
+      border: 2px solid white;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      z-index: 4;
+      position: relative;
+      left: -13.5rem;
+      top: 27rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      &:hover {
+        background-color: #f6b352;
+        border: #f6b352;
+      }
+      .arrow {
+        color: white;
+        font-size: 3rem;
+        z-index: 5;
       }
     }
   }
   .section2 {
+    margin-top: 3rem;
+    margin-bottom: 10rem;
+    background: rgba(0, 0, 0, 0);
     h1 {
       margin-bottom: 1rem;
       font-family: "Space Mono", monospace;
@@ -350,7 +379,7 @@ export default {
 
 #blob {
   background-color: white;
-  height: 34vmax;
+  height: 20vmax;
   aspect-ratio: 1;
   position: absolute;
   left: 50%;
@@ -364,7 +393,7 @@ export default {
 }
 
 #blur {
-  height: 100%;
+  height: 1700px;
   width: 100%;
   position: absolute;
   z-index: 1;
