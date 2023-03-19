@@ -9,64 +9,67 @@ import SongGenres from "./music/songGenres";
 import Login from "./login/login";
 import library from "./music/library";
 import shop from "./Shop/shop";
+import search from "./activity/search";
 
 const loginModule = {
-    state: {},
-    getters: {},
-    mutations: {},
-    actions: {},
-    modules: {
-        Login,
-    },
+  state: {},
+  getters: {},
+  mutations: {},
+  actions: {},
+  modules: {
+    Login,
+  },
 };
 
 const homeModule = {
-    state: {},
-    getters: {},
-    mutations: {},
-    actions: {},
-    modules: {},
+  state: {},
+  getters: {},
+  mutations: {},
+  actions: {},
+  modules: {},
 };
 
 const musicModule = {
-    state: {},
-    getters: {},
-    mutations: {},
-    actions: {},
-    modules: {
-        album,
-        artist,
-        creator,
-        playlist,
-        main,
-        queue,
-        SongGenres,
-        library,
-    },
+  state: {},
+  getters: {},
+  mutations: {},
+  actions: {},
+  modules: {
+    album,
+    artist,
+    creator,
+    playlist,
+    main,
+    queue,
+    SongGenres,
+    library,
+  },
 };
 
 const activityModule = {
-    state: {},
-    getters: {},
-    mutations: {},
-    actions: {},
-    modules: {},
+  state: {},
+  getters: {},
+  mutations: {},
+  actions: {},
+  modules: {
+    search,
+  },
 };
 
 const shopModule = {
-    state: {},
-    getters: {},
-    mutations: {},
-    actions: {},
-    modules: { shop },
+  state: {},
+  getters: {},
+  mutations: {},
+  actions: {},
+  modules: { shop },
 };
 
 export default createStore({
-    modules: {
-        login: loginModule,
-        home: homeModule,
-        music: musicModule,
-        activity: activityModule,
-        shop: shopModule,
-    },
+  modules: {
+    login: loginModule,
+    home: homeModule,
+    music: musicModule,
+    activity: activityModule,
+    shop: shopModule,
+  },
 });

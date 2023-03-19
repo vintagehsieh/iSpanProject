@@ -1,9 +1,8 @@
 <script>
-import { ref, watch, onMounted, computed, reactive } from "vue";
+import { ref, watch, onMounted, computed, watchEffect } from "vue";
 import { useRoute } from "vue-router";
 import { useStore } from "vuex";
 import emitter from "@/mitt";
-import axios from "axios";
 
 export default {
   setup() {
@@ -16,50 +15,14 @@ export default {
     const isLogin = ref(false);
     const store = useStore();
     const searchWord = ref("");
-    const searchResults = reactive({ value: [] });
 
-        const saerchActivities = async () => {
-            try {
-                await axios.get(`https://localhost:7043/Activities/${searchWord}?sort=${''}&typeId=${''}`, {
-                    withCredentials: true,
-                });
-                searchResults.value = response.data;
-            } catch (error) {
-                console.log(error);
-            }
-        };
-
-        const username = computed(() => {
-            return store.getters.getUserID;
-        });
-
-        onMounted(() => {
-            const isLoginLocalStorage = localStorage.getItem("isLogin");
-            if (isLoginLocalStorage) {
-                isLogin.value = true;
-            } else {
-                isLogin.value = false;
-            }
-
-            store.dispatch("updateUserID");
-        });
-        //轉倒頁面fn
-        watch(
-            () => route.path,
-            () => {
-                routeArr.forEach((item, index) => {
-                    const rp = route.path.substr(1).split("/")[0];
-                    if (rp === item) {
-                        idx.value = index;
-                    }
-                });
-            }
-        );
-        searchResults.value = response.data;
-      } catch (error) {
-        console.log(error);
-      }
-    };
+    const queryParameters = computed(() => {
+      return {
+        ActivityName: searchWord.value,
+        ActivityLocation: searchWord.value,
+        ActivityTypeName: searchWord.value,
+      };
+    });
 
     const username = computed(() => {
       return store.getters.getUserID;
@@ -75,6 +38,11 @@ export default {
 
       store.dispatch("updateUserID");
     });
+
+    watchEffect(() => {
+      emitter.emit("searchInputChange", searchWord.value);
+    });
+
     //轉倒頁面fn
     watch(
       () => route.path,
@@ -87,6 +55,7 @@ export default {
         });
       }
     );
+
     const isOpenMitt = () => {
       emitter.emit("isOpenMitt", isOpen);
     };
@@ -100,15 +69,18 @@ export default {
     return {
       idx,
       isOpen,
+      isLogin,
       username,
       searchWord,
+      queryParameters,
+      store,
       isOpenMitt,
       handToggleSideBar,
-      searchActivities,
     };
   },
 };
 </script>
+
 <template>
   <div :class="['navbar', { open: isOpen }]">
     <div :class="['side-navLogo', { open: isOpen }]">
@@ -160,18 +132,11 @@ export default {
         <input
           type="text"
           class="searchInput"
-          placeholder="請輸入活動名稱、時間、地點、類型"
-          @click="searchActivities"
+          placeholder="請輸入活動名稱、地點、類型"
+          @input="() => store.dispatch('searchActivities', queryParameters)"
           v-model="searchWord"
         />
       </div>
-      <!-- <div v-if="searchResults.value.length > 0">
-        <ul>
-          <li v-for="activity in searchResults.value" :key="activity.id">
-            {{ activity.name }}
-          </li>
-        </ul>
-      </div> -->
       <div id="pages">
         <a href="music.html" v-if="!isLogin" id="musicPage">音樂播放</a>
         <a href="shop.html" v-if="!isLogin" id="shopPage">音樂商城</a>
@@ -432,7 +397,7 @@ a {
       display: flex;
       flex-direction: column;
       align-items: start;
-      overflow-y: scroll;
+      //   overflow-y: scroll;
       width: 100vw;
       height: auto;
       background-color: #1f2124;
