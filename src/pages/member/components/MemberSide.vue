@@ -35,15 +35,11 @@ export default {
                     <h3>訂閱記錄</h3>
                 </router-link>
                 <router-link to="/memberOrder">
-                    <span class="icon"
-                        ><i class="fa-solid fa-cart-shopping"></i
-                    ></span>
+                    <span class="icon"><i class="fa-solid fa-cart-shopping"></i></span>
                     <h3>訂單紀錄</h3>
                 </router-link>
-                <router-link to="/musicLibrary">
-                    <span class="icon"
-                        ><i class="fa-solid fa-calendar"></i
-                    ></span>
+                <router-link to="/memberActivate">
+                    <span class="icon"><i class="fa-solid fa-calendar"></i></span>
                     <h3>行事曆</h3>
                 </router-link>
             </div>
@@ -60,21 +56,21 @@ export default {
     flex: 1;
     width: 100%;
     height: 100%;
+
     .navbar {
         display: flex;
         flex-direction: column;
         justify-content: start;
         align-items: center;
-        background: linear-gradient(
-            180deg,
-            rgba(60, 61, 62, 1) 0%,
-            rgba(59, 55, 49, 1) 100%
-        );
+        background: linear-gradient(180deg,
+                rgba(60, 61, 62, 1) 0%,
+                rgba(59, 55, 49, 1) 100%);
         min-width: 300px;
         height: 100%;
         padding-top: 6rem;
         color: white;
         padding-inline: 2rem;
+
         p {
             color: white;
             font-size: 1.25rem;
@@ -82,6 +78,7 @@ export default {
             letter-spacing: 2px;
             text-align: center;
         }
+
         .logo {
             position: relative;
             width: 175px;
@@ -90,6 +87,7 @@ export default {
             border-radius: 50%;
             background-color: rgba(0, 0, 0, 0.2);
             box-shadow: rgba(0, 0, 0, 0.2) 0 2px 10px;
+
             img {
                 position: absolute;
                 width: 100%;
@@ -98,9 +96,11 @@ export default {
                 object-fit: cover;
             }
         }
+
         .link {
             margin-top: 4rem;
             margin-left: -10px;
+
             a {
                 display: flex;
                 align-items: center;
@@ -109,27 +109,29 @@ export default {
                 margin-bottom: 2.5rem;
                 font-size: 1rem;
                 text-align: justify;
+
                 &:hover {
                     color: #f6b352;
                 }
-                span {
-                }
+
+                span {}
+
                 h3 {
                     padding-left: 1rem;
                 }
             }
         }
     }
+
     .view {
         flex: 1;
+
         .router-link {
             a {
-                .icon {
-                }
-                h3 {
-                }
+                .icon {}
+
+                h3 {}
             }
         }
     }
-}
-</style>
+}</style>

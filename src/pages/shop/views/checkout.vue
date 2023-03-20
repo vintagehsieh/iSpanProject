@@ -126,6 +126,15 @@ export default {
       );
     });
 
+    const formatter = new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'NTD',
+      maximumSignificantDigits: 4
+      // These options are needed to round to whole numbers if that's what you want.
+      //minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+      //maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
+    });
+
     return {
       discountprice,
       chekout,
@@ -134,6 +143,7 @@ export default {
       coupon,
       membercart,
       cartTotal,
+      formatter,
     };
   },
 };
@@ -158,9 +168,9 @@ export default {
             <tr v-for="(item, index) in membercart.value" :key="index">
               <img :src="item.albumCoverPath" alt="" />
               <td>{{ item.productName }}</td>
-              <td>{{ item.productPrice }}</td>
+              <td>{{ formatter.format(item.productPrice) }}</td>
               <td>{{ item.qty }}</td>
-              <td>{{ item.productPrice * item.qty }}</td>
+              <td>{{ formatter.format(item.productPrice * item.qty) }}</td>
             </tr>
           </tbody>
         </table>
@@ -170,13 +180,13 @@ export default {
         <hr />
         <div class="total">
           <div class="totalLabel">小計:</div>
-          <div class="totalPrice">NTD$ {{ cartTotal }}</div>
+          <div class="totalPrice">{{ formatter.format(cartTotal) }}</div>
         </div>
         <div class="couponContainer" v-if="coupon">
           <p class="couponTitle">折價:</p>
-          <p class="couponText">- NTD$ {{ discountprice() }}</p>
+          <p class="couponText">- NTD$ {{ formatter.format(discountprice()) }}</p>
         </div>
-        <h3 class="finalPrice">NTD$ {{ totalprice() }}</h3>
+        <h3 class="finalPrice">{{ formatter.format(totalprice()) }}</h3>
         <hr />
         <button @click="chekout()" class="checkoutBtn">結帳</button>
       </div>

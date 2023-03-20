@@ -60,6 +60,16 @@ export default {
                     membercart.value = data;
                 });
         });
+
+        const formatter = new Intl.NumberFormat('en-IN', {
+            style: 'currency',
+            currency: 'NTD',
+            maximumSignificantDigits: 4
+            // These options are needed to round to whole numbers if that's what you want.
+            //minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+            //maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
+        });
+
         return {
             alertFunction,
             formatDate,
@@ -67,6 +77,7 @@ export default {
             number,
             products,
             addtoCartItem,
+            formatter
         };
     },
 };
@@ -93,7 +104,7 @@ export default {
                 </div>
                 <div class="buySection">
                     <div class="albumPrice">
-                        NTD$ {{ membercart.value.productPrice }}
+                        {{ formatter.format(membercart.value.productPrice) }}
                     </div>
                     <div class="btn">
                         <input type="number" v-model="qty" min="1" step="1" />

@@ -3,6 +3,7 @@ import SideBar from '@/pages/music/components/SideBar.vue';
 import PlayerFooter from '@/pages/music/components/MusicPlayer.vue'
 import { ref } from 'vue'
 import Cookies from "js-cookie";
+import axios from "axios";
 
 export default {
   props: {
@@ -20,7 +21,38 @@ export default {
       memberNickname.value = Cookies.get("UserID");
     }
 
-    return { props, memberNickname };
+    const handLogout = () => {
+      // 清除cookie和localstorage
+      Cookies.remove("UserID");
+      localStorage.clear();
+
+      deleteCookie();
+      setTimeout(() => {
+        redirect();
+      }, 1000);
+    };
+
+    const redirect = () => {
+      window.history.pushState({}, "", "/");
+      window.location.reload();
+    };
+
+    const deleteCookie = () => {
+      axios
+        .post(
+          "https://localhost:7043/Members/MemberLogOut",
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          },
+          { withCredentials: true }
+        )
+        .then((res) => { })
+        .catch((err) => { });
+    };
+
+    return { props, memberNickname, handLogout };
   },
   components: {
     SideBar,
