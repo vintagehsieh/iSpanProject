@@ -1,5 +1,5 @@
 <template>
-  <div>驗證完成</div>
+  <h1>驗證完成</h1>
 </template>
 
 <script>
@@ -24,5 +24,12 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
+h1 {
+  color: black;
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  font-size: 40px;
+}
 </style>

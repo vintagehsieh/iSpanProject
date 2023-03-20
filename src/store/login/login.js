@@ -8,6 +8,7 @@ const state = {
         memberPassword: "",
     },
     UserID: "",
+    isConfirmed: false,
 };
 
 const getters = {
@@ -23,6 +24,9 @@ const getters = {
     getUserID(state) {
         return state.UserID;
     },
+    getIsConfirmed(state) {
+        return state.isConfirmed;
+    }
 };
 
 const actions = {
@@ -54,6 +58,16 @@ const actions = {
             });
         commit("setUserID", User);
     },
+    async updateIsConfirmed({ commit }) {
+        let confirmed = "";
+        await axios.get("https://localhost:7043/Members", { withCredentials: true })
+            .then((res) => {
+                console.log(res.data);
+                confirmed = res.data.isConfirmed;
+
+            });
+            commit("setIsConfirmed", confirmed);        
+    }
 };
 
 const mutations = {
@@ -69,6 +83,9 @@ const mutations = {
     setUserID(state, payload) {
         state.UserID = payload;
     },
+    setIsConfirmed(state, payload) {
+        state.isConfirmed = payload;
+    }
 };
 
 export default {

@@ -1,7 +1,5 @@
 <script>
 import { onMounted, ref } from "vue";
-import axios from "axios";
-import store from "@/store";
 
 export default {
   setup() {
@@ -33,7 +31,6 @@ export default {
           member.value = data;
           data.memberEdit = false;
           data.emailEdit = false;
-          console.log(member);
         })
         .catch((error) => {
           console.error(error);
@@ -159,6 +156,8 @@ export default {
         })
         .catch((error) => {});
     };
+
+
     return {
       member,
       formatDate,
