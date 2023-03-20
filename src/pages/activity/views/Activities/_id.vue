@@ -69,13 +69,15 @@ export default {
 <template>
   <div id="actDetail">
     <div v-if="!isError" class="singleAct">
-      <button @click="addCalender"><li class="fa-solid fa-plus"></li></button>
+      <button @click="addCalender">
+        <li class="fa-solid fa-plus"></li>
+      </button>
       <h1 class="name">{{ actDetail.data.activityName }}</h1>
       <h4 class="time">
         開始時間：{{ formatDate(actDetail.data.activityStartTime) }}<br />
         結束時間：{{ formatDate(actDetail.data.activityEndTime) }}
       </h4>
-      <img :src="actDetail.data.acitivityImagePath" alt="" />
+      <img :src="actDetail.data.activityImagePath" alt="" />
       <div class="desc">
         <p>{{ actDetail.data.activityInfo }}</p>
       </div>
@@ -96,6 +98,7 @@ export default {
   align-items: center;
   margin-block: 6rem;
   margin-block-end: 10rem;
+
   .singleAct {
     border: 1px solid white;
     padding: 2rem;
@@ -103,6 +106,7 @@ export default {
     border-radius: 8px;
     box-shadow: rgba(255, 255, 255, 0.5) 0 2px 10px 0;
     position: relative;
+
     button {
       border: none;
       color: #f6b352;
@@ -113,10 +117,12 @@ export default {
       top: 2rem;
       cursor: pointer;
     }
+
     .name {
       color: black;
       font-size: 3rem;
     }
+
     .time {
       margin-block: 1.3rem;
       font-size: 1rem;
@@ -124,12 +130,14 @@ export default {
       color: rgba(0, 0, 0, 0.5);
       font-weight: 650;
     }
+
     img {
       border: 1px solid black;
       width: 950px;
       height: 300px;
       margin-block: 0.5rem;
     }
+
     .desc {
       padding-inline: 2rem;
       margin-top: 1.3rem;
@@ -138,8 +146,8 @@ export default {
       text-align: justify;
     }
   }
+
   .noAct {
     color: white;
   }
-}
-</style>
+}</style>
