@@ -87,6 +87,15 @@ export default {
             }
         };
 
+        const formatter = new Intl.NumberFormat('en-IN', {
+            style: 'currency',
+            currency: 'NTD',
+            maximumSignificantDigits: 4
+            // These options are needed to round to whole numbers if that's what you want.
+            //minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+            //maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
+        });
+
         const showvalue = (e) => {
             console.log(e.target.value);
         };
@@ -122,6 +131,7 @@ export default {
             increaseCartItem,
             decreaseCartItem,
             deleteCartItem,
+            formatter,
         };
     },
 };
@@ -145,7 +155,7 @@ export default {
                         <img class="productCover" :src="item.albumCoverPath" alt="" />
                     </div>
                     <div class="proName">{{ item.productName }}</div>
-                    <div class="proPrice">{{ item.productPrice }}</div>
+                    <div class="proPrice">{{ formatter.format(item.productPrice) }}</div>
                     <div class="proQty">
                         <button class="deItem" @click="decreaseItemQuantity(item, item.productId)"
                             :disabled="item.qty <= 1">
@@ -156,7 +166,7 @@ export default {
                             +
                         </button>
                     </div>
-                    <div class="tPrice">{{ item.productPrice * item.qty }}</div>
+                    <div class="tPrice">{{ formatter.format(item.productPrice * item.qty) }}</div>
                 </div>
             </div>
             <div class="bottomContainer">
@@ -166,7 +176,7 @@ export default {
             </div>
         </div>
 
-        <p class="total" v-if="cartTotal != 0">NTD$ {{ cartTotal() }}</p>
+        <p class="total" v-if="cartTotal != 0">{{ formatter.format(cartTotal()) }}</p>
         <p class="totalEmpty" v-else>目前購物車尚無物品</p>
         <hr />
 

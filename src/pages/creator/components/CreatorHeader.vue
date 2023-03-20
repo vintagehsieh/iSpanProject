@@ -70,8 +70,8 @@ export default {
             <div class="loginSection">
                 <!-- <div v-if="props.isLogin" class="avatar"></div> -->
                 <!-- <div class="member" v-if="props.isLogin">
-                                                <a href="member.html">{{ memberAccount }}</a>
-                                            </div> -->
+                                                    <a href="member.html">{{ memberAccount }}</a>
+                                                </div> -->
                 <button @click="handLogout" class="logout">
                     登出
                 </button>

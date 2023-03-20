@@ -96,6 +96,15 @@ export default {
       return products.value;
     }
 
+    const formatter = new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'NTD',
+      maximumSignificantDigits: 4
+      // These options are needed to round to whole numbers if that's what you want.
+      //minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+      //maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
+    });
+
     return {
       returnP,
       genreName,
@@ -108,6 +117,7 @@ export default {
       popularProducts,
       emitPopularProducts,
       modules: [EffectCoverflow, Pagination],
+      formatter,
     };
   },
 };
@@ -143,12 +153,7 @@ export default {
       </div>
       <div class="searchOption">
         <label for="select-option" class="custom-label">搜尋方式</label>
-        <select
-          id="select-option"
-          v-model="options"
-          class="custom-select"
-          @change="showvalue"
-        >
+        <select id="select-option" v-model="options" class="custom-select" @change="showvalue">
           <option>歌手</option>
           <option>專輯</option>
         </select>
@@ -156,24 +161,17 @@ export default {
     </div>
 
     <div v-if="products.value != undefined" class="productContainer">
-      <router-link
-        :to="'/productItem/' + item.id"
-        v-for="(item, index) in products.value"
-        :key="index"
-        class="productItem"
-      >
+      <router-link :to="'/productItem/' + item.id" v-for="(item, index) in products.value" :key="index"
+        class="productItem">
         <Card>
           <template #picture>
             <div class="cover">
-              <img
-                :src="item.albumInfo ? item.albumInfo.albumCoverPath : ''"
-                alt=""
-              />
+              <img :src="item.albumInfo ? item.albumInfo.albumCoverPath : ''" alt="" />
             </div>
           </template>
           <template #price>
             <div class="productPrice">
-              <p>$ {{ item.productPrice }}</p>
+              <p>{{ formatter.format(item.productPrice) }}</p>
             </div>
           </template>
           <template #categoryName>
@@ -186,8 +184,8 @@ export default {
               <p>{{ item.productName }}</p>
             </div>
           </template>
-        </Card></router-link
-      >
+        </Card>
+      </router-link>
     </div>
   </div>
 </template>
@@ -204,6 +202,7 @@ a {
   justify-content: center;
   height: auto;
   margin-block: 8rem;
+
   .searchContainer {
     display: flex;
     justify-content: center;
@@ -211,10 +210,12 @@ a {
     margin-block: 3rem;
     width: 100%;
     height: 100%;
+
     .searchInput {
       display: flex;
       align-items: center;
       justify-content: start;
+
       input {
         width: 300px;
         height: 50px;
@@ -225,11 +226,13 @@ a {
         padding-left: 1rem;
         color: white;
         font-size: 1rem;
+
         &:focus {
           outline: none;
           background-color: #1f2124;
         }
       }
+
       button {
         height: 52px;
         width: 60px;
@@ -245,12 +248,15 @@ a {
         }
       }
     }
+
     .searchOption {
       margin-left: 4rem;
+
       .custom-label {
         color: white;
         font-size: 1.2rem;
       }
+
       .custom-select {
         width: 130px;
         height: 45px;
@@ -261,6 +267,7 @@ a {
         font-size: 1.2rem;
         background-color: #1f2124;
         color: white;
+
         option {
           font-size: 1.2rem;
           margin-block: 1.2rem;
@@ -268,6 +275,7 @@ a {
       }
     }
   }
+
   .carouselContainer {
     width: 1000px;
     height: auto;
@@ -278,11 +286,13 @@ a {
     padding: 1rem;
     padding-inline: 3rem;
   }
+
   .categorySearch {
     margin-top: 5rem;
     display: flex;
     justify-content: center;
     align-items: center;
+
     .category {
       width: 120px;
       height: 50px;
@@ -293,6 +303,7 @@ a {
       font-weight: 650;
       background-color: white;
       border: 2px solid black;
+
       &:hover {
         border: none;
         background: black;
@@ -319,6 +330,7 @@ a {
       &:hover {
         scale: 1.1;
       }
+
       .cover {
         img {
           width: 14rem;
@@ -327,6 +339,7 @@ a {
         }
       }
     }
+
     .categoryName {
       text-align: center;
       margin-right: 6.6rem;
@@ -338,6 +351,7 @@ a {
       background-color: #f6b352;
       border-radius: 3px;
     }
+
     .productName {
       color: white;
       font-size: 1rem;
@@ -345,8 +359,9 @@ a {
       font-weight: 700;
       padding-top: 1rem;
     }
+
     .productPrice {
-      width: 4rem;
+      width: 5rem;
       height: 2rem;
       background-color: rgba(0 0 0 / 40%);
       color: white;
@@ -356,6 +371,7 @@ a {
       border-radius: 0 4px 4px 0;
       transition: all 0.4 ease-in-out;
       z-index: 2;
+
       &:hover {
         scale: 1.1;
       }
