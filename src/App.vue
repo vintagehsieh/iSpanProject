@@ -17,7 +17,6 @@ export default {
     const route = useRoute();
 
     onMounted(() => {
-
       const isLoginLocalStorage = localStorage.getItem("isLogin");
       if (isLoginLocalStorage) {
         isLogin.value = true;
@@ -59,6 +58,15 @@ export default {
         )
         .then((res) => {})
         .catch((err) => {});
+    };
+
+    const loginCheck = (url) => {
+      const isLoginLocalStorage = localStorage.getItem("isLogin");
+      if (isLoginLocalStorage) {
+        window.location.href = `${url}.html`;
+      } else {
+        alert("您需要先登入才能造訪該網頁");
+      }
     };
 
     const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -109,7 +117,7 @@ export default {
       window.removeEventListener("pointermove", updatePosition);
     });
 
-    return { isLogin, handLogout, rotateWord, blobX, blobY };
+    return { isLogin, handLogout, rotateWord, blobX, blobY, loginCheck };
   },
 };
 </script>
@@ -134,35 +142,58 @@ export default {
       ></a>
     </div>
     <div class="section2" id="section2">
-      <h1
-        class="music"
-        ref="music"
-        data-value="MUSIC PLAYER"
-        @mouseover="rotateWord($event)"
+      <a href=""
+        ><h1
+          class="music"
+          ref="music"
+          data-value="MUSIC PLAYER"
+          @mouseover="rotateWord($event)"
+          @click.prevent="loginCheck('music')"
+        >
+          MUSIC PLAYER
+        </h1></a
       >
-        MUSIC PLAYER
-      </h1>
-      <h1
-        class="shop"
-        ref="shop"
-        data-value="SHOPPING"
-        @mouseover="rotateWord($event)"
+      <a href=""
+        ><h1
+          class="shop"
+          ref="shop"
+          data-value="SHOPPING"
+          @mouseover="rotateWord($event)"
+          @click.prevent="loginCheck('shop')"
+        >
+          SHOPPING
+        </h1></a
       >
-        SHOPPING
-      </h1>
-      <h1
-        ref="activity"
-        data-value="ACTIVITIES"
-        @mouseover="rotateWord($event)"
+      <a href=""
+        ><h1
+          ref="activity"
+          data-value="ACTIVITIES"
+          @mouseover="rotateWord($event)"
+          @click.prevent="loginCheck('activity')"
+        >
+          ACTIVITIES
+        </h1></a
       >
-        ACTIVITIES
-      </h1>
-      <h1 ref="creator" data-value="CREATING" @mouseover="rotateWord($event)">
-        CREATING
-      </h1>
-      <h1 ref="member" data-value="MEMBER" @mouseover="rotateWord($event)">
-        MEMEBER
-      </h1>
+      <a href="">
+        <h1
+          ref="creator"
+          data-value="CREATING"
+          @mouseover="rotateWord($event)"
+          @click.prevent="loginCheck('creator')"
+        >
+          CREATING
+        </h1></a
+      >
+      <a href=""
+        ><h1
+          ref="member"
+          data-value="MEMBER"
+          @mouseover="rotateWord($event)"
+          @click.prevent="loginCheck('member')"
+        >
+          MEMEBER
+        </h1></a
+      >
     </div>
 
     <!-- <div class="section3">
@@ -227,6 +258,10 @@ export default {
     scroll-behavior: smooth;
     scroll-padding-top: 10rem;
   }
+}
+
+a {
+  text-decoration: none;
 }
 
 .landing-page {
@@ -325,8 +360,8 @@ export default {
       border-radius: clamp(0.4rem, 0.75vw, 1rem);
       z-index: 3;
       position: relative;
-      &hover {
-        background-color: white;
+      &:hover {
+        background-color: rgb(46, 46, 46);
         color: #f68657;
       }
     }

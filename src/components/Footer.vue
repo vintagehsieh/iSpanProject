@@ -86,9 +86,13 @@ footer {
   justify-content: end;
   margin-right: 10rem;
   color: white;
+  position: relative;
+  z-index: 4;
 }
 hr {
-  border-color: rgba(255, 255, 255, 0.1);
-  margin: 3rem 0 2.25rem 0;
+  border-color: rgba(255, 255, 255, 0.938);
+  margin: 2rem 0 2rem 0;
+  z-index: 4;
+  position: relative;
 }
 </style>

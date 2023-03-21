@@ -1,14 +1,12 @@
 <script>
-import { defineComponent, ref, reactive, onMounted } from "vue";
+import { defineComponent, ref, reactive, onMounted, watch, toRefs } from "vue";
 import FullCalendar from "@fullcalendar/vue3";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import {
-  INITIAL_EVENTS,
-  createEventId,
-} from "@/pages/activity/src/event-utils";
+
 import { zhTwLocale } from "@fullcalendar/core/locales-all";
+import { INITIAL_EVENTS, createEventId, fetchEvents } from "../src/event-utils";
 import axios from "axios";
 
 export default defineComponent({
@@ -17,7 +15,8 @@ export default defineComponent({
   },
   setup() {
     const currentEvents = ref([]);
-    const events = ref([]);
+    const calendarEvents = ref([]);
+    const isInitialLoad = ref(true);
 
     const calendarOptions = reactive({
       plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
@@ -47,25 +46,68 @@ export default defineComponent({
 
     async function fetchEvents() {
       try {
-        const response = await axios
-          .get("https://localhost:7043/Members/Activities", {
+        const response = await axios.get(
+          "https://localhost:7043/Members/Activities",
+          {
             withCredentials: true,
-          })
-          .then((res) => {
-            events.value = res.data;
-            console.log(events.value);
-          });
+          }
+        );
+
+        calendarEvents.value = response.data.map((event) => {
+          let startTime = new Date(event.activityStartTime);
+          let endTime = new Date(event.activityEndTime);
+          return {
+            id: event.id,
+            title: event.activityName,
+            start: startTime.toISOString(),
+            end: endTime.toISOString(),
+          };
+        });
+        console.log("calendarEvents", calendarEvents.value);
       } catch (error) {
         console.error("Error fetching events:", error);
       }
     }
-    onMounted(() => {
-      fetchEvents();
+
+    onMounted(async () => {
+      await fetchEvents();
+      watch(
+        calendarEvents.value,
+        (newEvents) => {
+          calendarOptions.initialEvents = newEvents;
+        },
+        { immediate: true },
+        { deep: true }
+      );
+      console.log(calendarOptions.initialEvents);
+      wait();
     });
 
-    function handleWeekendsToggle() {
-      calendarOptions.weekends = !calendarOptions.weekends;
-    }
+    console.log(isInitialLoad);
+
+    const wait = () => {
+      if (isInitialLoad.value) {
+        // 第二次進來才執行 push()
+        INITIAL_EVENTS.push({
+          id: createEventId(),
+          title: "動力火車 都是因為愛",
+          start: "2023-03-22 19:00:00",
+          end: "2023-03-23 20:00:00",
+          text: "orange",
+        });
+
+        INITIAL_EVENTS.push({
+          id: createEventId(),
+          title: "FUJI ROCK FESTIVAL’23",
+          start: "2023-03-25 09:00:00",
+          end: "2023-03-27 00:00:00",
+          text: "orange",
+        });
+        console.log(isInitialLoad);
+      }
+      isInitialLoad.value = false;
+      console.log(isInitialLoad);
+    };
 
     function handleDateSelect(selectInfo) {
       let title = prompt("請輸入新的活動名稱");
@@ -94,8 +136,12 @@ export default defineComponent({
 
     return {
       calendarOptions,
+      calendarEvents,
       currentEvents,
-      handleWeekendsToggle,
+      handleDateSelect,
+      handleEventClick,
+      handleEvents,
+      isInitialLoad,
     };
   },
 });
@@ -109,8 +155,8 @@ export default defineComponent({
         :options="calendarOptions"
       >
         <template v-slot:eventContent="arg">
-          <b>{{ arg.timeText }}</b>
-          <i>{{ arg.event.title }}</i>
+          <b>{{ arg.timeText.slice(0, 1) }}點</b>
+          <b>{{ arg.event.title }}</b>
         </template>
       </FullCalendar>
     </div>
@@ -143,6 +189,15 @@ export default defineComponent({
         </ul>
       </div>
     </div> -->
+    <!-- <div class="all">
+      <h2 style="color: white">All Events ({{ calendarEvents.length }})</h2>
+      <ul style="color: white">
+        <li v-for="event in calendarEvents" :key="event.id">
+          <b style="color: white">{{ event.start }}</b>
+          <i style="color: white">{{ event.title }}</i>
+        </li>
+      </ul>
+    </div> -->
   </div>
 </template>
 
@@ -154,6 +209,7 @@ export default defineComponent({
 }
 .demo-app {
   display: flex;
+  flex-direction: column;
   width: 60%;
   min-height: 80%;
   font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
@@ -165,30 +221,14 @@ export default defineComponent({
     flex-grow: 1;
     padding: 3em;
     .demo-app-calendar {
-      .fc-header-toolbar {
-        .fc-toolbar-chunck {
-          .fc-toolbar-title {
-            color: orange !important;
-          }
-          .fc-button-group {
-            .fc-prev-button .fc-button .fc-button-primary {
-              background-color: white;
-              color: black;
-            }
-          }
-        }
-      }
     }
   }
-  .demo-app-sidebar {
-    width: 300px;
-    line-height: 1.5;
-    background: #eaf9ff;
-    border-right: 1px solid #d3e2e8;
-    .demo-app-sidebar-section {
-      padding: 2em;
-    }
+  .all {
   }
+}
+
+.fc-content {
+  color: white;
 }
 
 h2 {
