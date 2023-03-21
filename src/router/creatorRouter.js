@@ -3,13 +3,12 @@ import {
     createWebHistory,
     createWebHashHistory,
   } from "vue-router";
-  import CreatorHome from "../pages/creator/Creator.vue";
  
   const routes = [
     {
       path: "/",
       name: "Creator",
-      component: CreatorHome,
+      component: () => import("../pages/creator/Creator.vue") ,
     },
   ];
   
