@@ -235,13 +235,7 @@ export default {
         },
         async toggleShuffle() {
             this.queue.isShuffle = !this.queue.isShuffle;
-            const shuffle = document.querySelector("#shuffle");
 
-            if (this.queue.isShuffle) {
-                shuffle.classList.add("active");
-            } else {
-                shuffle.classList.remove("active");
-            }
             await fetch(`https://localhost:7043/Queues/ShuffleSetting`, {
                 method: 'PATCH',
                 headers: {
@@ -256,13 +250,7 @@ export default {
         },
         async toggleRepeat() {
             this.queue.isRepeat = !this.queue.isRepeat;
-            const repeat = document.querySelector("#repeat");
 
-            if (this.queue.isRepeat) {
-                repeat.classList.add("active");
-            } else {
-                repeat.classList.remove("active");
-            }
             await fetch(`https://localhost:7043/Queues/RepeatSetting`, {
                 method: 'PATCH',
                 headers: {
@@ -335,8 +323,8 @@ export default {
             <div class="player-controls">
                 <div id="player-controls_buttons">
                     <div class="player-controls_left">
-                        <font-awesome-icon id="shuffle" class="playerBtn" icon="fa-solid fa-shuffle"
-                            @click="toggleShuffle" />
+                        <font-awesome-icon id="shuffle" :class="{ 'playerBtn': true, 'active': queue.isShuffle }"
+                            icon="fa-solid fa-shuffle" @click="toggleShuffle" />
                         <font-awesome-icon id="previous" class="playerBtn" icon="fa-solid fa-backward-step"
                             @click="previousSong" />
                     </div>
@@ -347,7 +335,8 @@ export default {
                     </div>
                     <div class="player-controls_right">
                         <font-awesome-icon id="next" class="playerBtn" icon="fa-solid fa-forward-step" @click="nextSong" />
-                        <font-awesome-icon id="repeat" class="playerBtn" icon="fa-solid fa-repeat" @click="toggleRepeat" />
+                        <font-awesome-icon id="repeat" :class="{ 'playerBtn': true, 'active': queue.isRepeat }"
+                            icon="fa-solid fa-repeat" @click="toggleRepeat" />
                     </div>
                 </div>
                 <div class="playback-bar">
