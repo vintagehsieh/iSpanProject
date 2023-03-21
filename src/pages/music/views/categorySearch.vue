@@ -23,6 +23,15 @@ export default {
     methods: {
         async setAlbum(albumId) {
             await this.$store.dispatch('setAlbum', albumId);
+        },
+        cutString(name) {
+            if (this.getLength(name) > 16) {
+                name = name.slice(0, 7) + '...'
+            }
+            return name;
+        },
+        getLength(str) {
+            return str.replace(/[^\x00-\xff]/g, "OO").length;
         }
     }
 }
@@ -40,7 +49,7 @@ export default {
                         <img :src=album.albumCoverPath alt="">
                     </template>
                     <template #name>
-                        <h3>{{ album.albumName }}</h3>
+                        <h3>{{ cutString(album.albumName) }}</h3>
                     </template>
                     <template #desc>
                         <span>{{ album.mainArtistName }}</span>

@@ -75,7 +75,6 @@ export default {
             }
         },
         checkPath(playlist) {
-            console.log(playlist.playlistCoverPath)
             return playlist.playlistCoverPath != '' ? playlist.playlistCoverPath : "https://localhost:44373/Uploads/Covers/note.png";
         },
         setPlaylist(playlistId) {
