@@ -74,10 +74,8 @@ export default {
     },
     methods: {
         setLogin() {
-            var account = document.querySelector('#account');
-            var password = document.querySelector('#password')
-            account.value = 'test';
-            password.value = 'test';
+            this.loginInfo.memberAccount = 'test';
+            this.loginInfo.memberPassword = 'test';
         }
     }
 };

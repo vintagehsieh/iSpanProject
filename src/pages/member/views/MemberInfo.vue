@@ -1,8 +1,10 @@
 <script>
 import { onMounted, ref } from "vue";
+import { useStore } from "vuex";
 
 export default {
   setup() {
+    const store = useStore();
     const isSubmitting = ref(false);
     const member = ref([]);
     onMounted(() => {

@@ -9,7 +9,6 @@ import MemberSubscription from "../pages/member/views/MemberSubscription.vue";
 import MemberOrder from "../pages/member/views/MemberOrder.vue";
 import MusicLibrary from "../pages/member/views/MusicLibrary.vue";
 import MemberActivate from "../pages/member/views/MemberActivate.vue";
-import MemberCalendar from "../pages/activity/views/activityCalendar.vue"
 
 const routes = [
     {
@@ -33,9 +32,9 @@ const routes = [
         component: MemberOrder,
     },
     {
-        path: "/memberActivate",
+        path: "/memberActivate/:memberId/:confirmCode",
         name: "memberActivate",
-        component: MemberCalendar,
+        component: MemberActivate,
     },
 ];
 

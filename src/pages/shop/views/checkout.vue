@@ -184,7 +184,7 @@ export default {
         </div>
         <div class="couponContainer" v-if="coupon">
           <p class="couponTitle">折價:</p>
-          <p class="couponText">- NTD$ {{ formatter.format(discountprice()) }}</p>
+          <p class="couponText">- {{ formatter.format(discountprice()) }}</p>
         </div>
         <h3 class="finalPrice">{{ formatter.format(totalprice()) }}</h3>
         <hr />

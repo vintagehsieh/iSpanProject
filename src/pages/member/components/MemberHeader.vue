@@ -20,7 +20,6 @@ export default {
       if (store.getters.getIsConfirmed == false) {
         alert("使用者尚未驗證成功");
       } else {
-        alert("使用者已驗證成功");
         window.location.href = "creator.html";
       }
     });
